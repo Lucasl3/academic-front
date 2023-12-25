@@ -4,7 +4,7 @@ import * as ReactDOM from 'react-dom/client'
 import { ColorModeScript } from '@chakra-ui/react'
 import { ChakraProvider, theme } from '@chakra-ui/react'
 
-import { App } from './App'
+import App from './App'
 import reportWebVitals from './reportWebVitals'
 
 const container = document.getElementById('root')
