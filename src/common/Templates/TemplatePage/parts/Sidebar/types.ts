@@ -14,8 +14,9 @@ export interface ILinkItem {
 }
 
 export interface INavItemProps extends FlexProps {
+  name: string
+  to: string
   icon: IconType
-  children: React.ReactNode
 }
 
 export interface IMobileProps extends FlexProps {
