@@ -1,30 +1,28 @@
 import React from 'react'
+import { NavLink } from 'react-router-dom'
 
-import { Icon, Box, Flex } from '@chakra-ui/react'
+import { Icon, Flex, Link, Box } from '@chakra-ui/react'
 
 import { INavItemProps } from '../../types'
-
-const NavItem = ({ icon, children, ...rest }: INavItemProps) => {
+const NavItem = ({ name, to, icon, ...rest }: INavItemProps) => {
   return (
-    <Box
-      as="a"
-      href="#"
-      style={{ textDecoration: 'none' }}
-      _focus={{ boxShadow: 'none' }}
+    <Link
+      role="group"
+      as={NavLink}
+      to={to}
+      display="flex"
+      p="3"
+      textDecoration="none"
+      _activeLink={{
+        bg: 'blue.500',
+        color: 'white',
+      }}
+      _hover={{
+        bg: 'blue.400',
+        color: 'white',
+      }}
     >
-      <Flex
-        align="center"
-        p="4"
-        mx="4"
-        borderRadius="lg"
-        role="group"
-        cursor="pointer"
-        _hover={{
-          bg: 'cyan.400',
-          color: 'white',
-        }}
-        {...rest}
-      >
+      <Flex align="center">
         {icon && (
           <Icon
             mr="4"
@@ -35,9 +33,9 @@ const NavItem = ({ icon, children, ...rest }: INavItemProps) => {
             as={icon}
           />
         )}
-        {children}
+        {name}
       </Flex>
-    </Box>
+    </Link>
   )
 }
 

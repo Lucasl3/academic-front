@@ -1,4 +1,5 @@
 import React from 'react'
+import { BsGear, BsList, BsPower } from 'react-icons/bs'
 
 import {
   Box,
@@ -29,15 +30,21 @@ const SidebarContent = ({
       {...rest}
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Logo
+        <Text as="span" fontSize="2xl" fontFamily="monospace" fontWeight="bold">
+          Academ
+          <Text as="span" fontSize="3xl" color="blue.500">
+            IC
+          </Text>
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {linkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
-          {link.name}
-        </NavItem>
+        <NavItem
+          key={link.name}
+          name={link.name}
+          to={link.to}
+          icon={link.icon}
+        />
       ))}
     </Box>
   )
