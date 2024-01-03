@@ -5,7 +5,7 @@ import {
   useColorModeValue,
   Drawer,
   DrawerContent,
-  useDisclosure,
+  DrawerOverlay,
   useMediaQuery,
 } from '@chakra-ui/react'
 
@@ -20,38 +20,26 @@ const Sidebar = ({
   includeMobileHeader,
   children,
 }: ISidebarProps) => {
-  const { isOpen, onOpen, onClose } = useContext(SidebarContext)
+  const { isOpen, onClose } = useContext(SidebarContext)
   const [isMobile] = useMediaQuery('(max-width: 768px)')
   const sidebarWidth = 48
 
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
-      {!isMobile && (
-        <SidebarContent
-          linkItems={linkItems}
-          sidebarWidth={sidebarWidth}
-          onClose={() => onClose}
-        />
-      )}
+      {!isMobile && <SidebarContent linkItems={linkItems} />}
       <Drawer
         isOpen={isOpen}
         placement="left"
         onClose={onClose}
         returnFocusOnClose={false}
         onOverlayClick={onClose}
-        size="full"
       >
+        <DrawerOverlay />
         <DrawerContent>
-          <SidebarContent
-            linkItems={linkItems}
-            sidebarWidth={sidebarWidth}
-            onClose={onClose}
-          />
+          <SidebarContent linkItems={linkItems} />
         </DrawerContent>
       </Drawer>
-      {includeMobileHeader && isMobile && (
-        <MobileNav sidebarWidth={sidebarWidth} onOpen={onOpen} />
-      )}
+      {includeMobileHeader && isMobile && <MobileNav />}
       <Box ml={{ base: 0, md: sidebarWidth }}>{children}</Box>
     </Box>
   )

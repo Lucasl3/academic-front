@@ -1,11 +1,15 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { FiMenu } from 'react-icons/fi'
 
 import { Flex, IconButton, useColorModeValue, Text } from '@chakra-ui/react'
 
+import { SidebarContext } from '@/contexts/SidebarContext'
+
 import { IMobileProps } from '../../types'
 
-const MobileNav = ({ sidebarWidth, onOpen, ...rest }: IMobileProps) => {
+const MobileNav = ({ ...rest }: IMobileProps) => {
+  const { onOpen, sidebarWidth } = useContext(SidebarContext)
+
   return (
     <Flex
       ml={{ base: 0, md: sidebarWidth }}
@@ -26,7 +30,6 @@ const MobileNav = ({ sidebarWidth, onOpen, ...rest }: IMobileProps) => {
         aria-label="open menu"
         icon={<FiMenu />}
       />
-
       <Text
         display={{ base: 'flex', md: 'none' }}
         fontSize="2xl"
