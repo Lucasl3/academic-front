@@ -19,13 +19,8 @@ export interface INavItemProps extends FlexProps {
   icon: IconType
 }
 
-export interface IMobileProps extends FlexProps {
-  sidebarWidth: number | string
-  onOpen: () => void
-}
+export interface IMobileProps extends FlexProps {}
 
 export interface ISidebarContentProps extends BoxProps {
   linkItems: Array<ILinkItem>
-  sidebarWidth: number | string
-  onClose: () => void
 }
