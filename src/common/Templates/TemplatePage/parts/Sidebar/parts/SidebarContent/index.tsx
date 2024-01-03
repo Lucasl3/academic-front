@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { BsGear, BsList, BsPower } from 'react-icons/bs'
 
 import {
@@ -9,15 +9,14 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react'
 
+import { SidebarContext } from '@/contexts/SidebarContext'
+
 import { ISidebarContentProps } from '../../types'
 import NavItem from '../NavItem'
 
-const SidebarContent = ({
-  linkItems,
-  sidebarWidth,
-  onClose,
-  ...rest
-}: ISidebarContentProps) => {
+const SidebarContent = ({ linkItems, ...rest }: ISidebarContentProps) => {
+  const { onClose, sidebarWidth } = useContext(SidebarContext)
+
   return (
     <Box
       transition="3s ease"

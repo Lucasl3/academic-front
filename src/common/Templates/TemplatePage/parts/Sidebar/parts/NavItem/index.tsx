@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 
-import { Icon, Flex, Link, Box } from '@chakra-ui/react'
+import { Icon, Flex, Link } from '@chakra-ui/react'
+
+import { SidebarContext } from '@/contexts/SidebarContext'
 
 import { INavItemProps } from '../../types'
-const NavItem = ({ name, to, icon, ...rest }: INavItemProps) => {
+const NavItem = ({ name, to, icon }: INavItemProps) => {
+  const { onClose } = useContext(SidebarContext)
+
   return (
     <Link
       role="group"
@@ -21,6 +25,7 @@ const NavItem = ({ name, to, icon, ...rest }: INavItemProps) => {
         bg: 'blue.400',
         color: 'white',
       }}
+      onClick={onClose}
     >
       <Flex align="center">
         {icon && (
