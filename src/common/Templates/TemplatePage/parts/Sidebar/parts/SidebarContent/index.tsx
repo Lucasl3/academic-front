@@ -7,6 +7,7 @@ import {
   Text,
   CloseButton,
   useColorModeValue,
+  useMediaQuery,
 } from '@chakra-ui/react'
 
 import { SidebarContext } from '@/contexts/SidebarContext'
@@ -16,12 +17,13 @@ import NavItem from '../NavItem'
 
 const SidebarContent = ({ linkItems, ...rest }: ISidebarContentProps) => {
   const { onClose, sidebarWidth } = useContext(SidebarContext)
+  const [isMobile] = useMediaQuery('(max-width: 768px)')
 
   return (
     <Box
       transition="3s ease"
       bg={useColorModeValue('white', 'gray.900')}
-      borderRight="1px"
+      borderRight={isMobile ? 'none' : '1px'}
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
       w={{ base: 'full', md: sidebarWidth }}
       pos="fixed"

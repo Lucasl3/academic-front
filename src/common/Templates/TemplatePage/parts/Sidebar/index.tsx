@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 
 import {
   Box,
@@ -23,6 +23,12 @@ const Sidebar = ({
   const { isOpen, onClose } = useContext(SidebarContext)
   const [isMobile] = useMediaQuery('(max-width: 768px)')
   const sidebarWidth = 48
+
+  useEffect(() => {
+    if (!isMobile) {
+      onClose()
+    }
+  }, [isMobile])
 
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
