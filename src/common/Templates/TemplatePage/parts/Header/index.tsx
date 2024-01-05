@@ -27,8 +27,6 @@ const Header = ({ onOpen, ...rest }: IHeaderProps) => {
       height="20"
       alignItems="center"
       bg={useColorModeValue('white', 'gray.900')}
-      borderBottomWidth="1px"
-      borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
       justifyContent={{ base: 'space-between', md: 'flex-end' }}
       {...rest}
     >
@@ -48,7 +46,6 @@ const Header = ({ onOpen, ...rest }: IHeaderProps) => {
       >
         Logo
       </Text>
-
       <HStack spacing={{ base: 2, md: 6 }}>
         <Menu placement="bottom-end">
           <MenuButton
