@@ -14,20 +14,20 @@ class App extends React.Component {
       <SidebarContextProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/auth">
+              <Route path="login" element={<Login />} />
+              <Route path="cadastrar" element={<Register />} />
+            </Route>
             <Route element={<PrivateRoutes />}>
               <Route path="/dashboard" element={<TemplatePage />}>
-                <Route path="teste1" element={<Home />} />
                 <Route index element={<h1>Teste 1</h1>} />
                 <Route path="teste2" element={<h1>Teste 2</h1>} />
                 <Route path="teste3" element={<h1>Teste 3</h1>} />
                 <Route path="teste4" element={<h1>Teste 4</h1>} />
               </Route>
             </Route>
-            <Route path="/auth">
-              <Route path="login" element={<Login />} />
-              <Route path="cadastrar" element={<Register />} />
-            </Route>
-            <Route path="*" element={<Navigate to="/auth/login" />} />
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </BrowserRouter>
       </SidebarContextProvider>
