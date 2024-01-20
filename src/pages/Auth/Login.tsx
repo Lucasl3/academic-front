@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link as ReactRouterLink } from 'react-router-dom'
 
 import {
   Box,
@@ -14,11 +14,10 @@ import {
   Checkbox,
   Button,
   Image,
+  Link as ChakraLink,
 } from '@chakra-ui/react'
 
 const Login = () => {
-  const navigate = useNavigate()
-
   return (
     <Stack minH="100vh" direction="row" gap={0}>
       <Flex p={8} flex={1} align="center" justify="center" bg="#E1E6FC">
@@ -72,13 +71,14 @@ const Login = () => {
                 <Stack align="center">
                   <Text>
                     Ainda não tem uma conta?{' '}
-                    <Button
+                    <ChakraLink
+                      as={ReactRouterLink}
                       color="#495796"
-                      variant="link"
-                      onClick={() => navigate('/auth/cadastrar')}
+                      fontWeight="semibold"
+                      to="/auth/cadastrar"
                     >
                       Cadastre-se
-                    </Button>
+                    </ChakraLink>
                   </Text>
                 </Stack>
               </Stack>
