@@ -5,7 +5,6 @@ import TemplatePage from '@/common/Templates/TemplatePage'
 import SidebarContextProvider from '@/contexts/SidebarContext'
 import PrivateRoutes from '@/guard/auth.guard'
 import Login from '@/pages/Auth/Login'
-import Register from '@/pages/Auth/Register'
 import Home from '@/pages/Home'
 
 class App extends React.Component {
@@ -15,10 +14,7 @@ class App extends React.Component {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/auth">
-              <Route path="login" element={<Login />} />
-              <Route path="cadastrar" element={<Register />} />
-            </Route>
+            <Route path="/login" element={<Login />} />
             <Route element={<PrivateRoutes />}>
               <Route path="/dashboard" element={<TemplatePage />}>
                 <Route index element={<h1>Teste 1</h1>} />
