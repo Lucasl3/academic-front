@@ -1,5 +1,6 @@
 import React from 'react'
-import { Link as ReactRouterLink } from 'react-router-dom'
+import { FcGoogle } from 'react-icons/fc'
+import { useNavigate } from 'react-router-dom'
 
 import {
   Box,
@@ -8,16 +9,32 @@ import {
   Text,
   Stack,
   Heading,
-  FormControl,
-  FormLabel,
-  Input,
-  Checkbox,
   Button,
   Image,
-  Link as ChakraLink,
+  useToast,
 } from '@chakra-ui/react'
+import { useGoogleLogin } from '@react-oauth/google'
 
 const Login = () => {
+  const toast = useToast()
+  const navigate = useNavigate()
+
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: ({ access_token }) => {
+      localStorage.setItem('accessToken', access_token)
+      navigate('/dashboard')
+    },
+    onError: () => {
+      toast({
+        title: 'Erro ao fazer login',
+        description: 'Tente novamente mais tarde',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    },
+  })
+
   return (
     <Stack minH="100vh" direction="row" gap={0}>
       <Flex p={8} flex={1} align="center" justify="center" bg="#E1E6FC">
@@ -35,55 +52,20 @@ const Login = () => {
                 IC
               </Text>
             </Text>
+          </Stack>
+          <Stack rounded="lg" bg="#FBFBFB" boxShadow="lg" p={8} spacing={4}>
             <Heading fontSize="2xl" color="#444A63">
               Faça login em sua conta
             </Heading>
-          </Stack>
-          <Box rounded="lg" bg="#FBFBFB" boxShadow="lg" p={8}>
             <Stack spacing={4}>
-              <FormControl id="email">
-                <FormLabel color="#444A63">Email Institucional</FormLabel>
-                <Input type="email" borderColor="gray.400" />
-              </FormControl>
-              <FormControl id="password">
-                <FormLabel color="#444A63">Senha</FormLabel>
-                <Input type="password" borderColor="gray.400" />
-              </FormControl>
-              <Stack spacing={6}>
-                <Stack
-                  direction={{ base: 'column', sm: 'row' }}
-                  align="start"
-                  justify="space-between"
-                >
-                  <Checkbox borderColor="gray.400">Lembrar de mim</Checkbox>
-                  <Button color="#495796" variant="link">
-                    Esqueceu a senha?
-                  </Button>
-                </Stack>
-                <Button
-                  bg="#495796"
-                  colorScheme="blue"
-                  color="#FBFBFB"
-                  variant="solid"
-                >
-                  Entrar
-                </Button>
-                <Stack align="center">
-                  <Text>
-                    Ainda não tem uma conta?{' '}
-                    <ChakraLink
-                      as={ReactRouterLink}
-                      color="#495796"
-                      fontWeight="semibold"
-                      to="/auth/cadastrar"
-                    >
-                      Cadastre-se
-                    </ChakraLink>
-                  </Text>
-                </Stack>
-              </Stack>
+              <Button
+                leftIcon={<FcGoogle size={20} />}
+                onClick={() => handleGoogleLogin()}
+              >
+                Continuar com Google
+              </Button>
             </Stack>
-          </Box>
+          </Stack>
         </Stack>
       </Flex>
       <Hide below="lg">

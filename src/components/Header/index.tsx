@@ -127,7 +127,7 @@ const Header = ({ loggedUser, onOpen, ...rest }: IHeaderProps) => {
           colorScheme="blue"
           color="#FBFBFB"
           variant="solid"
-          to="/auth/login"
+          to="/login"
         >
           Login
         </Button>
