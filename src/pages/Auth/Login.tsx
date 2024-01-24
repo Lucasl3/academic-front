@@ -1,5 +1,6 @@
 import React from 'react'
 import { FcGoogle } from 'react-icons/fc'
+import { useNavigate } from 'react-router-dom'
 
 import {
   Box,
@@ -16,10 +17,12 @@ import { useGoogleLogin } from '@react-oauth/google'
 
 const Login = () => {
   const toast = useToast()
+  const navigate = useNavigate()
 
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: ({ access_token }) => {
       localStorage.setItem('accessToken', access_token)
+      navigate('/dashboard')
     },
     onError: () => {
       toast({
