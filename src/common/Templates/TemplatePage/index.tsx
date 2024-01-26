@@ -19,7 +19,7 @@ function TemplatePage() {
   return (
     <Sidebar {...sidebarProps}>
       <Header loggedUser={loggedUser} onOpen={onOpen} />
-      <Box p="4">
+      <Box minH="calc(100vh - 80px)" p="5" bg="#E1E6FC">
         <Outlet />
       </Box>
     </Sidebar>

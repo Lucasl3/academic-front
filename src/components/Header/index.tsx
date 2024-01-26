@@ -18,6 +18,7 @@ import {
   MenuDivider,
   MenuGroup,
   Button,
+  Circle,
   useMediaQuery,
 } from '@chakra-ui/react'
 
@@ -64,7 +65,24 @@ const Header = ({ loggedUser, onOpen, ...rest }: IHeaderProps) => {
               size="lg"
               variant="ghost"
               aria-label="open menu"
-              icon={<FiBell />}
+              icon={
+                <>
+                  <FiBell />
+                  {false && (
+                    <Circle
+                      size="16px"
+                      color="white"
+                      position="absolute"
+                      top="6px"
+                      right="3px"
+                      fontSize="xs"
+                      bgColor="red.500"
+                    >
+                      4
+                    </Circle>
+                  )}
+                </>
+              }
             />
             <MenuList>
               <MenuGroup title="Notificações">
