@@ -5,6 +5,7 @@ import TemplatePage from '@/common/Templates/TemplatePage'
 import SidebarContextProvider from '@/contexts/SidebarContext'
 import PrivateRoutes from '@/guard/auth.guard'
 import Login from '@/pages/Auth/Login'
+import StudentForm from '@/pages/Dashboard/Aluno/StudentForm'
 import Secretaria from '@/pages/Dashboard/Secretaria'
 import Demandas from '@/pages/Dashboard/Secretaria/Demandas'
 import DemandaView from '@/pages/Dashboard/Secretaria/Demandas/View'
@@ -27,6 +28,9 @@ class App extends React.Component {
               <Route path="/dashboard" element={<TemplatePage />}>
                 <Route index element={<Navigate to="/dashboard/home" />} />
                 <Route path="home" element={<Home />} />
+                <Route path="/formulario-aluno" element={<TemplatePage />}>
+                  <Route index element={<StudentForm />} />
+                </Route>
                 <Route path="secretaria" element={<Secretaria />}>
                   <Route index element={<SecretariaHome />} />
                   <Route path="demandas">
