@@ -15,6 +15,8 @@ import EditTutorial from '@/pages/Dashboard/Secretaria/Tutoriais/Edit'
 import Users from '@/pages/Dashboard/Secretaria/Users'
 import Home from '@/pages/Home'
 import HomeNotLogged from '@/pages/Home/NotLogged'
+
+import AlunoSolicitacoes from './pages/Dashboard/Aluno/Solicitacoes'
 class App extends React.Component {
   render() {
     return (
@@ -50,6 +52,10 @@ class App extends React.Component {
                     element={<h1>Secretaria Usuários</h1>}
                   />
                 </Route>
+                <Route
+                  path="aluno-solicitacoes"
+                  element={<AlunoSolicitacoes />}
+                />
               </Route>
             </Route>
             <Route path="*" element={<Navigate to="/" />} />
