@@ -45,10 +45,6 @@ class App extends React.Component {
                     path="formularios"
                     element={<h1>Secretaria Formularios</h1>}
                   />
-                  <Route
-                    path="usuarios"
-                    element={<h1>Secretaria Usuários</h1>}
-                  />
                 </Route>
               </Route>
             </Route>
