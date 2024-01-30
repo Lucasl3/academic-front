@@ -5,7 +5,7 @@ import TemplatePage from '@/common/Templates/TemplatePage'
 import SidebarContextProvider from '@/contexts/SidebarContext'
 import PrivateRoutes from '@/guard/auth.guard'
 import Login from '@/pages/Auth/Login'
-import StudentForm from '@/pages/Dashboard/Aluno/StudentForm'
+import StudentForm from '@/pages/Dashboard/Aluno/Formularios/StudentForm'
 import Secretaria from '@/pages/Dashboard/Secretaria'
 import Demandas from '@/pages/Dashboard/Secretaria/Demandas'
 import DemandaView from '@/pages/Dashboard/Secretaria/Demandas/View'
@@ -16,6 +16,10 @@ import EditTutorial from '@/pages/Dashboard/Secretaria/Tutoriais/Edit'
 import Users from '@/pages/Dashboard/Secretaria/Users'
 import Home from '@/pages/Home'
 import HomeNotLogged from '@/pages/Home/NotLogged'
+
+import Aluno from './pages/Dashboard/Aluno'
+import Formularios from './pages/Dashboard/Aluno/Formularios'
+import AlunoHome from './pages/Dashboard/Aluno/Home'
 class App extends React.Component {
   render() {
     return (
@@ -28,8 +32,12 @@ class App extends React.Component {
               <Route path="/dashboard" element={<TemplatePage />}>
                 <Route index element={<Navigate to="/dashboard/home" />} />
                 <Route path="home" element={<Home />} />
-                <Route path="/formulario-aluno" element={<TemplatePage />}>
-                  <Route index element={<StudentForm />} />
+                <Route path="aluno" element={<Aluno />}>
+                  <Route index element={<AlunoHome />} />
+                  <Route path="formularios">
+                    <Route index element={<Formularios />} />
+                    <Route path="detalhes/:id" element={<StudentForm />} />
+                  </Route>
                 </Route>
                 <Route path="secretaria" element={<Secretaria />}>
                   <Route index element={<SecretariaHome />} />
