@@ -39,10 +39,7 @@ class App extends React.Component {
                     <Route index element={<Formularios />} />
                     <Route path="detalhes/:id" element={<StudentForm />} />
                   </Route>
-                  <Route
-                    path="aluno-solicitacoes"
-                    element={<AlunoSolicitacoes />}
-                  />
+                  <Route path="solicitacoes" element={<AlunoSolicitacoes />} />
                 </Route>
                 <Route path="secretaria" element={<Secretaria />}>
                   <Route index element={<SecretariaHome />} />
