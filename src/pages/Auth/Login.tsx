@@ -48,7 +48,7 @@ const Login = () => {
               color="#444A63"
             >
               Academ
-              <Text as="span" fontSize="6xl" color="#495796">
+              <Text as="span" fontSize="6xl" color="blue.500">
                 IC
               </Text>
             </Text>
