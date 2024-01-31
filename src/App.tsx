@@ -20,6 +20,7 @@ import HomeNotLogged from '@/pages/Home/NotLogged'
 import Aluno from './pages/Dashboard/Aluno'
 import Formularios from './pages/Dashboard/Aluno/Formularios'
 import AlunoHome from './pages/Dashboard/Aluno/Home'
+import AlunoSolicitacoes from './pages/Dashboard/Aluno/Solicitacoes'
 class App extends React.Component {
   render() {
     return (
@@ -38,6 +39,10 @@ class App extends React.Component {
                     <Route index element={<Formularios />} />
                     <Route path="detalhes/:id" element={<StudentForm />} />
                   </Route>
+                  <Route
+                    path="aluno-solicitacoes"
+                    element={<AlunoSolicitacoes />}
+                  />
                 </Route>
                 <Route path="secretaria" element={<Secretaria />}>
                   <Route index element={<SecretariaHome />} />
