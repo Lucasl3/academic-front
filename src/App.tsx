@@ -9,6 +9,7 @@ import Secretaria from '@/pages/Dashboard/Secretaria'
 import Demandas from '@/pages/Dashboard/Secretaria/Demandas'
 import DemandaView from '@/pages/Dashboard/Secretaria/Demandas/View'
 import SecretariaHome from '@/pages/Dashboard/Secretaria/Home'
+import Solicitacoes from '@/pages/Dashboard/Secretaria/Solicitacoes'
 import Tutoriais from '@/pages/Dashboard/Secretaria/Tutoriais'
 import CreateTutorial from '@/pages/Dashboard/Secretaria/Tutoriais/Create'
 import EditTutorial from '@/pages/Dashboard/Secretaria/Tutoriais/Edit'
@@ -32,6 +33,11 @@ class App extends React.Component {
                   <Route path="demandas">
                     <Route index element={<Demandas />} />
                     <Route path="detalhes/:id" element={<DemandaView />} />
+                  </Route>
+                  <Route path="solicitacoes">
+                    <Route index element={<Solicitacoes />} />
+                    <Route path="criar" element={<CreateTutorial />} />
+                    <Route path="detalhes/:id" element={<EditTutorial />} />
                   </Route>
                   <Route path="tutoriais">
                     <Route index element={<Tutoriais />} />
