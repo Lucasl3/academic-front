@@ -10,4 +10,5 @@ export interface IFormularioCardProps {
   statusTag?: status
   tooltipText?: string
   course?: string
+  isClosed?: boolean
 }

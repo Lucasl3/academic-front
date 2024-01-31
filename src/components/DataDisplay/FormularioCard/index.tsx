@@ -1,18 +1,7 @@
 import React from 'react'
-import { BiHide } from 'react-icons/bi'
-import { BsTools } from 'react-icons/bs'
-import { FaCheck } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 
-import {
-  HStack,
-  Stack,
-  Text,
-  Tag as ChakraTag,
-  TagLeftIcon,
-  TagLabel,
-  Tooltip,
-} from '@chakra-ui/react'
+import { HStack, Stack, Text, Tooltip } from '@chakra-ui/react'
 
 import FormularioStatusTag from '@/components/Tags/FormularioStatus'
 import { status } from '@/components/Tags/FormularioStatus/types'
@@ -27,6 +16,7 @@ const FormularioCard = ({
   tooltipText,
   statusTag,
   course,
+  isClosed,
 }: IFormularioCardProps) => {
   return (
     <Tooltip label={tooltipText}>
@@ -36,8 +26,9 @@ const FormularioCard = ({
         boxShadow="lg"
         rounded="lg"
         p="6"
-        bg="#FBFBFB"
+        bg={isClosed ? '#DDDDDD' : '#FFFFFF'}
         gap={2}
+        cursor={isClosed ? 'not-allowed' : 'pointer'}
       >
         <HStack justifyContent="space-between">
           {course && (
