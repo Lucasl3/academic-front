@@ -27,6 +27,7 @@ import {
 import { Box } from '@chakra-ui/react'
 import { Checkbox, CheckboxGroup } from '@chakra-ui/react'
 import { Radio, RadioGroup } from '@chakra-ui/react'
+import UploadFile from '@/components/UploadFile'
 
 const fieldSets: {
   name: string
@@ -258,7 +259,30 @@ function StudentForm() {
                   </FormControl>
                 )}
 
-                {field.type !== 'checkbox' && field.type !== 'radio' && (
+                {field.type !== 'checkbox' &&
+                  field.type !== 'radio' &&
+                  field.type !== 'file' && (
+                    <FormControl
+                      isRequired={field.isRequired}
+                      p={6}
+                      paddingInline={10}
+                      w="100%"
+                      border="1px solid #E1E1E3"
+                      rounded="lg"
+                      boxShadow="md"
+                      bg="#FBFBFB"
+                    >
+                      <FormLabel paddingBottom={4}>{field.name}</FormLabel>
+                      <Input
+                        variant="flushed"
+                        type={field.type}
+                        placeholder={field.placeholder}
+                        borderColor="gray.400"
+                      />
+                      <FormErrorMessage>{`${field.name} é necessário`}</FormErrorMessage>
+                    </FormControl>
+                  )}
+                {field.type === 'file' && (
                   <FormControl
                     isRequired={field.isRequired}
                     p={6}
@@ -270,12 +294,7 @@ function StudentForm() {
                     bg="#FBFBFB"
                   >
                     <FormLabel paddingBottom={4}>{field.name}</FormLabel>
-                    <Input
-                      variant="flushed"
-                      type={field.type}
-                      placeholder={field.placeholder}
-                      borderColor="gray.400"
-                    />
+                    <UploadFile />
                     <FormErrorMessage>{`${field.name} é necessário`}</FormErrorMessage>
                   </FormControl>
                 )}
@@ -290,7 +309,7 @@ function StudentForm() {
     const steps = [
       { title: 'Aluno', description: 'Dados Iniciais' },
       { title: 'Documentos', description: 'Dados do Formulário' },
-      { title: 'Enviar', description: 'Revisão dos Dados' },
+      // { title: 'Enviar', description: 'Revisão dos Dados' },
     ]
 
     return (
@@ -385,8 +404,11 @@ function StudentForm() {
             colorScheme="blue"
             color="#FBFBFB"
             variant="solid"
+            isDisabled={activeStep === 2 ? true : false}
           >
-            {activeStep === 2 ? 'Enviar' : 'Próximo'}
+            {activeStep === 0 ? 'Próximo' : ''}
+            {activeStep === 1 ? 'Enviar' : ''}
+            {activeStep === 2 ? 'Enviado' : ''}
           </Button>
         </Flex>
       </FormControl>
