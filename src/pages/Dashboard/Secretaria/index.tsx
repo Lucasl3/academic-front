@@ -29,10 +29,10 @@ const Secretaria = () => {
       id: 'tutoriais',
       label: 'Tutoriais',
     },
-    {
+    /*{
       id: 'formularios',
       label: 'Formulários',
-    },
+    },*/
     {
       id: 'usuarios',
       label: 'Gerenciar Usuários',
