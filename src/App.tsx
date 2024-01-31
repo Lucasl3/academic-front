@@ -5,6 +5,7 @@ import TemplatePage from '@/common/Templates/TemplatePage'
 import SidebarContextProvider from '@/contexts/SidebarContext'
 import PrivateRoutes from '@/guard/auth.guard'
 import Login from '@/pages/Auth/Login'
+import StudentForm from '@/pages/Dashboard/Aluno/Formularios/StudentForm'
 import Secretaria from '@/pages/Dashboard/Secretaria'
 import Demandas from '@/pages/Dashboard/Secretaria/Demandas'
 import DemandaView from '@/pages/Dashboard/Secretaria/Demandas/View'
@@ -16,6 +17,9 @@ import Users from '@/pages/Dashboard/Secretaria/Users'
 import Home from '@/pages/Home'
 import HomeNotLogged from '@/pages/Home/NotLogged'
 
+import Aluno from './pages/Dashboard/Aluno'
+import Formularios from './pages/Dashboard/Aluno/Formularios'
+import AlunoHome from './pages/Dashboard/Aluno/Home'
 import AlunoSolicitacoes from './pages/Dashboard/Aluno/Solicitacoes'
 class App extends React.Component {
   render() {
@@ -29,6 +33,17 @@ class App extends React.Component {
               <Route path="/dashboard" element={<TemplatePage />}>
                 <Route index element={<Navigate to="/dashboard/home" />} />
                 <Route path="home" element={<Home />} />
+                <Route path="aluno" element={<Aluno />}>
+                  <Route index element={<AlunoHome />} />
+                  <Route path="formularios">
+                    <Route index element={<Formularios />} />
+                    <Route path="detalhes/:id" element={<StudentForm />} />
+                  </Route>
+                  <Route
+                    path="aluno-solicitacoes"
+                    element={<AlunoSolicitacoes />}
+                  />
+                </Route>
                 <Route path="secretaria" element={<Secretaria />}>
                   <Route index element={<SecretariaHome />} />
                   <Route path="demandas">
@@ -47,15 +62,7 @@ class App extends React.Component {
                     path="formularios"
                     element={<h1>Secretaria Formularios</h1>}
                   />
-                  <Route
-                    path="usuarios"
-                    element={<h1>Secretaria Usuários</h1>}
-                  />
                 </Route>
-                <Route
-                  path="aluno-solicitacoes"
-                  element={<AlunoSolicitacoes />}
-                />
               </Route>
             </Route>
             <Route path="*" element={<Navigate to="/" />} />
