@@ -52,28 +52,106 @@ const Home = () => {
         </Carousel>
       </Flex>
       <Stack direction={{ base: 'column', md: 'row' }}>
-        <Stack w="full" boxShadow="lg" rounded="lg" p={4} bg="#FBFBFB" flex={7}>
+        <Stack w="80%" boxShadow="lg" rounded="lg" p={4} bg="#FBFBFB">
           <Text fontSize="lg" fontWeight="semibold" color="#444A63">
-            Formulário de Ouvidoria
+            Calculadora IC
           </Text>
-          <FormControl id="assunto">
-            <FormLabel color="#444A63">Assunto</FormLabel>
-            <Input
-              type="text"
-              borderColor="gray.400"
-              placeholder="Here is a sample placeholder"
-            />
-          </FormControl>
-          <FormControl id="conteudo">
-            <FormLabel color="#444A63">Conteúdo</FormLabel>
-            <Textarea
-              placeholder="Here is a sample placeholder"
-              borderColor="gray.400"
-              minH="150px"
-            />
-          </FormControl>
+          <Tabs isFitted>
+            <TabList>
+              <Tab
+                _selected={{
+                  color: '#495796',
+                  borderBottomColor: '#495796',
+                }}
+              >
+                Nota Final
+              </Tab>
+              <Tab
+                _selected={{
+                  color: '#495796',
+                  borderBottomColor: '#495796',
+                }}
+              >
+                Faltas
+              </Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <Flex justify="center" gap={3}>
+                  <Flex direction="column" w={{ base: '100%', md: '50%' }}>
+                    <FormControl id="ab1">
+                      <FormLabel color="#444A63">Nota AB1</FormLabel>
+                      <Input
+                        type="number"
+                        borderColor="gray.400"
+                        placeholder="Insira aqui a Nota AB1"
+                        min={0}
+                        max={10}
+                      />
+                    </FormControl>
+                    <FormControl id="ab2">
+                      <FormLabel color="#444A63">Nota AB2</FormLabel>
+                      <Input
+                        type="number"
+                        borderColor="gray.400"
+                        placeholder="Insira aqui a Nota AB2"
+                        min={0}
+                        max={10}
+                      />
+                    </FormControl>
+                    <FormControl id="ab1">
+                      <FormLabel color="#444A63">Nota Reav</FormLabel>
+                      <Input
+                        type="number"
+                        borderColor="gray.400"
+                        placeholder="Insira aqui a Nota Reav"
+                        min={0}
+                        max={10}
+                      />
+                    </FormControl>
+                  </Flex>
+                </Flex>
+              </TabPanel>
+              <TabPanel>
+                <Flex justify="center" gap={3}>
+                  <Flex direction="column" w={{ base: '100%', md: '50%' }}>
+                    <FormControl id="ab1">
+                      <FormLabel color="#444A63">Disciplina</FormLabel>
+                      <Input
+                        type="number"
+                        borderColor="gray.400"
+                        placeholder="Insira aqui a Disciplina"
+                        min={0}
+                        max={10}
+                      />
+                    </FormControl>
+                    <FormControl id="ab2">
+                      <FormLabel color="#444A63">C.H.T</FormLabel>
+                      <Input
+                        type="number"
+                        borderColor="gray.400"
+                        placeholder="Insira aqui a C.H.T"
+                        min={0}
+                        max={10}
+                      />
+                    </FormControl>
+                    <FormControl id="ab1">
+                      <FormLabel color="#444A63">C.H.D</FormLabel>
+                      <Input
+                        type="number"
+                        borderColor="gray.400"
+                        placeholder="Insira aqui a C.H.D"
+                        min={0}
+                        max={10}
+                      />
+                    </FormControl>
+                  </Flex>
+                </Flex>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
         </Stack>
-        <Stack w="full" boxShadow="lg" rounded="lg" p={4} bg="#FBFBFB" flex={3}>
+        <Stack boxShadow="lg" rounded="lg" p={4} bg="#FBFBFB" flex={3}>
           <Text fontSize="lg" fontWeight="semibold" color="#444A63">
             Tutoriais
           </Text>
@@ -87,105 +165,6 @@ const Home = () => {
             ))}
           </OrderedList>
         </Stack>
-      </Stack>
-      <Stack w="full" boxShadow="lg" rounded="lg" p={4} bg="#FBFBFB">
-        <Text fontSize="lg" fontWeight="semibold" color="#444A63">
-          Calculadora IC
-        </Text>
-        <Tabs isFitted>
-          <TabList>
-            <Tab
-              _selected={{
-                color: '#495796',
-                borderBottomColor: '#495796',
-              }}
-            >
-              Nota Final
-            </Tab>
-            <Tab
-              _selected={{
-                color: '#495796',
-                borderBottomColor: '#495796',
-              }}
-            >
-              Faltas
-            </Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <Flex justify="center" gap={3}>
-                <Flex direction="column" w={{ base: '100%', md: '50%' }}>
-                  <FormControl id="ab1">
-                    <FormLabel color="#444A63">Nota AB1</FormLabel>
-                    <Input
-                      type="number"
-                      borderColor="gray.400"
-                      placeholder="Here is a sample placeholder"
-                      min={0}
-                      max={10}
-                    />
-                  </FormControl>
-                  <FormControl id="ab2">
-                    <FormLabel color="#444A63">Nota AB2</FormLabel>
-                    <Input
-                      type="number"
-                      borderColor="gray.400"
-                      placeholder="Here is a sample placeholder"
-                      min={0}
-                      max={10}
-                    />
-                  </FormControl>
-                  <FormControl id="ab1">
-                    <FormLabel color="#444A63">Nota Reav</FormLabel>
-                    <Input
-                      type="number"
-                      borderColor="gray.400"
-                      placeholder="Here is a sample placeholder"
-                      min={0}
-                      max={10}
-                    />
-                  </FormControl>
-                </Flex>
-              </Flex>
-            </TabPanel>
-            <TabPanel>
-              <Flex justify="center" gap={3}>
-                <Flex direction="column" w={{ base: '100%', md: '50%' }}>
-                  <FormControl id="ab1">
-                    <FormLabel color="#444A63">Disciplina</FormLabel>
-                    <Input
-                      type="number"
-                      borderColor="gray.400"
-                      placeholder="Here is a sample placeholder"
-                      min={0}
-                      max={10}
-                    />
-                  </FormControl>
-                  <FormControl id="ab2">
-                    <FormLabel color="#444A63">C.H.T</FormLabel>
-                    <Input
-                      type="number"
-                      borderColor="gray.400"
-                      placeholder="Here is a sample placeholder"
-                      min={0}
-                      max={10}
-                    />
-                  </FormControl>
-                  <FormControl id="ab1">
-                    <FormLabel color="#444A63">C.H.D</FormLabel>
-                    <Input
-                      type="number"
-                      borderColor="gray.400"
-                      placeholder="Here is a sample placeholder"
-                      min={0}
-                      max={10}
-                    />
-                  </FormControl>
-                </Flex>
-              </Flex>
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
       </Stack>
     </Stack>
   )

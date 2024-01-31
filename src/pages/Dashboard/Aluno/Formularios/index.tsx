@@ -40,13 +40,9 @@ const Formularios = () => {
               title={`Título do Formulário ${index + 1}`}
               date={availableDate[index]}
               description={loremIpsum}
-              tooltipText={
-                isClosed
-                  ? 'Este formulário está encerrado'
-                  : 'Clique para preencher'
-              }
               course={cursos[index]}
               statusTag={data as status}
+              isClosed={isClosed}
             />
           )
         })}
