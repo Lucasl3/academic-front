@@ -28,12 +28,16 @@ const Calculadora = () => {
   })
   const [precisaFinal, setPrecisaFinal] = useState<boolean>()
   const [naoPodeFazerFinal, setNaoPodeFazerFinal] = useState<boolean>()
-  const aviso =
-    'A sua média é inferior ao limite que permite a realização da prova final.'
 
   const calculaNotaFinal = (nota1: number, nota2: number, notaR: number) => {
-    console.log(nota1, nota2, notaR)
     let media = 0
+    if (nota1 > 10 || nota2 > 10 || notaR > 10) {
+      alert('As notas não podem ser maiores que 10')
+      return
+    }
+    if (Number.isNaN(notaR)) notaR = 0
+    if (Number.isNaN(nota1)) nota1 = 0
+    if (Number.isNaN(nota2)) nota2 = 0
     if (notaR >= nota1) {
       media = (notaR + nota2) / 2
     } else if (notaR >= nota2) {
@@ -156,7 +160,6 @@ const Calculadora = () => {
                             )}
                           </Field>
                           <Button
-                            mt={4}
                             colorScheme="blue"
                             isLoading={props.isSubmitting}
                             type="submit"
@@ -167,14 +170,21 @@ const Calculadora = () => {
                       </Form>
                     )}
                   </Formik>
-                  {media.status && <div>Sua média é: {media.valor}</div>}
+                  {media.status && (
+                    <Text mt={4}>Sua média é: {media.valor}</Text>
+                  )}
                   {precisaFinal && (
-                    <div>
+                    <Text mt={2}>
                       Precisa fazer prova final, com a nota minima de{' '}
                       {notaFinal.valor}
-                    </div>
+                    </Text>
                   )}
-                  {naoPodeFazerFinal && <div>{aviso}</div>}
+                  {naoPodeFazerFinal && (
+                    <Text color="red" mt={2}>
+                      A sua média é inferior ao limite que permite a realização
+                      da prova final.
+                    </Text>
+                  )}
                 </>
               </Flex>
             </Flex>
