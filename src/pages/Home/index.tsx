@@ -20,6 +20,7 @@ import {
   useMediaQuery,
 } from '@chakra-ui/react'
 
+import Calculadora from '@/components/Calculadora'
 import Carousel from '@/components/Carousel'
 
 const Home = () => {
@@ -52,105 +53,7 @@ const Home = () => {
         </Carousel>
       </Flex>
       <Stack direction={{ base: 'column', md: 'row' }}>
-        <Stack w="80%" boxShadow="lg" rounded="lg" p={4} bg="#FBFBFB">
-          <Text fontSize="lg" fontWeight="semibold" color="#444A63">
-            Calculadora IC
-          </Text>
-          <Tabs isFitted>
-            <TabList>
-              <Tab
-                _selected={{
-                  color: '#495796',
-                  borderBottomColor: '#495796',
-                }}
-              >
-                Nota Final
-              </Tab>
-              <Tab
-                _selected={{
-                  color: '#495796',
-                  borderBottomColor: '#495796',
-                }}
-              >
-                Faltas
-              </Tab>
-            </TabList>
-            <TabPanels>
-              <TabPanel>
-                <Flex justify="center" gap={3}>
-                  <Flex direction="column" w={{ base: '100%', md: '50%' }}>
-                    <FormControl id="ab1">
-                      <FormLabel color="#444A63">Nota AB1</FormLabel>
-                      <Input
-                        type="number"
-                        borderColor="gray.400"
-                        placeholder="Insira aqui a Nota AB1"
-                        min={0}
-                        max={10}
-                      />
-                    </FormControl>
-                    <FormControl id="ab2">
-                      <FormLabel color="#444A63">Nota AB2</FormLabel>
-                      <Input
-                        type="number"
-                        borderColor="gray.400"
-                        placeholder="Insira aqui a Nota AB2"
-                        min={0}
-                        max={10}
-                      />
-                    </FormControl>
-                    <FormControl id="ab1">
-                      <FormLabel color="#444A63">Nota Reav</FormLabel>
-                      <Input
-                        type="number"
-                        borderColor="gray.400"
-                        placeholder="Insira aqui a Nota Reav"
-                        min={0}
-                        max={10}
-                      />
-                    </FormControl>
-                  </Flex>
-                </Flex>
-              </TabPanel>
-              <TabPanel>
-                <Flex justify="center" gap={3}>
-                  <Flex direction="column" w={{ base: '100%', md: '50%' }}>
-                    <FormControl id="ab1">
-                      <FormLabel color="#444A63">Disciplina</FormLabel>
-                      <Input
-                        type="number"
-                        borderColor="gray.400"
-                        placeholder="Insira aqui a Disciplina"
-                        min={0}
-                        max={10}
-                      />
-                    </FormControl>
-                    <FormControl id="ab2">
-                      <FormLabel color="#444A63">C.H.T</FormLabel>
-                      <Input
-                        type="number"
-                        borderColor="gray.400"
-                        placeholder="Insira aqui a C.H.T"
-                        min={0}
-                        max={10}
-                      />
-                    </FormControl>
-                    <FormControl id="ab1">
-                      <FormLabel color="#444A63">C.H.D</FormLabel>
-                      <Input
-                        type="number"
-                        borderColor="gray.400"
-                        placeholder="Insira aqui a C.H.D"
-                        min={0}
-                        max={10}
-                      />
-                    </FormControl>
-                  </Flex>
-                </Flex>
-              </TabPanel>
-            </TabPanels>
-          </Tabs>
-        </Stack>
+        <Calculadora />
         <Stack boxShadow="lg" rounded="lg" p={4} bg="#FBFBFB" flex={3}>
           <Text fontSize="lg" fontWeight="semibold" color="#444A63">
             Tutoriais
