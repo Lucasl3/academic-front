@@ -19,7 +19,7 @@ const SecretariaHome = () => {
       <Stack>
         <Stack boxShadow="lg" rounded="lg" p="6" bg="#FBFBFB" gap={5}>
           <Text fontSize="xl" fontWeight="semibold">
-            Status das solicitações
+            Status das demandas
           </Text>
           <HStack flexWrap="wrap" align="flex-start">
             <NumberCaption number={7} caption="Não atendidas" flex={1} />
