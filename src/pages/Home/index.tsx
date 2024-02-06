@@ -52,13 +52,14 @@ const Home = () => {
         </Carousel>
       </Flex>
       <Stack direction={{ base: 'column', md: 'row' }}>
-        <Stack w="80%" boxShadow="lg" rounded="lg" p={4} bg="#FBFBFB">
-          <Text fontSize="lg" fontWeight="semibold" color="#444A63">
+        <Stack boxShadow="lg" rounded="lg" p={4} bg="#FBFBFB" flex={5}>
+          <Text fontSize="2xl" fontWeight="semibold" color="#444A63">
             Calculadora IC
           </Text>
           <Tabs isFitted>
             <TabList>
               <Tab
+                fontSize="lg"
                 _selected={{
                   color: '#495796',
                   borderBottomColor: '#495796',
@@ -67,6 +68,7 @@ const Home = () => {
                 Nota Final
               </Tab>
               <Tab
+                fontSize="lg"
                 _selected={{
                   color: '#495796',
                   borderBottomColor: '#495796',
@@ -151,13 +153,13 @@ const Home = () => {
             </TabPanels>
           </Tabs>
         </Stack>
-        <Stack boxShadow="lg" rounded="lg" p={4} bg="#FBFBFB" flex={3}>
-          <Text fontSize="lg" fontWeight="semibold" color="#444A63">
+        <Stack boxShadow="lg" rounded="lg" p={4} bg="#FBFBFB" flex={2}>
+          <Text fontSize="2xl" fontWeight="semibold" color="#444A63">
             Tutoriais
           </Text>
           <OrderedList>
             {[0, 1, 2, 3, 4].map((index) => (
-              <ListItem key={index}>
+              <ListItem fontSize="lg" key={index}>
                 <Link color="teal.500" href="https://chakra-ui.com" isExternal>
                   Tutorial {index + 1}
                 </Link>
