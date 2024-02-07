@@ -60,7 +60,7 @@ const Home = () => {
           </Text>
           <OrderedList>
             {[0, 1, 2, 3, 4].map((index) => (
-              <ListItem key={index}>
+              <ListItem fontSize="lg" key={index}>
                 <Link color="teal.500" href="https://chakra-ui.com" isExternal>
                   Tutorial {index + 1}
                 </Link>
