@@ -3,20 +3,11 @@ import React from 'react'
 import {
   Box,
   Flex,
-  FormControl,
-  FormLabel,
-  Input,
   Stack,
   Text,
-  Textarea,
   OrderedList,
   ListItem,
   Link,
-  Tabs,
-  Tab,
-  TabPanels,
-  TabPanel,
-  TabList,
   useMediaQuery,
 } from '@chakra-ui/react'
 
@@ -52,9 +43,23 @@ const Home = () => {
           ))}
         </Carousel>
       </Flex>
-      <Stack direction={{ base: 'column', md: 'row' }}>
+      <Flex
+        sx={{
+          flexDirection: isMobile ? 'column' : 'row',
+          gap: 8,
+        }}
+      >
         <Calculadora />
-        <Stack boxShadow="lg" rounded="lg" p={4} bg="#FBFBFB" flex={3}>
+        <Flex
+          boxShadow="lg"
+          rounded="lg"
+          p={4}
+          bg="#FBFBFB"
+          sx={{
+            flexDirection: 'column',
+            width: isMobile ? '100%' : '70%',
+          }}
+        >
           <Text fontSize="lg" fontWeight="semibold" color="#444A63">
             Tutoriais
           </Text>
@@ -67,8 +72,8 @@ const Home = () => {
               </ListItem>
             ))}
           </OrderedList>
-        </Stack>
-      </Stack>
+        </Flex>
+      </Flex>
     </Stack>
   )
 }
