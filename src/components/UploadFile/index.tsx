@@ -3,7 +3,7 @@ import { FaUpload } from 'react-icons/fa'
 
 import { Flex, Icon } from '@chakra-ui/react'
 
-const UploadFile = () => {
+const UploadFile = ({ id }: { id: string }) => {
   const [hovered, setHovered] = useState(false)
 
   const truncateFileName = (fileName: string): string => {
@@ -19,8 +19,7 @@ const UploadFile = () => {
 
   const handleFileUpload = (e: any) => {
     const files: FileList = e.target.files
-    const fileChosenElement = document.getElementById('file-chosen')
-
+    const fileChosenElement = document.getElementById('file-chosen' + id)
     if (files.length === 1) {
       const file = files[0]
       const fileName = truncateFileName(file.name)
@@ -40,11 +39,11 @@ const UploadFile = () => {
     }
   }
 
-  const handleMouseHover = (e: any) => {
+  const handleMouseHover = () => {
     setHovered(true)
   }
 
-  const handleMouseLeave = (e: any) => {
+  const handleMouseLeave = () => {
     setHovered(false)
   }
 
@@ -61,7 +60,7 @@ const UploadFile = () => {
     >
       <input
         type="file"
-        id="upload"
+        id={'upload' + id}
         hidden
         onChange={handleFileUpload}
         multiple
@@ -74,14 +73,14 @@ const UploadFile = () => {
           borderRadius: '4px',
           backgroundColor: hovered ? '#ccc' : '#fff',
         }}
-        htmlFor="upload"
+        htmlFor={'upload' + id}
         onMouseEnter={handleMouseHover}
         onMouseLeave={handleMouseLeave}
       >
         <Icon as={FaUpload} mr="2" />
         Selecione o arquivo
       </label>
-      <span id="file-chosen">Nenhum arquivo selecionado</span>
+      <span id={'file-chosen' + id}>Nenhum arquivo selecionado</span>
     </Flex>
   )
 }
