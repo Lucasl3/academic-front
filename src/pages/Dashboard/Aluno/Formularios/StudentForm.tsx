@@ -28,12 +28,13 @@ import {
   Stepper,
   useSteps,
   extendTheme,
+  Tooltip,
 } from '@chakra-ui/react'
 import { Box } from '@chakra-ui/react'
 import { Checkbox, CheckboxGroup } from '@chakra-ui/react'
 import { Radio, RadioGroup } from '@chakra-ui/react'
 
-import UploadFile from '@/components/UploadFile'
+import UploadFile, { UploadFileRef } from '@/components/UploadFile'
 
 const fieldSets: {
   id: string
@@ -50,7 +51,7 @@ const fieldSets: {
     name: 'Nome Completo',
     type: 'text',
     step: 0,
-    isRequired: false,
+    isRequired: true,
     placeholder: 'Informe seu nome',
   },
   {
@@ -147,87 +148,154 @@ const fieldSets: {
   },
 ]
 
+const COLORS = {
+  0: '#F7F7FA',
+  5: '#EDEDF0',
+  10: '#E1E1E3',
+  40: '#9696A0',
+  controlColor: '#2264D1',
+  focusColor: '#9DC2FF',
+}
+
+const smoothClasses = {
+  minH: '40px',
+  px: '12px',
+  w: '100%',
+  borderRadius: '6px',
+  transition: 'all 150ms',
+  _checked: {
+    bg: COLORS[10],
+  },
+  'span[class*="checkbox__control"]:not([data-disabled])': {
+    borderColor: COLORS.controlColor,
+    _checked: {
+      bg: COLORS.controlColor,
+      borderColor: COLORS.controlColor,
+    },
+    _focus: {
+      boxShadow: `0 0 0 2px ${COLORS.focusColor}`,
+      _checked: {
+        boxShadow: `0 0 0 2px ${COLORS.focusColor}`,
+      },
+    },
+  },
+  _hover: {
+    transition: 'all 350ms',
+    bg: COLORS[5],
+    _checked: {
+      bg: COLORS[10],
+    },
+  },
+}
+
 function StudentForm() {
   const [formValues, setFormValues] = React.useState<{ [key: string]: string }>(
     {},
   )
 
-  const handleInputChange = (field: { name: string; value: string }) => {
-    setFormValues({ ...formValues, [field.name]: field.value })
-  }
-
-  const [radioNumbers, setRadioNumbers] = React.useState(['1'])
-
-  interface TextAreaValue {
-    [key: string]: string
-  }
-
-  const [textAreaValue, setTextAreaValue] = React.useState<TextAreaValue>(
-    Object.fromEntries(fieldSets.map((field) => [field.id, ''])),
-  )
-  interface CheckboxValues {
-    [key: string]: {
-      [key: number]: boolean
-    }
-  }
-
-  const [checkboxValues, setCheckboxValues] = React.useState<CheckboxValues>(
-    Object.fromEntries(fieldSets.map((field) => [field.id, {}])),
-  )
+  const [stepFieldsFilled, setStepFieldsFilled] = React.useState<boolean[]>([])
 
   const { activeStep, setActiveStep } = useSteps({
     index: 0,
     count: 3,
   })
 
-  const COLORS = {
-    0: '#F7F7FA',
-    5: '#EDEDF0',
-    10: '#E1E1E3',
-    40: '#9696A0',
-    controlColor: '#2264D1',
-    focusColor: '#9DC2FF',
+  interface TextAreaValue {
+    [key: string]: { value: string; step: number } | undefined
   }
 
-  const smoothClasses = {
-    minH: '40px',
-    px: '12px',
-    w: '100%',
-    borderRadius: '6px',
-    transition: 'all 150ms',
-    _checked: {
-      bg: COLORS[10],
-    },
-    'span[class*="checkbox__control"]:not([data-disabled])': {
-      borderColor: COLORS.controlColor,
-      _checked: {
-        bg: COLORS.controlColor,
-        borderColor: COLORS.controlColor,
-      },
-      _focus: {
-        boxShadow: `0 0 0 2px ${COLORS.focusColor}`,
-        _checked: {
-          boxShadow: `0 0 0 2px ${COLORS.focusColor}`,
-        },
-      },
-    },
-    _hover: {
-      transition: 'all 350ms',
-      bg: COLORS[5],
-      _checked: {
-        bg: COLORS[10],
-      },
-    },
+  const [textAreaValue, setTextAreaValue] = React.useState<TextAreaValue>(
+    Object.fromEntries(
+      fieldSets.map((field) => [field.id, { value: '', step: field.step }]),
+    ),
+  )
+
+  const handleResetText = (stepToReset: number) => {
+    setTextAreaValue((prevTextAreaValue) => {
+      const updatedTextAreaValue: TextAreaValue = {}
+
+      Object.keys(prevTextAreaValue).forEach((key) => {
+        if (prevTextAreaValue[key]?.step === stepToReset) {
+          updatedTextAreaValue[key] = { value: '', step: stepToReset }
+        } else {
+          updatedTextAreaValue[key] = prevTextAreaValue[key]
+        }
+      })
+      return updatedTextAreaValue
+    })
+  }
+
+  interface CheckboxValues {
+    [key: string]: {
+      [key: number]: boolean
+      step: number
+    }
+  }
+
+  const [checkboxValues, setCheckboxValues] = React.useState<CheckboxValues>(
+    Object.fromEntries(
+      fieldSets.map((field) => [field.id, { step: field.step }]),
+    ),
+  )
+
+  const handleResetCheckbox = (stepToReset: number) => {
+    setCheckboxValues((prevValues) => {
+      const updatedValues = { ...prevValues }
+      Object.keys(updatedValues).forEach((key) => {
+        if (updatedValues[key].step === stepToReset) {
+          delete updatedValues[key]
+        }
+      })
+      return updatedValues
+    })
   }
 
   type TouchedFields = {
     [key: string]: boolean
   }
 
-  const renderFields = (columns: number) => {
-    const [touchedFields, setTouchedFields] = React.useState<TouchedFields>({})
-    const [clickedFields, setClickedFields] = React.useState<TouchedFields>({})
+  const [touchedFields, setTouchedFields] = React.useState<TouchedFields>({})
+  const [clickedFields, setClickedFields] = React.useState<TouchedFields>({})
 
+  const [radioNumbers, setRadioNumbers] = React.useState<{
+    [key: string]: { value: string; step: number }
+  }>({})
+
+  const handleResetRadio = (stepToReset: number) => {
+    setRadioNumbers((prevNumbers) => {
+      const updatedNumbers = { ...prevNumbers }
+      Object.keys(updatedNumbers).forEach((key) => {
+        if (updatedNumbers[key].step === stepToReset) {
+          delete updatedNumbers[key]
+        }
+      })
+      return updatedNumbers
+    })
+  }
+
+  const uploadFileRefs = React.useRef<{
+    [key: string]: { ref: React.RefObject<UploadFileRef>; step: number }
+  }>({})
+
+  const handleClearFiles = (stepToClear: number) => {
+    Object.keys(uploadFileRefs.current).forEach((id) => {
+      const { ref, step } = uploadFileRefs.current[id]
+      if (step === stepToClear && ref.current) {
+        ref.current.clearFiles(stepToClear)
+      }
+    })
+  }
+
+  const handleClearFields = (step: number) => {
+    setTouchedFields({})
+    setClickedFields({})
+    handleResetText(step)
+    handleResetCheckbox(step)
+    handleResetRadio(step)
+    handleClearFiles(step)
+  }
+
+  const renderFields = (columns: number) => {
     const handleFieldTouch = (fieldId: string) => {
       setTouchedFields((prev) => ({
         ...prev,
@@ -242,13 +310,6 @@ function StudentForm() {
       setTouchedFields((prev) => ({
         ...prev,
         [fieldId]: false,
-      }))
-    }
-
-    const handleFieldChange = (fieldId: string, value: string) => {
-      setTextAreaValue((prev) => ({
-        ...prev,
-        [fieldId]: value,
       }))
     }
 
@@ -271,7 +332,8 @@ function StudentForm() {
             const isError =
               touchedFields[field.id] &&
               field.isRequired &&
-              textAreaValue[field.id] === '' &&
+              (textAreaValue[field.id]?.value === '' ||
+                textAreaValue[field.id] === undefined) &&
               radioNumbers[field.id] === undefined &&
               Object.keys(checkboxValues[field.id]).length === 0
 
@@ -317,6 +379,7 @@ function StudentForm() {
                                   [field.id]: {
                                     ...prev[field.id],
                                     [optionIndex]: e.target.checked,
+                                    step: field.step,
                                   },
                                 }))
                               }}
@@ -363,10 +426,14 @@ function StudentForm() {
                         onChange={(value) => {
                           setRadioNumbers((prev) => ({
                             ...prev,
-                            [field.id]: value,
+                            [field.id]: { value: value, step: field.step },
                           }))
                         }}
-                        value={radioNumbers[field.id]}
+                        value={
+                          radioNumbers[field.id]
+                            ? radioNumbers[field.id].value
+                            : ''
+                        }
                       >
                         <Stack spacing={4} direction={['column']}>
                           {field.options?.map(
@@ -420,9 +487,19 @@ function StudentForm() {
                         type={field.type}
                         placeholder={field.placeholder}
                         onChange={(e) =>
-                          handleFieldChange(field.id, e.target.value)
+                          setTextAreaValue((prev) => ({
+                            ...prev,
+                            [field.id]: {
+                              value: e.target.value,
+                              step: field.step,
+                            },
+                          }))
                         }
-                        value={textAreaValue[field.id] || ''}
+                        value={
+                          textAreaValue[field.id]?.value !== undefined
+                            ? textAreaValue[field.id]?.value
+                            : ''
+                        }
                         borderColor="gray.400"
                         isDisabled={isDisabled}
                       />
@@ -453,7 +530,16 @@ function StudentForm() {
                       isDisabled={isDisabled}
                     >
                       <FormLabel paddingBottom={4}>{field.name}</FormLabel>
-                      <UploadFile id={field.id} />
+                      <UploadFile
+                        ref={(ref) =>
+                          (uploadFileRefs.current[field.id] = {
+                            ref: ref || React.createRef(),
+                            step: field.step,
+                          })
+                        }
+                        id={field.id}
+                        step={field.step}
+                      />
 
                       <FormErrorMessage>{`${field.name} é necessário`}</FormErrorMessage>
                     </FormControl>
@@ -464,6 +550,35 @@ function StudentForm() {
       </Stack>
     ))
   }
+
+  React.useEffect(() => {
+    const currentStepFields = fieldSets.filter(
+      (field) => field.step === activeStep,
+    )
+    const filled = currentStepFields.every((field) => {
+      if (field.type === 'checkbox') {
+        console.log(checkboxValues[field.id])
+        return Object.keys(checkboxValues[field.id]).length > 0
+      } else if (field.type === 'radio') {
+        console.log(radioNumbers[field.id])
+        return !!radioNumbers[field.id]
+      } else if (field.type === 'file') {
+        console.log(
+          uploadFileRefs.current[field.id].ref.current?.getFileCount(),
+        )
+        return !!uploadFileRefs.current[field.id].ref.current?.getFileCount()
+      } else {
+        console.log(textAreaValue[field.id])
+        return !!textAreaValue[field.id]?.value
+      }
+    })
+
+    setStepFieldsFilled((prev) => {
+      const newFilled = [...prev]
+      newFilled[activeStep] = filled
+      return newFilled
+    })
+  }, [activeStep, textAreaValue, checkboxValues, radioNumbers])
 
   function FormSteps() {
     const steps = [
@@ -535,8 +650,6 @@ function StudentForm() {
       </Flex>
       <FormControl>
         {renderFields(2)}
-
-        {/* Mostra os valores do formulário apenas na última etapa */}
         <Flex
           direction="row"
           justify="space-between"
@@ -544,9 +657,15 @@ function StudentForm() {
           p={8}
           w="100%"
         >
-          <Button colorScheme="blue" variant="ghost">
-            Limpar Formulário
-          </Button>
+          {activeStep < 2 && (
+            <Button
+              colorScheme="blue"
+              variant="ghost"
+              onClick={() => handleClearFields(activeStep)}
+            >
+              Limpar Formulário
+            </Button>
+          )}
           <Flex direction="row" justify="right" w="75%">
             {activeStep > 0 && (
               <Button
@@ -559,19 +678,27 @@ function StudentForm() {
               </Button>
             )}
           </Flex>
-          <Button
-            onClick={() => setActiveStep(activeStep + 1)}
-            type="submit"
-            bg="#495796"
-            colorScheme="blue"
-            color="#FBFBFB"
-            variant="solid"
-            isDisabled={activeStep === 2 ? true : false}
+          <Tooltip
+            label="Por favor, preencha todos os campos obrigatórios!"
+            aria-label="Erro de preenchimento"
+            isDisabled={stepFieldsFilled[activeStep]}
           >
-            {activeStep === 0 ? 'Próximo' : ''}
-            {activeStep === 1 ? 'Enviar' : ''}
-            {activeStep === 2 ? 'Enviado' : ''}
-          </Button>
+            <span>
+              <Button
+                onClick={() => setActiveStep(activeStep + 1)}
+                type="submit"
+                bg="#495796"
+                colorScheme="blue"
+                color="#FBFBFB"
+                variant="solid"
+                isDisabled={!stepFieldsFilled[activeStep]}
+              >
+                {activeStep === 0 ? 'Próximo' : ''}
+                {activeStep === 1 ? 'Próximo' : ''}
+                {activeStep === 2 ? 'Enviar' : ''}
+              </Button>
+            </span>
+          </Tooltip>
         </Flex>
       </FormControl>
     </Box>
