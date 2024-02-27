@@ -12,6 +12,8 @@ import {
   Textarea,
 } from '@chakra-ui/react'
 
+import RichTexEditor from '@/components/RichTextEditor'
+
 const CreateTutorial = () => {
   return (
     <Stack gap={5}>
@@ -24,23 +26,42 @@ const CreateTutorial = () => {
       <Stack>
         <FormControl id="titulo">
           <FormLabel color="#444A63">Título</FormLabel>
-          <Input placeholder="Escreva o título do tutorial" variant="filled" />
+          <Input
+            placeholder="Escreva o título do tutorial"
+            variant="filled"
+            sx={{
+              backgroundColor: 'white',
+              _hover: {
+                backgroundColor: 'white',
+              },
+              _focus: {
+                backgroundColor: 'white',
+              },
+            }}
+            onChange={(e) => console.log('titulo: ', e.target.value)}
+          />
         </FormControl>
         <FormControl id="descrição">
           <FormLabel color="#444A63">Descrição</FormLabel>
           <Textarea
-            placeholder="Escreva o título do tutorial"
+            placeholder="Escreva a descrição do tutorial"
             variant="filled"
-            maxH="100px"
+            sx={{
+              maxH: '100px',
+              backgroundColor: 'white',
+              _hover: {
+                backgroundColor: 'white',
+              },
+              _focus: {
+                backgroundColor: 'white',
+              },
+            }}
+            onChange={(e) => console.log('descricao: ', e.target.value)}
           />
         </FormControl>
         <FormControl id="conteudo">
           <FormLabel color="#444A63">Conteúdo</FormLabel>
-          <Textarea
-            placeholder="Escreva o título do tutorial"
-            variant="filled"
-            maxH="250px"
-          />
+          <RichTexEditor />
         </FormControl>
       </Stack>
       <HStack justify="space-between">
