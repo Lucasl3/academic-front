@@ -10,13 +10,14 @@ import {
   useMediaQuery,
 } from '@chakra-ui/react'
 
-import { SidebarContext } from '@/contexts/SidebarContext'
+import { AppContext } from '@/contexts/AppContext'
 
 import { ISidebarContentProps } from '../../types'
 import NavItem from '../NavItem'
 
 const SidebarContent = ({ linkItems, ...rest }: ISidebarContentProps) => {
-  const { onClose, sidebarWidth } = useContext(SidebarContext)
+  const { sidebar } = useContext(AppContext)
+  const { onClose, width } = sidebar
   const [isMobile] = useMediaQuery('(max-width: 768px)')
 
   return (
@@ -25,7 +26,7 @@ const SidebarContent = ({ linkItems, ...rest }: ISidebarContentProps) => {
       bg={useColorModeValue('white', 'gray.900')}
       borderRight={isMobile ? 'none' : '1px'}
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-      w={{ base: 'full', md: sidebarWidth }}
+      w={{ base: 'full', md: width }}
       pos="fixed"
       h="full"
       {...rest}

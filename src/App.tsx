@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 
 import TemplatePage from '@/common/Templates/TemplatePage'
-import SidebarContextProvider from '@/contexts/SidebarContext'
+import AppContextProvider from '@/contexts/AppContext'
 import PrivateRoutes from '@/guard/auth.guard'
 import Login from '@/pages/Auth/Login'
 import StudentForm from '@/pages/Dashboard/Aluno/Formularios/StudentForm'
@@ -24,6 +24,7 @@ import Aluno from './pages/Dashboard/Aluno'
 import Formularios from './pages/Dashboard/Aluno/Formularios'
 import AlunoHome from './pages/Dashboard/Aluno/Home'
 import AlunoSolicitacoes from './pages/Dashboard/Aluno/Solicitacoes'
+import AlunoSolicitacoesDetalhes from './pages/Dashboard/Aluno/Solicitacoes/View'
 const activeLabelStyles = {
   transform: 'scale(0.85) translateY(-24px)',
 }
@@ -64,7 +65,7 @@ class App extends React.Component {
   render() {
     return (
       <ChakraProvider theme={theme}>
-        <SidebarContextProvider>
+        <AppContextProvider>
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<HomeNotLogged />} />
@@ -79,10 +80,13 @@ class App extends React.Component {
                       <Route index element={<Formularios />} />
                       <Route path="detalhes/:id" element={<StudentForm />} />
                     </Route>
-                    <Route
-                      path="solicitacoes"
-                      element={<AlunoSolicitacoes />}
-                    />
+                    <Route path="solicitacoes">
+                      <Route index element={<AlunoSolicitacoes />} />
+                      <Route
+                        path="detalhes/:id"
+                        element={<AlunoSolicitacoesDetalhes />}
+                      />
+                    </Route>
                   </Route>
                   <Route path="secretaria" element={<Secretaria />}>
                     <Route index element={<SecretariaHome />} />
@@ -103,17 +107,13 @@ class App extends React.Component {
                     <Route path="usuarios">
                       <Route index element={<Users />} />
                     </Route>
-                    <Route
-                      path="formularios"
-                      element={<h1>Secretaria Formularios</h1>}
-                    />
                   </Route>
                 </Route>
               </Route>
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </BrowserRouter>
-        </SidebarContextProvider>
+        </AppContextProvider>
       </ChakraProvider>
     )
   }

@@ -9,7 +9,7 @@ import {
   useMediaQuery,
 } from '@chakra-ui/react'
 
-import { SidebarContext } from '@/contexts/SidebarContext'
+import { AppContext } from '@/contexts/AppContext'
 
 import MobileNav from './parts/MobileNav'
 import SidebarContent from './parts/SidebarContent'
@@ -20,7 +20,8 @@ const Sidebar = ({
   includeMobileHeader,
   children,
 }: ISidebarProps) => {
-  const { isOpen, onClose } = useContext(SidebarContext)
+  const { sidebar } = useContext(AppContext)
+  const { isOpen, onClose } = sidebar
   const [isMobile] = useMediaQuery('(max-width: 768px)')
   const sidebarWidth = 48
 
