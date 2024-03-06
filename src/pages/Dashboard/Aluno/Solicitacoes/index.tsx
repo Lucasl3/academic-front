@@ -1,112 +1,36 @@
 import React from 'react'
 
-import {
-  Box,
-  Text,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  Flex,
-  Step,
-  StepDescription,
-  StepIcon,
-  StepIndicator,
-  StepNumber,
-  StepSeparator,
-  StepStatus,
-  StepTitle,
-  Stepper,
-  useSteps,
-  useMediaQuery,
-} from '@chakra-ui/react'
+import { Box, Button, Stack, HStack, Text } from '@chakra-ui/react'
 
-import StatusSolicitacao from '@/components/StatusSolicitacao'
+import RequestCard from '@/components/DataDisplay/RequestCard'
+import { status } from '@/components/Tags/RequestStatus/types'
 
-const statusSolicitacoes = [
-  {
-    data: '30/01/2024 09:00',
-    mensagem: 'Lorem Ipsum aprovou os dados do aluno',
-  },
-  {
-    data: '28/01/2024 15:00',
-    mensagem:
-      'Lorem Ipsum reprovou os dados Lorem ipsum da Solicitação, com o comentário: “Lorem ipsum dolor sit amet. Qui vitae nulla a praesentium deleniti cum quasi incidunt est voluptas expedita id consequatur accusantium qui provident inventore! Aut ipsa ratione ut aliquam provident ex dicta internos eum minima consectetur et rerum...”',
-  },
-]
-
-const steps = [
-  { title: 'Criação', description: '20/01/2024   15:42' },
-  { title: 'Recebimento', description: '22/01/2024   11:10' },
-  {
-    title: 'Verificação',
-    description: <StatusSolicitacao statusSolicitacoes={statusSolicitacoes} />,
-  },
-  { title: 'Envio para PROGRAD', description: '' },
-]
-
-const AlunoSolicitacoes = () => {
-  const [isMobile] = useMediaQuery('(max-width: 768px)')
-  const { activeStep } = useSteps({
-    index: 3,
-    count: steps.length,
-  })
+const Solicitacoes = () => {
+  const loremIpsum =
+    'Lorem ipsum dolor sit amet. Nam molestias impedit qui consequuntur distinctio et cumque voluptas qui vero possimus. Ut galisum dolorum aut adipisci consequatur et modi voluptatibus aut nesciunt fugiat non eligendi exercitationem.'
 
   return (
-    <Flex
-      sx={{
-        background: 'white',
-        borderRadius: '4px',
-        flexDirection: 'column',
-        padding: '24px',
-      }}
-    >
-      <Breadcrumb separator={'>'} fontSize={'14px'} marginBottom={5}>
-        <BreadcrumbItem>
-          <BreadcrumbLink href="#">Solicitações</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbItem isCurrentPage>
-          <BreadcrumbLink href="#">Titulo da Solicitaçao</BreadcrumbLink>
-        </BreadcrumbItem>
-      </Breadcrumb>
-      <Flex
-        sx={{
-          flexDirection: 'column',
-          gap: '30px',
-        }}
-      >
-        <Text fontSize="2xl" color="#444A63">
-          Título da solicitação
+    <Stack gap={5}>
+      <HStack justify="space-between">
+        <Text fontSize="2xl" fontWeight="semibold" color="#444A63">
+          Solicitações
         </Text>
-
-        <Stepper
-          index={activeStep}
-          orientation="vertical"
-          minHeight="450px"
-          marginY="16px"
-        >
-          {steps.map((step, index) => (
-            <Step key={index}>
-              <StepIndicator>
-                <StepStatus
-                  complete={<StepIcon />}
-                  incomplete={<StepNumber />}
-                  active={<StepNumber />}
-                />
-              </StepIndicator>
-
-              <Box>
-                <StepTitle>{step.title}</StepTitle>
-                {step.description !== '' && (
-                  <StepDescription>{step.description}</StepDescription>
-                )}
-              </Box>
-              <StepSeparator />
-            </Step>
-          ))}
-        </Stepper>
-      </Flex>
-    </Flex>
+      </HStack>
+      <Stack gap={3}>
+        {['done', 'in_progress', 'received', 'viewed'].map((data, index) => {
+          return (
+            <RequestCard
+              key={index}
+              to={`detalhes/${index}`}
+              title={`Título da Solicitação ${index + 1}`}
+              date="SEGUNDA, 15/01/2024 ÀS 11:06"
+              status={data as status}
+            />
+          )
+        })}
+      </Stack>
+    </Stack>
   )
 }
 
-export default AlunoSolicitacoes
+export default Solicitacoes

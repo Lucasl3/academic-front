@@ -3,16 +3,17 @@ import { FiMenu } from 'react-icons/fi'
 
 import { Flex, IconButton, useColorModeValue, Text } from '@chakra-ui/react'
 
-import { SidebarContext } from '@/contexts/SidebarContext'
+import { AppContext } from '@/contexts/AppContext'
 
 import { IMobileProps } from '../../types'
 
 const MobileNav = ({ ...rest }: IMobileProps) => {
-  const { onOpen, sidebarWidth } = useContext(SidebarContext)
+  const { sidebar } = useContext(AppContext)
+  const { onOpen, width } = sidebar
 
   return (
     <Flex
-      ml={{ base: 0, md: sidebarWidth }}
+      ml={{ base: 0, md: width }}
       px={{ base: 4, md: 4 }}
       height="20"
       alignItems="center"
