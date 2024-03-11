@@ -1,14 +1,43 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 
-import { Button, HStack, Stack, Text } from '@chakra-ui/react'
+import {
+  Button,
+  HStack,
+  Stack,
+  Text,
+  useToast,
+  Skeleton,
+} from '@chakra-ui/react'
 
+import { useQueryTutorials } from '@/api/dashboard/queries'
 import TutorialCard from '@/components/DataDisplay/TutorialCard'
 import { status } from '@/components/Tags/TutorialStatus/types'
 
 const Tutoriais = () => {
-  const loremIpsum =
-    'Lorem ipsum dolor sit amet. Nam molestias impedit qui consequuntur distinctio et cumque voluptas qui vero possimus. Ut galisum dolorum aut adipisci consequatur et modi voluptatibus aut nesciunt fugiat non eligendi exercitationem.'
+  const toast = useToast()
+
+  const { data: tutorials = [], isFetching: isTutorialsLoading } =
+    useQueryTutorials({
+      onError: () => {
+        toast({
+          title: 'Houve um erro ao buscar os tutoriais.',
+          status: 'error',
+          duration: 5000,
+        })
+      },
+    })
+
+  const tutorialsData = useMemo(() => {
+    return tutorials?.map((tutorial) => {
+      return {
+        id: tutorial.co_tutorial,
+        title: tutorial.no_tutorial,
+        description: tutorial.ds_tutorial,
+        status: 'available',
+      }
+    })
+  }, [tutorials])
 
   return (
     <Stack gap={5}>
@@ -20,15 +49,29 @@ const Tutoriais = () => {
           Criar Tutorial
         </Button>
       </HStack>
+      {isTutorialsLoading &&
+        Array.from({ length: 3 }).map((_, index) => (
+          <Skeleton key={index} height="108px" />
+        ))}
       <Stack gap={3}>
-        {['hidden', 'available', 'incomplete'].map((data, index) => (
+        {!isTutorialsLoading && tutorialsData?.length === 0 && (
+          <Text
+            fontSize="xl"
+            fontWeight="medium"
+            color="#444A63"
+            textAlign="center"
+          >
+            Nenhum tutorial encontrado
+          </Text>
+        )}
+        {tutorialsData?.map((tutorial, index) => (
           <TutorialCard
             key={index}
-            to={`/dashboard/secretaria/tutoriais/detalhes/${index}`}
-            title={`Título do tutorial ${index + 1}`}
-            description={loremIpsum}
-            tooltipText="Clique para gerenciar"
-            statusTag={data as status}
+            to={`/dashboard/secretaria/tutoriais/detalhes/${tutorial.id}`}
+            title={tutorial.title}
+            description={tutorial.description}
+            tooltipText="Clique para editar"
+            statusTag={tutorial.status as status}
           />
         ))}
       </Stack>
