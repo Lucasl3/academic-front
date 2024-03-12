@@ -31,9 +31,9 @@ const Tutoriais = () => {
   const tutorialsData = useMemo(() => {
     return tutorials?.map((tutorial) => {
       return {
-        id: tutorial.co_tutorial,
-        title: tutorial.no_tutorial,
-        description: tutorial.ds_tutorial,
+        id: tutorial.coTutorial,
+        title: tutorial.noTutorial,
+        description: tutorial.dsTutorial,
         status: 'available',
       }
     })

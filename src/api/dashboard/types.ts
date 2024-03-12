@@ -1,24 +1,24 @@
 export interface IGetTutorialDTO {
-  co_tutorial: number
-  dt_create_at: string
-  dt_update_at: string
-  dt_delete_at: string
-  is_deleted: boolean
-  no_tutorial: string
-  ds_tutorial: string
-  content_tutorial: string
+  coTutorial: number
+  dtCreate_at: string
+  dtUpdate_at: string
+  dtDelete_at: string
+  isDeleted: boolean
+  noTutorial: string
+  dsTutorial: string
+  contentTutorial: string
 }
 
 export interface ITutorialDTOBase {
-  no_tutorial: string
-  ds_tutorial: string
-  content_tutorial: string
+  noTutorial: string
+  dsTutorial: string
+  contentTutorial: string
 }
 
 export interface IPostTutorialDTO extends ITutorialDTOBase {}
 
 export interface IPutTutorialDTO extends ITutorialDTOBase {
-  co_tutorial: number
+  coTutorial: number
 }
 
 export type TGetTutorialParams = { id: number }

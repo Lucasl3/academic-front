@@ -82,10 +82,10 @@ const EditTutorial = () => {
 
   const tutorialData = useMemo(() => {
     return {
-      id: tutorial?.co_tutorial,
-      title: tutorial?.no_tutorial,
-      description: tutorial?.ds_tutorial,
-      content: tutorial?.content_tutorial,
+      id: tutorial?.coTutorial,
+      title: tutorial?.noTutorial,
+      description: tutorial?.dsTutorial,
+      content: tutorial?.contentTutorial,
       status: 'available',
     }
   }, [tutorial])
@@ -115,10 +115,10 @@ const EditTutorial = () => {
 
   const onSubmit = (values: TFormValues) => {
     const payload = {
-      co_tutorial: Number(id),
-      no_tutorial: values.title,
-      ds_tutorial: values.description,
-      content_tutorial: values.content,
+      coTutorial: Number(id),
+      noTutorial: values.title,
+      dsTutorial: values.description,
+      contentTutorial: values.content,
     }
 
     putTutorial(payload)
