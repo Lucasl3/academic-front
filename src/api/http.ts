@@ -3,7 +3,7 @@ import applyCaseMiddleware from 'axios-case-converter'
 
 const http = applyCaseMiddleware(
   axios.create({
-    baseURL: process.env.VUE_APP_API_URL,
+    baseURL: process.env.REACT_APP_API_URL,
   }),
 )
 

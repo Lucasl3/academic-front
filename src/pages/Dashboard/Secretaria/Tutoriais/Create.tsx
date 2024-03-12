@@ -64,9 +64,9 @@ const CreateTutorial = () => {
 
   const onSubmit = (values: TFormValues) => {
     const payload = {
-      no_tutorial: values.title,
-      ds_tutorial: values.description,
-      content_tutorial: values.content,
+      noTutorial: values.title,
+      dsTutorial: values.description,
+      contentTutorial: values.content,
     }
 
     postTutorial(payload)
