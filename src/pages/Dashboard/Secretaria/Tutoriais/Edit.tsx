@@ -26,8 +26,8 @@ import {
   useToast,
 } from '@chakra-ui/react'
 
-import { useMutationPutTutorial } from '@/api/dashboard/mutations'
-import { useQueryTutorial } from '@/api/dashboard/queries'
+import { useMutationPutTutorial } from '@/api/dashboard/tutorial/mutations'
+import { useQueryTutorial } from '@/api/dashboard/tutorial/queries'
 import RichTexEditor from '@/components/RichTextEditor'
 import TutorialStatusTag from '@/components/Tags/TutorialStatus'
 

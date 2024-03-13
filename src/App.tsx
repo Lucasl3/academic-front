@@ -7,7 +7,13 @@ import TemplatePage from '@/common/Templates/TemplatePage'
 import AppContextProvider from '@/contexts/AppContext'
 import PrivateRoutes from '@/guard/auth.guard'
 import Login from '@/pages/Auth/Login'
+import Aluno from '@/pages/Dashboard/Aluno'
+import Formularios from '@/pages/Dashboard/Aluno/Formularios'
 import StudentForm from '@/pages/Dashboard/Aluno/Formularios/StudentForm'
+import AlunoHome from '@/pages/Dashboard/Aluno/Home'
+import AlunoSolicitacoes from '@/pages/Dashboard/Aluno/Solicitacoes'
+import AlunoSolicitacoesDetalhes from '@/pages/Dashboard/Aluno/Solicitacoes/View'
+import AlunoTutorial from '@/pages/Dashboard/Aluno/Tutorial'
 import Secretaria from '@/pages/Dashboard/Secretaria'
 import Demandas from '@/pages/Dashboard/Secretaria/Demandas'
 import DemandaView from '@/pages/Dashboard/Secretaria/Demandas/View'
@@ -20,11 +26,6 @@ import Users from '@/pages/Dashboard/Secretaria/Users'
 import Home from '@/pages/Home'
 import HomeNotLogged from '@/pages/Home/NotLogged'
 
-import Aluno from './pages/Dashboard/Aluno'
-import Formularios from './pages/Dashboard/Aluno/Formularios'
-import AlunoHome from './pages/Dashboard/Aluno/Home'
-import AlunoSolicitacoes from './pages/Dashboard/Aluno/Solicitacoes'
-import AlunoSolicitacoesDetalhes from './pages/Dashboard/Aluno/Solicitacoes/View'
 const activeLabelStyles = {
   transform: 'scale(0.85) translateY(-24px)',
 }
@@ -88,6 +89,10 @@ class App extends React.Component {
                       />
                     </Route>
                   </Route>
+                  <Route
+                    path="aluno/tutorial/:id"
+                    element={<AlunoTutorial />}
+                  />
                   <Route path="secretaria" element={<Secretaria />}>
                     <Route index element={<SecretariaHome />} />
                     <Route path="demandas">

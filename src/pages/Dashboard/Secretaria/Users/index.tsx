@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { IoMdSearch } from 'react-icons/io'
+import { TfiReload } from 'react-icons/tfi'
 
 import {
   Text,
@@ -7,45 +8,61 @@ import {
   InputGroup,
   InputLeftElement,
   Input,
-  Switch,
+  useToast,
+  Skeleton,
+  HStack,
+  IconButton,
+  Tooltip,
+  Box,
 } from '@chakra-ui/react'
 
+import { useQueryUsers } from '@/api/dashboard/user/queries'
 import DataTable from '@/components/DataDisplay/DataTable'
 import { IHeader } from '@/components/DataDisplay/DataTable/types'
+import { profilesLabels, SECRETARY } from '@/utils/profile'
 
-const AdminSwitch = (id: number, admin: boolean) => {
-  const [checked, setChecked] = React.useState(admin)
-
-  const handleOnChange = () => {
-    setChecked(!checked)
-  }
-
-  return (
-    <Switch colorScheme="blue" isChecked={checked} onChange={handleOnChange} />
-  )
-}
+import AdminSwitch from './parts/AdminSwitch'
 
 const Users = () => {
-  const tableData = [
+  const toast = useToast()
+  const [searchText, setSearchText] = useState('')
+
+  const {
+    data: users = [],
+    isFetching: isUsersFetching,
+    refetch: refetchUsers,
+  } = useQueryUsers(
+    { search: searchText },
     {
-      name: 'Doe',
-      email: 'doe@ic.ufal.br',
-      type: 'Aluno',
-      admin: AdminSwitch(2, true),
+      enabled: true,
+      onError: () => {
+        toast({
+          title: 'Houve um erro ao buscar os usuários.',
+          status: 'error',
+          duration: 5000,
+        })
+      },
     },
-    {
-      name: 'Doe',
-      email: 'doe@ic.ufal.br',
-      type: 'Aluno',
-      admin: AdminSwitch(2, false),
-    },
-    {
-      name: 'Smith',
-      email: 'smith@ic.ufal.br',
-      type: 'Aluno',
-      admin: AdminSwitch(2, true),
-    },
-  ]
+  )
+
+  const usersData = useMemo(() => {
+    const mappedUsers = users.map((user) => {
+      return {
+        name: user.noUser,
+        email: user.dsEmail,
+        type: profilesLabels(user.coProfile),
+        admin: (
+          <AdminSwitch
+            user={user}
+            isAdmin={user.coProfile === SECRETARY}
+            onSuccess={refetchUsers}
+          />
+        ),
+      }
+    })
+
+    return mappedUsers
+  }, [users])
 
   const header: Array<IHeader> = [
     {
@@ -67,25 +84,47 @@ const Users = () => {
     },
   ]
 
+  useEffect(() => {
+    refetchUsers()
+  }, [searchText])
+
   return (
     <Stack gap={5}>
       <Text fontSize="2xl" fontWeight="semibold" color="#444A63">
         Usuários
       </Text>
-      <InputGroup>
-        <InputLeftElement pointerEvents="none">
-          <IoMdSearch color="#495796" size={20} />
-        </InputLeftElement>
-        <Input
-          placeholder="Busque por usuário"
-          variant="filled"
-          bg="#FBFBFB"
-          _hover={{
-            bg: 'white',
-          }}
-        />
-      </InputGroup>
-      <DataTable data={tableData} headers={header} />
+      <HStack>
+        <InputGroup>
+          <InputLeftElement pointerEvents="none">
+            <IoMdSearch color="#495796" size={20} />
+          </InputLeftElement>
+          <Input
+            placeholder="Busque por usuário"
+            variant="filled"
+            bg="#FBFBFB"
+            _hover={{
+              bg: 'white',
+            }}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+        </InputGroup>
+        <Tooltip label="Atualizar">
+          <IconButton
+            icon={<TfiReload />}
+            aria-label="reload"
+            bg="#FBFBFB"
+            _hover={{
+              bg: '#FBFBFB80',
+            }}
+            onClick={() => refetchUsers()}
+          />
+        </Tooltip>
+      </HStack>
+      <DataTable
+        data={usersData}
+        headers={header}
+        isLoading={isUsersFetching}
+      />
     </Stack>
   )
 }
