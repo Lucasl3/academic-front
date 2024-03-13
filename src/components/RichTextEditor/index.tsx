@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   FaBold,
   FaItalic,
@@ -29,8 +29,12 @@ const RichTextEditor = ({
     },
   })
 
+  useEffect(() => {
+    editor?.setEditable(!readOnly)
+  }, [])
+
   return (
-    <Box bg="#FFFFFF" py="4" borderRadius="md">
+    <Box bg={readOnly ? 'transparent' : '#FFFFFF'} py="4" borderRadius="md">
       {!readOnly && (
         <HStack px="2" pb="2" gap={0.5}>
           <IconButton
@@ -91,7 +95,7 @@ const RichTextEditor = ({
           />
         </HStack>
       )}
-      <Box px="6">
+      <Box px={readOnly ? 0 : 6}>
         <EditorContent editor={editor} />
       </Box>
     </Box>
