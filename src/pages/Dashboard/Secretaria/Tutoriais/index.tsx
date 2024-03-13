@@ -10,7 +10,7 @@ import {
   Skeleton,
 } from '@chakra-ui/react'
 
-import { useQueryTutorials } from '@/api/dashboard/queries'
+import { useQueryTutorials } from '@/api/dashboard/tutorial/queries'
 import TutorialCard from '@/components/DataDisplay/TutorialCard'
 import { status } from '@/components/Tags/TutorialStatus/types'
 
@@ -64,16 +64,17 @@ const Tutoriais = () => {
             Nenhum tutorial encontrado
           </Text>
         )}
-        {tutorialsData?.map((tutorial, index) => (
-          <TutorialCard
-            key={index}
-            to={`/dashboard/secretaria/tutoriais/detalhes/${tutorial.id}`}
-            title={tutorial.title}
-            description={tutorial.description}
-            tooltipText="Clique para editar"
-            statusTag={tutorial.status as status}
-          />
-        ))}
+        {!isTutorialsLoading &&
+          tutorialsData?.map((tutorial, index) => (
+            <TutorialCard
+              key={index}
+              to={`/dashboard/secretaria/tutoriais/detalhes/${tutorial.id}`}
+              title={tutorial.title}
+              description={tutorial.description}
+              tooltipText="Clique para editar"
+              statusTag={tutorial.status as status}
+            />
+          ))}
       </Stack>
     </Stack>
   )

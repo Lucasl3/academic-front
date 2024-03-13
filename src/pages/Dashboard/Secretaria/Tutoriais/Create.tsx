@@ -23,7 +23,7 @@ import {
   useToast,
 } from '@chakra-ui/react'
 
-import { useMutationPostTutorial } from '@/api/dashboard/mutations'
+import { useMutationPostTutorial } from '@/api/dashboard/tutorial/mutations'
 import RichTexEditor from '@/components/RichTextEditor'
 
 import { TFormValues } from './types'
