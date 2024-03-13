@@ -1,8 +1,8 @@
 export interface IGetTutorialDTO {
   coTutorial: number
-  dtCreate_at: string
-  dtUpdate_at: string
-  dtDelete_at: string
+  dtCreatedAt: string
+  dtUpdatedAt: string
+  dtDeletedAt: string
   isDeleted: boolean
   noTutorial: string
   dsTutorial: string

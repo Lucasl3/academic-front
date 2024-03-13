@@ -27,15 +27,9 @@ import {
   useToast,
 } from '@chakra-ui/react'
 
-import { useMutationPutTutorial } from '@/api/dashboard/tutorial/mutations'
 import { useQueryTutorial } from '@/api/dashboard/tutorial/queries'
 import RichTexEditor from '@/components/RichTextEditor'
-
-export type TFormValues = {
-  title: string
-  description: string
-  content: string
-}
+import { formatDate } from '@/utils/date'
 
 const ViewTutorial = () => {
   const toast = useToast()
@@ -59,22 +53,15 @@ const ViewTutorial = () => {
   )
 
   const tutorialData = useMemo(() => {
+    console.log(tutorial)
     return {
       id: tutorial?.coTutorial,
       title: tutorial?.noTutorial,
       description: tutorial?.dsTutorial,
       content: tutorial?.contentTutorial,
-      status: 'available',
+      last_update: tutorial?.dtUpdatedAt,
     }
   }, [tutorial])
-
-  const validateSchema = yup.object().shape({
-    title: yup.string().required('O título é obrigatório'),
-    description: yup.string().required('A descrição é obrigatória'),
-    content: yup.string().required('O conteúdo é obrigatório'),
-  })
-
-  const formikRef = useRef<FormikProps<TFormValues>>(null)
 
   return (
     <Stack gap={5}>
@@ -82,16 +69,28 @@ const ViewTutorial = () => {
         {tutorial ? (
           <Stack>
             <FormControl id="titulo">
-              <FormLabel fontSize="4xl" color="#444A63">
-                Título
-              </FormLabel>
+              <HStack justify="space-between">
+                <FormLabel
+                  fontSize={{ base: '3xl', md: '4xl' }}
+                  color="#444A63"
+                >
+                  Título
+                </FormLabel>
+                <Text fontSize={{ base: 'sm', md: 'md' }} color="gray.500">
+                  Última atualização em{' '}
+                  {formatDate(
+                    String(tutorialData.last_update),
+                    'DD/MM/YYYY [ás] HH:mm',
+                  )}
+                </Text>
+              </HStack>
               <Text fontSize="xl" fontWeight="medium" color="#444A63">
                 {tutorialData.title}
               </Text>
             </FormControl>
             <Divider borderColor="gray.400" my={3} />
             <FormControl id="descrição">
-              <FormLabel fontSize="3xl" color="#444A63">
+              <FormLabel fontSize={{ base: '2xl', md: '3xl' }} color="#444A63">
                 Descrição
               </FormLabel>
               <Text fontSize="lg" fontWeight="medium" color="#444A63">
@@ -100,7 +99,7 @@ const ViewTutorial = () => {
             </FormControl>
             <Divider borderColor="gray.400" my={3} />
             <FormControl id="conteudo">
-              <FormLabel fontSize="3xl" color="#444A63">
+              <FormLabel fontSize={{ base: '3xl', md: '3xl' }} color="#444A63">
                 Conteúdo
               </FormLabel>
               <RichTexEditor content={tutorialData.content} readOnly />
