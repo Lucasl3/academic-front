@@ -10,12 +10,8 @@ import { sidebarProps } from '@/data/template'
 import Sidebar from './parts/Sidebar'
 
 function TemplatePage() {
-  const { sidebar } = useContext(AppContext)
+  const { sidebar, user: loggedUser } = useContext(AppContext)
   const { onOpen } = sidebar
-  const loggedUser = {
-    name: 'User',
-    type: 'Admin',
-  }
 
   return (
     <Sidebar {...sidebarProps}>

@@ -1,6 +1,7 @@
 import { FlexProps } from '@chakra-ui/react'
 
+import { IUserProps } from '@/contexts/types'
 export interface IHeaderProps extends FlexProps {
-  loggedUser?: Record<string, string>
+  loggedUser?: IUserProps
   onOpen?: () => void
 }

@@ -1,6 +1,13 @@
 import React, { useMemo } from 'react'
 
-import { Box, Flex, Stack, useMediaQuery, useToast } from '@chakra-ui/react'
+import {
+  Avatar,
+  Box,
+  Flex,
+  Stack,
+  useMediaQuery,
+  useToast,
+} from '@chakra-ui/react'
 
 import { useQueryTutorials } from '@/api/dashboard/tutorial/queries'
 import Calculadora from '@/components/Calculadora'
@@ -9,18 +16,18 @@ import TutoriaisHome from '@/components/Tutoriais'
 
 const Home = () => {
   const toast = useToast()
-  const { data: tutorials = [] } = useQueryTutorials({
-    onError: () => {
-      toast({
-        title: 'Houve um erro ao buscar os tutoriais.',
-        status: 'error',
-        duration: 5000,
-      })
-    },
-  })
+  const { data: tutorials = [], isFetching: isTutorialsLoading } =
+    useQueryTutorials({
+      onError: () => {
+        toast({
+          title: 'Houve um erro ao buscar os tutoriais.',
+          status: 'error',
+          duration: 5000,
+        })
+      },
+    })
 
   const tutorialsData = useMemo(() => {
-    console.log(tutorials)
     return tutorials?.map((tutorial) => {
       return {
         id: tutorial.coTutorial,
@@ -62,7 +69,10 @@ const Home = () => {
       </Flex>
       <Flex flexDirection={{ base: 'column', lg: 'row' }} gap={8}>
         <Calculadora />
-        <TutoriaisHome tutorials={tutorialsData} />
+        <TutoriaisHome
+          tutorials={tutorialsData}
+          isLoading={isTutorialsLoading}
+        />
       </Flex>
     </Stack>
   )

@@ -165,7 +165,7 @@ const EditTutorial = () => {
                     )}
                   </ErrorMessage>
                 </FormControl>
-                <FormControl flex={1}>
+                {/* <FormControl flex={1}>
                   <FormLabel color="#444A63">Status</FormLabel>
                   <Select
                     value={selectedOption}
@@ -175,7 +175,7 @@ const EditTutorial = () => {
                     selectedOptionStyle="check"
                     onChange={(e) => setSelectedOption(e)}
                   />
-                </FormControl>
+                </FormControl> */}
               </HStack>
               <FormControl id="descrição">
                 <FormLabel color="#444A63">Descrição</FormLabel>

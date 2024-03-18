@@ -29,6 +29,16 @@ const Header = ({ loggedUser, onOpen, ...rest }: IHeaderProps) => {
   const [isMobile] = useMediaQuery('(max-width: 768px)')
   const navigate = useNavigate()
 
+  const handleSignOut = () => {
+    localStorage.removeItem('accessToken')
+    navigate('/')
+  }
+
+  const getUserName = (name: string) => {
+    const splitName = name.split(' ')
+    return `${splitName[0]} ${splitName[1]}`
+  }
+
   return (
     <Flex
       px={{ base: 4, md: 10 }}
@@ -92,21 +102,16 @@ const Header = ({ loggedUser, onOpen, ...rest }: IHeaderProps) => {
                   justify="space-between"
                 >
                   <HStack>
-                    <Avatar
-                      size={'sm'}
-                      src={
-                        'https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
-                      }
-                    />
+                    <Avatar size="sm" src={loggedUser.picture} />
                     <VStack
                       display={{ base: 'none', md: 'flex' }}
                       alignItems="flex-start"
                       spacing="1px"
                       ml="2"
                     >
-                      <Text fontSize="sm">{loggedUser.name}</Text>
+                      <Text fontSize="sm">{getUserName(loggedUser.name)}</Text>
                       <Text fontSize="xs" color="gray.600">
-                        {loggedUser.type}
+                        {loggedUser.admin ? 'Secretaria' : 'Aluno'}
                       </Text>
                     </VStack>
                   </HStack>
@@ -123,7 +128,7 @@ const Header = ({ loggedUser, onOpen, ...rest }: IHeaderProps) => {
                   <MenuItem>Perfil</MenuItem>
                   <MenuDivider />
                  */}
-                <MenuItem onClick={() => navigate('/')}>Sign out</MenuItem>
+                <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
               </MenuList>
             </Menu>
           </Flex>

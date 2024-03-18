@@ -8,4 +8,5 @@ export interface ITutorial {
 
 export interface ITutorialsProps {
   tutorials: Array<ITutorial>
+  isLoading?: boolean
 }
