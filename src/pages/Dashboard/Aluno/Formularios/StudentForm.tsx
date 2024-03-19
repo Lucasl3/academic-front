@@ -1,4 +1,8 @@
 import React from 'react'
+import { set } from 'react-hook-form'
+
+import { check } from 'prettier'
+import * as yup from 'yup'
 
 import {
   Stack,
@@ -8,6 +12,7 @@ import {
   FormControl,
   FormLabel,
   FormErrorMessage,
+  FormHelperText,
   Flex,
   color,
 } from '@chakra-ui/react'
@@ -23,22 +28,27 @@ import {
   Stepper,
   useSteps,
   extendTheme,
+  Tooltip,
 } from '@chakra-ui/react'
 import { Box } from '@chakra-ui/react'
 import { Checkbox, CheckboxGroup } from '@chakra-ui/react'
 import { Radio, RadioGroup } from '@chakra-ui/react'
+
 import UploadFile from '@/components/UploadFile'
 
 const fieldSets: {
+  id: string
   name: string
   description?: string
   type: string
   step: number
   isRequired: boolean
-  options?: string[]
+  options?: string[] | { id: number; label: string }[]
   placeholder?: string
+  value?: string | [number]
 }[] = [
   {
+    id: '1',
     name: 'Nome Completo',
     type: 'text',
     step: 0,
@@ -46,6 +56,7 @@ const fieldSets: {
     placeholder: 'Informe seu nome',
   },
   {
+    id: '2',
     name: 'Matrícula',
     type: 'number',
     step: 0,
@@ -53,6 +64,7 @@ const fieldSets: {
     placeholder: 'Informe sua matrícula',
   },
   {
+    id: '3',
     name: 'Curso',
     type: 'radio',
     step: 0,
@@ -60,6 +72,7 @@ const fieldSets: {
     options: ['Engenharia de Computação', 'Ciência da Computação'],
   },
   {
+    id: '4',
     name: 'Email institucional',
     type: 'email',
     step: 0,
@@ -67,6 +80,7 @@ const fieldSets: {
     placeholder: 'Informe seu email institucional',
   },
   {
+    id: '5',
     name: 'Ano de Ingresso',
     type: 'number',
     step: 0,
@@ -74,6 +88,7 @@ const fieldSets: {
     placeholder: 'Informe seu ano de ingresso',
   },
   {
+    id: '6',
     name: 'Período Atual',
     type: 'number',
     step: 0,
@@ -81,6 +96,7 @@ const fieldSets: {
     placeholder: 'Informe seu período atual',
   },
   {
+    id: '7',
     name: 'Endereço',
     type: 'text',
     step: 0,
@@ -88,6 +104,7 @@ const fieldSets: {
     placeholder: 'Informe seu endereço',
   },
   {
+    id: '8',
     name: 'Celular',
     type: 'tel',
     step: 0,
@@ -95,6 +112,7 @@ const fieldSets: {
     placeholder: 'Informe seu número de celular',
   },
   {
+    id: '9',
     name: 'Tipo de Trancamento',
     type: 'radio',
     step: 1,
@@ -102,25 +120,43 @@ const fieldSets: {
     options: ['Trancamento de Curso', 'Trancamento de Disciplina'],
   },
   {
+    id: '10',
     name: 'Anexo de Documentos',
     type: 'file',
     step: 1,
     isRequired: true,
   },
   {
+    id: '11',
     name: 'ACE(s) desejada(s)',
     type: 'checkbox',
     step: 1,
     isRequired: true,
     options: [
-      'Asfvbjjfgnjfgnejwfnggerj',
-      'Asfvbjjfgnjfgnejergergerwfnj',
-      'Asfvbjjfgnjfgnejgerwfnj',
-      'Asfvbjjfgnjfgnejwrgeryfnj',
-      'Asfvbjjfgnjfgnejwfnjp',
+      {
+        id: 1,
+        label: 'Teste 1',
+      },
+      {
+        id: 2,
+        label: 'Teste 2',
+      },
+      {
+        id: 3,
+        label: 'Teste 3',
+      },
+      {
+        id: 4,
+        label: 'Teste 4',
+      },
+      {
+        id: 5,
+        label: 'Teste 5',
+      },
     ],
   },
   {
+    id: '12',
     name: 'Anexo de Documentos 2',
     type: 'file',
     step: 1,
@@ -128,55 +164,232 @@ const fieldSets: {
   },
 ]
 
+const COLORS = {
+  0: '#F7F7FA',
+  5: '#EDEDF0',
+  10: '#E1E1E3',
+  40: '#9696A0',
+  controlColor: '#2264D1',
+  focusColor: '#9DC2FF',
+}
+
+const smoothClasses = {
+  minH: '40px',
+  px: '12px',
+  w: '100%',
+  borderRadius: '6px',
+  transition: 'all 150ms',
+  _checked: {
+    bg: COLORS[10],
+  },
+  'span[class*="checkbox__control"]:not([data-disabled])': {
+    borderColor: COLORS.controlColor,
+    _checked: {
+      bg: COLORS.controlColor,
+      borderColor: COLORS.controlColor,
+    },
+    _focus: {
+      boxShadow: `0 0 0 2px ${COLORS.focusColor}`,
+      _checked: {
+        boxShadow: `0 0 0 2px ${COLORS.focusColor}`,
+      },
+    },
+  },
+  _hover: {
+    transition: 'all 350ms',
+    bg: COLORS[5],
+    _checked: {
+      bg: COLORS[10],
+    },
+  },
+}
+
 function StudentForm() {
-  const [radioNumber, setRadioNumber] = React.useState('1')
+  const [formValues, setFormValues] = React.useState<{ [key: string]: string }>(
+    {},
+  )
+
   const { activeStep, setActiveStep } = useSteps({
     index: 0,
     count: 3,
   })
 
-  const COLORS = {
-    0: '#F7F7FA',
-    5: '#EDEDF0',
-    10: '#E1E1E3',
-    40: '#9696A0',
-    controlColor: '#2264D1',
-    focusColor: '#9DC2FF',
+  interface TextAreaValue {
+    [key: string]: { value: string; step: number } | undefined
   }
 
-  const smoothClasses = {
-    minH: '40px',
-    px: '12px',
-    w: '100%',
-    borderRadius: '6px',
-    transition: 'all 150ms',
-    _checked: {
-      bg: COLORS[10],
-    },
-    'span[class*="checkbox__control"]:not([data-disabled])': {
-      borderColor: COLORS.controlColor,
-      _checked: {
-        bg: COLORS.controlColor,
-        borderColor: COLORS.controlColor,
-      },
-      _focus: {
-        boxShadow: `0 0 0 2px ${COLORS.focusColor}`,
-        _checked: {
-          boxShadow: `0 0 0 2px ${COLORS.focusColor}`,
-        },
-      },
-    },
-    _hover: {
-      transition: 'all 350ms',
-      bg: COLORS[5],
-      _checked: {
-        bg: COLORS[10],
-      },
-    },
+  const [textAreaValue, setTextAreaValue] = React.useState<TextAreaValue>(
+    Object.fromEntries(
+      fieldSets.map((field) => [field.id, { value: '', step: field.step }]),
+    ),
+  )
+
+  const handleResetText = (stepToReset: number) => {
+    setTextAreaValue((prevTextAreaValue) => {
+      const updatedTextAreaValue: TextAreaValue = {}
+
+      Object.keys(prevTextAreaValue).forEach((key) => {
+        if (prevTextAreaValue[key]?.step === stepToReset) {
+          updatedTextAreaValue[key] = { value: '', step: stepToReset }
+        } else {
+          updatedTextAreaValue[key] = prevTextAreaValue[key]
+        }
+      })
+      return updatedTextAreaValue
+    })
   }
+
+  interface ICheckboxOption {
+    id: number
+    label: string
+  }
+
+  const [selectedCheckboxes, setSelectedCheckboxes] = React.useState<
+    Array<ICheckboxOption>
+  >([])
+
+  const handleSelectedCheckboxes = (option: ICheckboxOption) => {
+    const indexOption = selectedCheckboxes.indexOf(option)
+
+    if (indexOption === -1) {
+      setSelectedCheckboxes([...selectedCheckboxes, option])
+    } else {
+      setSelectedCheckboxes([
+        ...selectedCheckboxes.filter((item) => item !== option),
+      ])
+    }
+  }
+
+  const handleResetCheckbox = () => {
+    setSelectedCheckboxes([])
+  }
+
+  const [radioNumbers, setRadioNumbers] = React.useState<{
+    [key: string]: { value: string; step: number }
+  }>({})
+
+  const handleResetRadio = (stepToReset: number) => {
+    setRadioNumbers((prevNumbers) => {
+      const updatedNumbers = { ...prevNumbers }
+      Object.keys(updatedNumbers).forEach((key) => {
+        if (updatedNumbers[key].step === stepToReset) {
+          delete updatedNumbers[key]
+        }
+      })
+      return updatedNumbers
+    })
+  }
+
+  interface IFileState {
+    id: string
+    isFilled: boolean
+  }
+  const [fileState, setFileState] = React.useState<IFileState[]>([])
+
+  const handleFill = (id: string, isFilled: boolean): void => {
+    // console.log('item', id, isFilled)
+    setFileState((prev) => {
+      const index = prev.findIndex((item) => item.id === id)
+
+      if (index !== -1) {
+        return prev.map((item, i) => {
+          if (i === index) {
+            return { ...item, isFilled: isFilled }
+          }
+          return item
+        })
+      } else {
+        return [...prev, { id: id, isFilled: isFilled }]
+      }
+    })
+  }
+
+  type TouchedFields = {
+    [key: string]: boolean
+  }
+
+  const [touchedFields, setTouchedFields] = React.useState<TouchedFields>({})
+  const [clickedFields, setClickedFields] = React.useState<TouchedFields>({})
+
+  const handleClearFields = (step: number) => {
+    setTouchedFields({})
+    setClickedFields({})
+    handleResetText(step)
+    handleResetCheckbox()
+    handleResetRadio(step)
+    // handleClearFiles(step)
+  }
+
+  const [stepFieldsFilled, setStepFieldsFilled] = React.useState<boolean[]>([])
+
+  interface FilledFields {
+    [key: string]: boolean
+  }
+
+  // Em seguida, utilize esta interface para tipar o objeto filledFields
+  const filledFields: FilledFields = {}
+
+  React.useEffect(() => {
+    fieldSets.forEach((field) => {
+      if (field.type === 'checkbox') {
+        // console.log('selectedCheckboxes', selectedCheckboxes)
+        filledFields[field.id] = selectedCheckboxes.length > 0
+      } else if (field.type === 'radio') {
+        // console.log('radioNumbers', radioNumbers)
+        filledFields[field.id] =
+          !!radioNumbers[field.id] && radioNumbers[field.id].value !== ''
+      } else if (field.type === 'file') {
+        // console.log('fileState', fileState)
+        filledFields[field.id] =
+          fileState.find((item) => item.id === field.id)?.isFilled || false
+      } else {
+        // console.log('textAreaValue', textAreaValue[field.id]?.value)
+        filledFields[field.id] = !!textAreaValue[field.id]?.value
+      }
+    })
+
+    // Verifica se todos os campos do passo atual estão preenchidos
+    const isStepFilled = fieldSets
+      .filter((field) => field.step === activeStep)
+      .every((field) => filledFields[field.id])
+
+    // Atualiza o estado com a informação de preenchimento do passo atual
+    setStepFieldsFilled((prev) => {
+      const newFilled = [...prev]
+      newFilled[activeStep] = isStepFilled
+      return newFilled
+    })
+  }, [
+    activeStep,
+    textAreaValue,
+    selectedCheckboxes,
+    radioNumbers,
+    fileState,
+    fieldSets,
+  ])
 
   const renderFields = (columns: number) => {
-    const currentFields = fieldSets.filter((field) => field.step === activeStep)
+    const handleFieldTouch = (fieldId: string) => {
+      setTouchedFields((prev) => ({
+        ...prev,
+        [fieldId]: true,
+      }))
+    }
+    const handleFieldClick = (fieldId: string) => {
+      setClickedFields((prev) => ({
+        ...prev,
+        [fieldId]: true,
+      }))
+      setTouchedFields((prev) => ({
+        ...prev,
+        [fieldId]: false,
+      }))
+    }
+
+    const currentFields = fieldSets.filter(
+      (field) => field.step === activeStep || activeStep === 2,
+    )
+
     const rows = Math.ceil(currentFields.length / columns)
     const fields = [...currentFields, ...Array(rows * columns).fill(null)]
 
@@ -189,80 +402,201 @@ function StudentForm() {
           .map((field, index) => {
             if (!field) return null
 
+            const isStep2 = activeStep === 2
+            const isDisabled = isStep2 ? true : false
+            const isError =
+              touchedFields[field.id] &&
+              field.isRequired &&
+              (textAreaValue[field.id]?.value === '' ||
+                textAreaValue[field.id] === undefined) &&
+              radioNumbers[field.id] === undefined &&
+              selectedCheckboxes.length === 0
+
             return (
               <Box
-                key={index}
+                key={field.id}
+                id={field.id}
                 width={`calc(${columnSize} * 1vw)`}
                 color="#19191D"
                 alignItems="center"
                 justifyContent="center"
                 paddingTop={4}
               >
-                {field.type === 'checkbox' && (
-                  <FormControl
-                    isRequired={field.isRequired}
-                    p={6}
-                    paddingInline={10}
-                    w="100%"
-                    border="1px solid #E1E1E3"
-                    rounded="lg"
-                    boxShadow="md"
-                    bg="#FBFBFB"
-                  >
-                    <FormLabel paddingBottom={4}>{field.name}</FormLabel>
-                    <CheckboxGroup colorScheme="blue">
+                {field.type === 'checkbox' &&
+                  (field.step === activeStep || activeStep === 2) && (
+                    <FormControl
+                      key={field.id}
+                      id={field.id}
+                      isRequired={field.isRequired}
+                      isInvalid={isError}
+                      p={6}
+                      // paddingTop={4}
+                      paddingInline={10}
+                      w="100%"
+                      border="1px solid #E1E1E3"
+                      rounded="lg"
+                      boxShadow="md"
+                      bg="#FBFBFB"
+                      // isDisabled={isDisabled}
+                    >
+                      <FormLabel paddingBottom={4}>{field.name}</FormLabel>
                       <Stack spacing={4} direction={['column']}>
                         {field.options?.map(
-                          (option: string, optionIndex: number) => (
+                          (option: ICheckboxOption, optionIndex: number) => (
                             <Checkbox
+                              onFocus={() => handleFieldClick(field.id)}
+                              onBlur={() => handleFieldTouch(field.id)}
                               key={optionIndex}
-                              value={option}
-                              sx={smoothClasses}
+                              isChecked={selectedCheckboxes.includes(option)}
+                              onChange={() => {
+                                handleSelectedCheckboxes(option)
+                                touchedFields[field.id] = true
+                              }}
+                              value={option.label}
+                              sx={
+                                isDisabled
+                                  ? { cursor: 'not-allowed' }
+                                  : smoothClasses
+                              }
                               size="md"
+                              isDisabled={isDisabled}
                             >
-                              {option}
+                              {option.label}
                             </Checkbox>
                           ),
+                          (field.value = selectedCheckboxes),
                         )}
                       </Stack>
-                    </CheckboxGroup>
-                  </FormControl>
-                )}
-
-                {field.type === 'radio' && (
-                  <FormControl
-                    isRequired={field.isRequired}
-                    p={4}
-                    paddingInline={10}
-                    w="100%"
-                    border="1px solid #E1E1E3"
-                    rounded="lg"
-                    boxShadow="md"
-                    bg="#FBFBFB"
-                  >
-                    <FormLabel paddingBottom={2}>{field.name}</FormLabel>
-                    <RadioGroup
-                      key={index}
-                      onChange={setRadioNumber}
-                      value={radioNumber}
+                      {!isError && field.description && (
+                        <FormHelperText>{field.description}</FormHelperText>
+                      )}
+                      {isError && (
+                        <FormErrorMessage>
+                          É necessário selecionar pelo menos uma caixa de
+                          seleção
+                        </FormErrorMessage>
+                      )}
+                    </FormControl>
+                  )}
+                {field.type === 'radio' &&
+                  (field.step === activeStep || activeStep === 2) && (
+                    <FormControl
+                      key={field.id}
+                      id={field.id}
+                      isRequired={field.isRequired}
+                      p={4}
+                      paddingInline={10}
+                      w="100%"
+                      border="1px solid #E1E1E3"
+                      rounded="lg"
+                      boxShadow="md"
+                      bg="#FBFBFB"
                     >
-                      <Stack spacing={4} direction={['column']}>
-                        {field.options?.map(
-                          (option: string, optionIndex: number) => (
-                            <Radio key={optionIndex} value={option} size="md">
-                              {option}
-                            </Radio>
-                          ),
-                        )}
-                      </Stack>
-                    </RadioGroup>
-                  </FormControl>
-                )}
-
+                      <FormLabel paddingBottom={2}>{field.name}</FormLabel>
+                      <RadioGroup
+                        onFocus={() => handleFieldClick(field.id)}
+                        onBlur={() => handleFieldTouch(field.id)}
+                        onChange={(value) => {
+                          field.value = value
+                          setRadioNumbers((prev) => ({
+                            ...prev,
+                            [field.id]: { value: value, step: field.step },
+                          }))
+                          console.log('field', field)
+                        }}
+                        value={
+                          radioNumbers[field.id]
+                            ? radioNumbers[field.id].value
+                            : ''
+                        }
+                        isDisabled={isDisabled}
+                      >
+                        <Stack spacing={4} direction={['column']}>
+                          {field.options?.map(
+                            (option: string, optionIndex: number) => (
+                              <Radio
+                                key={optionIndex}
+                                value={option}
+                                size="md"
+                                isDisabled={isDisabled}
+                              >
+                                {option}
+                              </Radio>
+                            ),
+                          )}
+                        </Stack>
+                      </RadioGroup>
+                      {!isError && field.description && (
+                        <FormHelperText>{field.description}</FormHelperText>
+                      )}
+                      {isError && (
+                        <FormErrorMessage>
+                          É necessário selecionar uma opção
+                        </FormErrorMessage>
+                      )}
+                    </FormControl>
+                  )}
                 {field.type !== 'checkbox' &&
                   field.type !== 'radio' &&
-                  field.type !== 'file' && (
+                  field.type !== 'file' &&
+                  (field.step === activeStep || activeStep === 2) && (
                     <FormControl
+                      key={field.id}
+                      id={field.id}
+                      isRequired={field.isRequired}
+                      isInvalid={isError}
+                      p={6}
+                      paddingInline={10}
+                      w="100%"
+                      border="1px solid #E1E1E3"
+                      rounded="lg"
+                      boxShadow="md"
+                      bg="#FBFBFB"
+                      // isDisabled={isDisabled}
+                      // variant={isDisabled ? 'filled' : 'flushed'}
+                    >
+                      <FormLabel paddingBottom={4}>{field.name}</FormLabel>
+                      <Input
+                        variant={isDisabled ? 'filled' : 'flushed'}
+                        onFocus={() => handleFieldClick(field.id)}
+                        onBlur={() => handleFieldTouch(field.id)}
+                        type={field.type}
+                        placeholder={field.placeholder}
+                        onChange={(e) => {
+                          ;(field.value = e.target.value),
+                            setTextAreaValue((prev) => ({
+                              ...prev,
+                              [field.id]: {
+                                value: e.target.value,
+                                step: field.step,
+                              },
+                            }))
+                          console.log('field', field)
+                        }}
+                        value={
+                          textAreaValue[field.id]?.value !== undefined
+                            ? textAreaValue[field.id]?.value
+                            : ''
+                        }
+                        borderColor={isDisabled ? 'gray.100' : 'gray.400'}
+                        isDisabled={isDisabled}
+                        textColor={isDisabled ? 'gray.600' : 'gray.800'}
+                      />
+                      {!isError && field.description && (
+                        <FormHelperText>{field.description}</FormHelperText>
+                      )}
+                      {isError && (
+                        <FormErrorMessage>
+                          Este campo é obrigatório
+                        </FormErrorMessage>
+                      )}
+                    </FormControl>
+                  )}
+
+                {field.type === 'file' &&
+                  (field.step === activeStep || activeStep === 2) && (
+                    <FormControl
+                      key={field.id}
                       isRequired={field.isRequired}
                       p={6}
                       paddingInline={10}
@@ -271,33 +605,18 @@ function StudentForm() {
                       rounded="lg"
                       boxShadow="md"
                       bg="#FBFBFB"
+                      // isDisabled={isDisabled}
                     >
                       <FormLabel paddingBottom={4}>{field.name}</FormLabel>
-                      <Input
-                        variant="flushed"
-                        type={field.type}
-                        placeholder={field.placeholder}
-                        borderColor="gray.400"
+                      <UploadFile
+                        id={field.id}
+                        handleFill={handleFill}
+                        step={activeStep}
                       />
                       <FormErrorMessage>{`${field.name} é necessário`}</FormErrorMessage>
+                      <FormHelperText>{field.description}</FormHelperText>
                     </FormControl>
                   )}
-                {field.type === 'file' && (
-                  <FormControl
-                    isRequired={field.isRequired}
-                    p={6}
-                    paddingInline={10}
-                    w="100%"
-                    border="1px solid #E1E1E3"
-                    rounded="lg"
-                    boxShadow="md"
-                    bg="#FBFBFB"
-                  >
-                    <FormLabel paddingBottom={4}>{field.name}</FormLabel>
-                    <UploadFile />
-                    <FormErrorMessage>{`${field.name} é necessário`}</FormErrorMessage>
-                  </FormControl>
-                )}
               </Box>
             )
           })}
@@ -309,7 +628,7 @@ function StudentForm() {
     const steps = [
       { title: 'Aluno', description: 'Dados Iniciais' },
       { title: 'Documentos', description: 'Dados do Formulário' },
-      // { title: 'Enviar', description: 'Revisão dos Dados' },
+      { title: 'Enviar', description: 'Revisão dos Dados' },
     ]
 
     return (
@@ -382,9 +701,15 @@ function StudentForm() {
           p={8}
           w="100%"
         >
-          <Button colorScheme="blue" variant="ghost">
-            Limpar Formulário
-          </Button>
+          {activeStep < 2 && (
+            <Button
+              colorScheme="blue"
+              variant="ghost"
+              onClick={() => handleClearFields(activeStep)}
+            >
+              Limpar Formulário
+            </Button>
+          )}
           <Flex direction="row" justify="right" w="75%">
             {activeStep > 0 && (
               <Button
@@ -397,19 +722,27 @@ function StudentForm() {
               </Button>
             )}
           </Flex>
-          <Button
-            onClick={() => setActiveStep(activeStep + 1)}
-            type="submit"
-            bg="#495796"
-            colorScheme="blue"
-            color="#FBFBFB"
-            variant="solid"
-            isDisabled={activeStep === 2 ? true : false}
+          <Tooltip
+            label="Por favor, preencha todos os campos obrigatórios!"
+            aria-label="Erro de preenchimento"
+            isDisabled={stepFieldsFilled[activeStep]}
           >
-            {activeStep === 0 ? 'Próximo' : ''}
-            {activeStep === 1 ? 'Enviar' : ''}
-            {activeStep === 2 ? 'Enviado' : ''}
-          </Button>
+            <span>
+              <Button
+                onClick={() => setActiveStep(activeStep + 1)}
+                type="submit"
+                bg="#495796"
+                colorScheme="blue"
+                color="#FBFBFB"
+                variant="solid"
+                isDisabled={!stepFieldsFilled[activeStep]}
+              >
+                {activeStep === 0 ? 'Próximo' : ''}
+                {activeStep === 1 ? 'Próximo' : ''}
+                {activeStep === 2 ? 'Enviar' : ''}
+              </Button>
+            </span>
+          </Tooltip>
         </Flex>
       </FormControl>
     </Box>

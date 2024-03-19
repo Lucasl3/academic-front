@@ -3,7 +3,13 @@ import { FaUpload } from 'react-icons/fa'
 
 import { Flex, Icon } from '@chakra-ui/react'
 
-const UploadFile = () => {
+interface HandleFillProps {
+  handleFill: (id: string, value: boolean) => void
+  id: string
+  step: number
+}
+
+const UploadFile: React.FC<HandleFillProps> = ({ id, handleFill, step }) => {
   const [hovered, setHovered] = useState(false)
 
   const truncateFileName = (fileName: string): string => {
@@ -19,7 +25,9 @@ const UploadFile = () => {
 
   const handleFileUpload = (e: any) => {
     const files: FileList = e.target.files
-    const fileChosenElement = document.getElementById('file-chosen')
+    const fileChosenElement = document.getElementById('file-chosen' + id)
+
+    console.log(files)
 
     if (files.length === 1) {
       const file = files[0]
@@ -38,6 +46,17 @@ const UploadFile = () => {
         fileChosenElement!.textContent = fileListString
       })
     }
+    handleFill(id, true)
+  }
+
+  const clearFiles = () => {
+    const fileInputElement = document.getElementById(
+      'upload' + id,
+    ) as HTMLInputElement
+    const fileChosenElement = document.getElementById('file-chosen' + id)
+    fileInputElement.value = '' // Reset input value
+    fileChosenElement!.textContent = 'Nenhum arquivo selecionado' // Update text content
+    handleFill(id, false) // Update handleFill to indicate no file selected
   }
 
   const handleMouseHover = (e: any) => {
@@ -61,27 +80,32 @@ const UploadFile = () => {
     >
       <input
         type="file"
-        id="upload"
+        id={'upload' + id}
         hidden
         onChange={handleFileUpload}
         multiple
+        disabled={step === 2}
       />
-      <label
-        style={{
-          border: '1.5px dashed #E1E6FC',
-          padding: '10px 16px',
-          cursor: 'pointer',
-          borderRadius: '4px',
-          backgroundColor: hovered ? '#ccc' : '#fff',
-        }}
-        htmlFor="upload"
-        onMouseEnter={handleMouseHover}
-        onMouseLeave={handleMouseLeave}
-      >
-        <Icon as={FaUpload} mr="2" />
-        Selecione o arquivo
-      </label>
-      <span id="file-chosen">Nenhum arquivo selecionado</span>
+      {step !== 2 && (
+        <label
+          style={{
+            border: '1.5px dashed #E1E6FC',
+            padding: '10px 16px',
+            cursor: 'pointer',
+            borderRadius: '4px',
+            backgroundColor: hovered ? '#ccc' : '#fff',
+          }}
+          htmlFor={'upload' + id}
+          onMouseEnter={handleMouseHover}
+          onMouseLeave={handleMouseLeave}
+        >
+          <Icon as={FaUpload} mr="2" />
+          Selecione o arquivo
+        </label>
+      )}
+      <span id={'file-chosen' + id} style={{ opacity: step === 2 ? 0.5 : 1 }}>
+        Nenhum arquivo selecionado
+      </span>
     </Flex>
   )
 }
