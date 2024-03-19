@@ -16,7 +16,7 @@ const PrivateRoutes = () => {
   const { setUser } = useContext(AppContext)
   const toast = useToast()
   const accessToken = localStorage.getItem('accessToken')
-  const { mutate: postLogin } = useMutationLogin({
+  const { mutate: postLogin, isLoading: isLoginLoading } = useMutationLogin({
     onSuccess: (data) => {
       const admin = data.coProfile === 1
       setUser({
@@ -34,6 +34,7 @@ const PrivateRoutes = () => {
         duration: 3000,
         isClosable: true,
       })
+      setIsAuthenticated(false)
     },
   })
 
@@ -59,7 +60,7 @@ const PrivateRoutes = () => {
     checkAuthentication()
   }, [])
 
-  if (isAuthenticating) {
+  if (isAuthenticating || isLoginLoading) {
     return <LayoutLoading />
   }
 
