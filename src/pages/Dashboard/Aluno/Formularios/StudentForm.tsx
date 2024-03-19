@@ -608,11 +608,12 @@ function StudentForm() {
                       // isDisabled={isDisabled}
                     >
                       <FormLabel paddingBottom={4}>{field.name}</FormLabel>
-                      <UploadFile
+                      {/* <UploadFile id="file1" file={null} onFileChange={(file) => setTeste(file)} /> */}
+                      {/* <UploadFile
                         id={field.id}
                         handleFill={handleFill}
                         step={activeStep}
-                      />
+                      /> */}
                       <FormErrorMessage>{`${field.name} é necessário`}</FormErrorMessage>
                       <FormHelperText>{field.description}</FormHelperText>
                     </FormControl>
