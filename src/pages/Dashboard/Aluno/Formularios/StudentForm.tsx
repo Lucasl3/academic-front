@@ -2,7 +2,7 @@ import React from 'react'
 import { set } from 'react-hook-form'
 
 import { check } from 'prettier'
-import { TestConfig } from 'yup'
+import * as yup from 'yup'
 
 import {
   Stack,
@@ -34,7 +34,7 @@ import { Box } from '@chakra-ui/react'
 import { Checkbox, CheckboxGroup } from '@chakra-ui/react'
 import { Radio, RadioGroup } from '@chakra-ui/react'
 
-import UploadFile, { UploadFileRef } from '@/components/UploadFile'
+import UploadFile from '@/components/UploadFile'
 
 const fieldSets: {
   id: string
@@ -43,8 +43,9 @@ const fieldSets: {
   type: string
   step: number
   isRequired: boolean
-  options?: string[]
+  options?: string[] | { id: number; label: string }[]
   placeholder?: string
+  value?: string | [number]
 }[] = [
   {
     id: '1',
@@ -132,11 +133,26 @@ const fieldSets: {
     step: 1,
     isRequired: true,
     options: [
-      'Asfvbjjfgnjfgnejwfnggerj',
-      'Asfvbjjfgnjfgnejergergerwfnj',
-      'Asfvbjjfgnjfgnejgerwfnj',
-      'Asfvbjjfgnjfgnejwrgeryfnj',
-      'Asfvbjjfgnjfgnejwfnjp',
+      {
+        id: 1,
+        label: 'Teste 1',
+      },
+      {
+        id: 2,
+        label: 'Teste 2',
+      },
+      {
+        id: 3,
+        label: 'Teste 3',
+      },
+      {
+        id: 4,
+        label: 'Teste 4',
+      },
+      {
+        id: 5,
+        label: 'Teste 5',
+      },
     ],
   },
   {
@@ -193,8 +209,6 @@ function StudentForm() {
     {},
   )
 
-  const [stepFieldsFilled, setStepFieldsFilled] = React.useState<boolean[]>([])
-
   const { activeStep, setActiveStep } = useSteps({
     index: 0,
     count: 3,
@@ -225,37 +239,30 @@ function StudentForm() {
     })
   }
 
-  interface CheckboxValues {
-    [key: string]: {
-      [key: number]: boolean
-      step: number
+  interface ICheckboxOption {
+    id: number
+    label: string
+  }
+
+  const [selectedCheckboxes, setSelectedCheckboxes] = React.useState<
+    Array<ICheckboxOption>
+  >([])
+
+  const handleSelectedCheckboxes = (option: ICheckboxOption) => {
+    const indexOption = selectedCheckboxes.indexOf(option)
+
+    if (indexOption === -1) {
+      setSelectedCheckboxes([...selectedCheckboxes, option])
+    } else {
+      setSelectedCheckboxes([
+        ...selectedCheckboxes.filter((item) => item !== option),
+      ])
     }
   }
 
-  const [checkboxValues, setCheckboxValues] = React.useState<CheckboxValues>(
-    Object.fromEntries(
-      fieldSets.map((field) => [field.id, { step: field.step }]),
-    ),
-  )
-
-  const handleResetCheckbox = (stepToReset: number) => {
-    setCheckboxValues((prevValues) => {
-      const updatedValues = { ...prevValues }
-      Object.keys(updatedValues).forEach((key) => {
-        if (updatedValues[key].step === stepToReset) {
-          delete updatedValues[key]
-        }
-      })
-      return updatedValues
-    })
+  const handleResetCheckbox = () => {
+    setSelectedCheckboxes([])
   }
-
-  type TouchedFields = {
-    [key: string]: boolean
-  }
-
-  const [touchedFields, setTouchedFields] = React.useState<TouchedFields>({})
-  const [clickedFields, setClickedFields] = React.useState<TouchedFields>({})
 
   const [radioNumbers, setRadioNumbers] = React.useState<{
     [key: string]: { value: string; step: number }
@@ -273,27 +280,93 @@ function StudentForm() {
     })
   }
 
-  const uploadFileRefs = React.useRef<{
-    [key: string]: { ref: React.RefObject<UploadFileRef>; step: number }
-  }>({})
+  interface IFileState {
+    id: string
+    isFilled: boolean
+  }
+  const [fileState, setFileState] = React.useState<IFileState[]>([])
 
-  const handleClearFiles = (stepToClear: number) => {
-    Object.keys(uploadFileRefs.current).forEach((id) => {
-      const { ref, step } = uploadFileRefs.current[id]
-      if (step === stepToClear && ref.current) {
-        ref.current.clearFiles(stepToClear)
+  const handleFill = (id: string, isFilled: boolean): void => {
+    // console.log('item', id, isFilled)
+    setFileState((prev) => {
+      const index = prev.findIndex((item) => item.id === id)
+
+      if (index !== -1) {
+        return prev.map((item, i) => {
+          if (i === index) {
+            return { ...item, isFilled: isFilled }
+          }
+          return item
+        })
+      } else {
+        return [...prev, { id: id, isFilled: isFilled }]
       }
     })
   }
+
+  type TouchedFields = {
+    [key: string]: boolean
+  }
+
+  const [touchedFields, setTouchedFields] = React.useState<TouchedFields>({})
+  const [clickedFields, setClickedFields] = React.useState<TouchedFields>({})
 
   const handleClearFields = (step: number) => {
     setTouchedFields({})
     setClickedFields({})
     handleResetText(step)
-    handleResetCheckbox(step)
+    handleResetCheckbox()
     handleResetRadio(step)
-    handleClearFiles(step)
+    // handleClearFiles(step)
   }
+
+  const [stepFieldsFilled, setStepFieldsFilled] = React.useState<boolean[]>([])
+
+  interface FilledFields {
+    [key: string]: boolean
+  }
+
+  // Em seguida, utilize esta interface para tipar o objeto filledFields
+  const filledFields: FilledFields = {}
+
+  React.useEffect(() => {
+    fieldSets.forEach((field) => {
+      if (field.type === 'checkbox') {
+        // console.log('selectedCheckboxes', selectedCheckboxes)
+        filledFields[field.id] = selectedCheckboxes.length > 0
+      } else if (field.type === 'radio') {
+        // console.log('radioNumbers', radioNumbers)
+        filledFields[field.id] =
+          !!radioNumbers[field.id] && radioNumbers[field.id].value !== ''
+      } else if (field.type === 'file') {
+        // console.log('fileState', fileState)
+        filledFields[field.id] =
+          fileState.find((item) => item.id === field.id)?.isFilled || false
+      } else {
+        // console.log('textAreaValue', textAreaValue[field.id]?.value)
+        filledFields[field.id] = !!textAreaValue[field.id]?.value
+      }
+    })
+
+    // Verifica se todos os campos do passo atual estão preenchidos
+    const isStepFilled = fieldSets
+      .filter((field) => field.step === activeStep)
+      .every((field) => filledFields[field.id])
+
+    // Atualiza o estado com a informação de preenchimento do passo atual
+    setStepFieldsFilled((prev) => {
+      const newFilled = [...prev]
+      newFilled[activeStep] = isStepFilled
+      return newFilled
+    })
+  }, [
+    activeStep,
+    textAreaValue,
+    selectedCheckboxes,
+    radioNumbers,
+    fileState,
+    fieldSets,
+  ])
 
   const renderFields = (columns: number) => {
     const handleFieldTouch = (fieldId: string) => {
@@ -313,7 +386,9 @@ function StudentForm() {
       }))
     }
 
-    const currentFields = fieldSets
+    const currentFields = fieldSets.filter(
+      (field) => field.step === activeStep || activeStep === 2,
+    )
 
     const rows = Math.ceil(currentFields.length / columns)
     const fields = [...currentFields, ...Array(rows * columns).fill(null)]
@@ -335,7 +410,7 @@ function StudentForm() {
               (textAreaValue[field.id]?.value === '' ||
                 textAreaValue[field.id] === undefined) &&
               radioNumbers[field.id] === undefined &&
-              Object.keys(checkboxValues[field.id]).length === 0
+              selectedCheckboxes.length === 0
 
             return (
               <Box
@@ -353,54 +428,53 @@ function StudentForm() {
                       key={field.id}
                       id={field.id}
                       isRequired={field.isRequired}
+                      isInvalid={isError}
                       p={6}
+                      // paddingTop={4}
                       paddingInline={10}
                       w="100%"
                       border="1px solid #E1E1E3"
                       rounded="lg"
                       boxShadow="md"
                       bg="#FBFBFB"
-                      isDisabled={isDisabled}
+                      // isDisabled={isDisabled}
                     >
                       <FormLabel paddingBottom={4}>{field.name}</FormLabel>
                       <Stack spacing={4} direction={['column']}>
                         {field.options?.map(
-                          (option: string, optionIndex: number) => (
+                          (option: ICheckboxOption, optionIndex: number) => (
                             <Checkbox
                               onFocus={() => handleFieldClick(field.id)}
                               onBlur={() => handleFieldTouch(field.id)}
                               key={optionIndex}
-                              isChecked={
-                                checkboxValues[field.id]?.[optionIndex] || false
-                              }
-                              onChange={(e) => {
-                                setCheckboxValues((prev) => ({
-                                  ...prev,
-                                  [field.id]: {
-                                    ...prev[field.id],
-                                    [optionIndex]: e.target.checked,
-                                    step: field.step,
-                                  },
-                                }))
+                              isChecked={selectedCheckboxes.includes(option)}
+                              onChange={() => {
+                                handleSelectedCheckboxes(option)
+                                touchedFields[field.id] = true
                               }}
-                              value={option}
-                              sx={smoothClasses}
+                              value={option.label}
+                              sx={
+                                isDisabled
+                                  ? { cursor: 'not-allowed' }
+                                  : smoothClasses
+                              }
                               size="md"
                               isDisabled={isDisabled}
                             >
-                              {option}
+                              {option.label}
                             </Checkbox>
                           ),
+                          (field.value = selectedCheckboxes),
                         )}
                       </Stack>
-                      {!isError && (
-                        <FormHelperText>
-                          Enter the email youd like to receive the newsletter
-                          on.
-                        </FormHelperText>
+                      {!isError && field.description && (
+                        <FormHelperText>{field.description}</FormHelperText>
                       )}
                       {isError && (
-                        <FormErrorMessage>Email is required.</FormErrorMessage>
+                        <FormErrorMessage>
+                          É necessário selecionar pelo menos uma caixa de
+                          seleção
+                        </FormErrorMessage>
                       )}
                     </FormControl>
                   )}
@@ -417,23 +491,25 @@ function StudentForm() {
                       rounded="lg"
                       boxShadow="md"
                       bg="#FBFBFB"
-                      isDisabled={isDisabled}
                     >
                       <FormLabel paddingBottom={2}>{field.name}</FormLabel>
                       <RadioGroup
                         onFocus={() => handleFieldClick(field.id)}
                         onBlur={() => handleFieldTouch(field.id)}
                         onChange={(value) => {
+                          field.value = value
                           setRadioNumbers((prev) => ({
                             ...prev,
                             [field.id]: { value: value, step: field.step },
                           }))
+                          console.log('field', field)
                         }}
                         value={
                           radioNumbers[field.id]
                             ? radioNumbers[field.id].value
                             : ''
                         }
+                        isDisabled={isDisabled}
                       >
                         <Stack spacing={4} direction={['column']}>
                           {field.options?.map(
@@ -450,14 +526,13 @@ function StudentForm() {
                           )}
                         </Stack>
                       </RadioGroup>
-                      {!isError && (
-                        <FormHelperText>
-                          Enter the email youd like to receive the newsletter
-                          on.
-                        </FormHelperText>
+                      {!isError && field.description && (
+                        <FormHelperText>{field.description}</FormHelperText>
                       )}
                       {isError && (
-                        <FormErrorMessage>Email is required.</FormErrorMessage>
+                        <FormErrorMessage>
+                          É necessário selecionar uma opção
+                        </FormErrorMessage>
                       )}
                     </FormControl>
                   )}
@@ -477,40 +552,43 @@ function StudentForm() {
                       rounded="lg"
                       boxShadow="md"
                       bg="#FBFBFB"
-                      isDisabled={isDisabled}
+                      // isDisabled={isDisabled}
+                      // variant={isDisabled ? 'filled' : 'flushed'}
                     >
                       <FormLabel paddingBottom={4}>{field.name}</FormLabel>
                       <Input
-                        variant="flushed"
+                        variant={isDisabled ? 'filled' : 'flushed'}
                         onFocus={() => handleFieldClick(field.id)}
                         onBlur={() => handleFieldTouch(field.id)}
                         type={field.type}
                         placeholder={field.placeholder}
-                        onChange={(e) =>
-                          setTextAreaValue((prev) => ({
-                            ...prev,
-                            [field.id]: {
-                              value: e.target.value,
-                              step: field.step,
-                            },
-                          }))
-                        }
+                        onChange={(e) => {
+                          ;(field.value = e.target.value),
+                            setTextAreaValue((prev) => ({
+                              ...prev,
+                              [field.id]: {
+                                value: e.target.value,
+                                step: field.step,
+                              },
+                            }))
+                          console.log('field', field)
+                        }}
                         value={
                           textAreaValue[field.id]?.value !== undefined
                             ? textAreaValue[field.id]?.value
                             : ''
                         }
-                        borderColor="gray.400"
+                        borderColor={isDisabled ? 'gray.100' : 'gray.400'}
                         isDisabled={isDisabled}
+                        textColor={isDisabled ? 'gray.600' : 'gray.800'}
                       />
-                      {!isError && (
-                        <FormHelperText>
-                          Enter the email youd like to receive the newsletter
-                          on.
-                        </FormHelperText>
+                      {!isError && field.description && (
+                        <FormHelperText>{field.description}</FormHelperText>
                       )}
                       {isError && (
-                        <FormErrorMessage>Email is required.</FormErrorMessage>
+                        <FormErrorMessage>
+                          Este campo é obrigatório
+                        </FormErrorMessage>
                       )}
                     </FormControl>
                   )}
@@ -527,21 +605,16 @@ function StudentForm() {
                       rounded="lg"
                       boxShadow="md"
                       bg="#FBFBFB"
-                      isDisabled={isDisabled}
+                      // isDisabled={isDisabled}
                     >
                       <FormLabel paddingBottom={4}>{field.name}</FormLabel>
                       <UploadFile
-                        ref={(ref) =>
-                          (uploadFileRefs.current[field.id] = {
-                            ref: ref || React.createRef(),
-                            step: field.step,
-                          })
-                        }
                         id={field.id}
-                        step={field.step}
+                        handleFill={handleFill}
+                        step={activeStep}
                       />
-
                       <FormErrorMessage>{`${field.name} é necessário`}</FormErrorMessage>
+                      <FormHelperText>{field.description}</FormHelperText>
                     </FormControl>
                   )}
               </Box>
@@ -550,35 +623,6 @@ function StudentForm() {
       </Stack>
     ))
   }
-
-  React.useEffect(() => {
-    const currentStepFields = fieldSets.filter(
-      (field) => field.step === activeStep,
-    )
-    const filled = currentStepFields.every((field) => {
-      if (field.type === 'checkbox') {
-        console.log(checkboxValues[field.id])
-        return Object.keys(checkboxValues[field.id]).length > 0
-      } else if (field.type === 'radio') {
-        console.log(radioNumbers[field.id])
-        return !!radioNumbers[field.id]
-      } else if (field.type === 'file') {
-        console.log(
-          uploadFileRefs.current[field.id].ref.current?.getFileCount(),
-        )
-        return !!uploadFileRefs.current[field.id].ref.current?.getFileCount()
-      } else {
-        console.log(textAreaValue[field.id])
-        return !!textAreaValue[field.id]?.value
-      }
-    })
-
-    setStepFieldsFilled((prev) => {
-      const newFilled = [...prev]
-      newFilled[activeStep] = filled
-      return newFilled
-    })
-  }, [activeStep, textAreaValue, checkboxValues, radioNumbers])
 
   function FormSteps() {
     const steps = [
