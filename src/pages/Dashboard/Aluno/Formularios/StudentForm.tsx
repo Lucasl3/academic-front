@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { set } from 'react-hook-form'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { check } from 'prettier'
 import * as yup from 'yup'
@@ -15,6 +16,9 @@ import {
   FormHelperText,
   Flex,
   color,
+  useToast,
+  Skeleton,
+  HStack,
 } from '@chakra-ui/react'
 import {
   Step,
@@ -34,7 +38,9 @@ import { Box } from '@chakra-ui/react'
 import { Checkbox, CheckboxGroup } from '@chakra-ui/react'
 import { Radio, RadioGroup } from '@chakra-ui/react'
 
+import { useQueryForm } from '@/api/dashboard/forms/queries'
 import UploadFile from '@/components/UploadFile'
+import { formatDate } from '@/utils/date'
 
 const fieldSets: {
   id: string
@@ -204,19 +210,63 @@ const smoothClasses = {
   },
 }
 
+interface TextAreaValue {
+  [key: string]: { value: string; step: number } | undefined
+}
+
+interface ICheckboxOption {
+  id: number
+  label: string
+}
+
+// interface IFileState {
+//   id: string
+//   isFilled: boolean
+// }
+
+interface FilledFields {
+  [key: string]: boolean
+}
+
 function StudentForm() {
-  const [formValues, setFormValues] = React.useState<{ [key: string]: string }>(
-    {},
+  const toast = useToast()
+  const navigate = useNavigate()
+  const { id } = useParams()
+  console.log('id', id)
+
+  const { data: form, isFetching: isFormLoading } = useQueryForm(
+    {
+      id: Number(id),
+    },
+    {
+      enabled: !!id,
+      onError: () => {
+        toast({
+          title: 'Houve um erro ao buscar o Formulário.',
+          status: 'error',
+          duration: 5000,
+        })
+      },
+    },
   )
+
+  const formData = useMemo(() => {
+    console.log(form)
+    return {
+      id: form?.coForm,
+      title: form?.noForm,
+      description: form?.dsForm,
+      last_update: form?.dtUpdatedAt,
+      steps: form?.steps,
+    }
+  }, [form])
+
+  const len_steps = formData.steps?.length
 
   const { activeStep, setActiveStep } = useSteps({
     index: 0,
     count: 3,
   })
-
-  interface TextAreaValue {
-    [key: string]: { value: string; step: number } | undefined
-  }
 
   const [textAreaValue, setTextAreaValue] = React.useState<TextAreaValue>(
     Object.fromEntries(
@@ -237,11 +287,6 @@ function StudentForm() {
       })
       return updatedTextAreaValue
     })
-  }
-
-  interface ICheckboxOption {
-    id: number
-    label: string
   }
 
   const [selectedCheckboxes, setSelectedCheckboxes] = React.useState<
@@ -280,29 +325,24 @@ function StudentForm() {
     })
   }
 
-  interface IFileState {
-    id: string
-    isFilled: boolean
-  }
-  const [fileState, setFileState] = React.useState<IFileState[]>([])
+  // const [fileState, setFileState] = React.useState<IFileState[]>([])
 
-  const handleFill = (id: string, isFilled: boolean): void => {
-    // console.log('item', id, isFilled)
-    setFileState((prev) => {
-      const index = prev.findIndex((item) => item.id === id)
+  // const handleFill = (id: string, isFilled: boolean): void => {
+  //   setFileState((prev) => {
+  //     const index = prev.findIndex((item) => item.id === id)
 
-      if (index !== -1) {
-        return prev.map((item, i) => {
-          if (i === index) {
-            return { ...item, isFilled: isFilled }
-          }
-          return item
-        })
-      } else {
-        return [...prev, { id: id, isFilled: isFilled }]
-      }
-    })
-  }
+  //     if (index !== -1) {
+  //       return prev.map((item, i) => {
+  //         if (i === index) {
+  //           return { ...item, isFilled: isFilled }
+  //         }
+  //         return item
+  //       })
+  //     } else {
+  //       return [...prev, { id: id, isFilled: isFilled }]
+  //     }
+  //   })
+  // }
 
   type TouchedFields = {
     [key: string]: boolean
@@ -322,38 +362,29 @@ function StudentForm() {
 
   const [stepFieldsFilled, setStepFieldsFilled] = React.useState<boolean[]>([])
 
-  interface FilledFields {
-    [key: string]: boolean
-  }
-
-  // Em seguida, utilize esta interface para tipar o objeto filledFields
   const filledFields: FilledFields = {}
 
   React.useEffect(() => {
     fieldSets.forEach((field) => {
       if (field.type === 'checkbox') {
-        // console.log('selectedCheckboxes', selectedCheckboxes)
         filledFields[field.id] = selectedCheckboxes.length > 0
       } else if (field.type === 'radio') {
-        // console.log('radioNumbers', radioNumbers)
         filledFields[field.id] =
           !!radioNumbers[field.id] && radioNumbers[field.id].value !== ''
-      } else if (field.type === 'file') {
-        // console.log('fileState', fileState)
-        filledFields[field.id] =
-          fileState.find((item) => item.id === field.id)?.isFilled || false
-      } else {
-        // console.log('textAreaValue', textAreaValue[field.id]?.value)
+      }
+      //  else if (field.type === 'file') {
+      //   filledFields[field.id] =
+      //     fileState.find((item) => item.id === field.id)?.isFilled || false
+      // }
+      else {
         filledFields[field.id] = !!textAreaValue[field.id]?.value
       }
     })
 
-    // Verifica se todos os campos do passo atual estão preenchidos
     const isStepFilled = fieldSets
       .filter((field) => field.step === activeStep)
       .every((field) => filledFields[field.id])
 
-    // Atualiza o estado com a informação de preenchimento do passo atual
     setStepFieldsFilled((prev) => {
       const newFilled = [...prev]
       newFilled[activeStep] = isStepFilled
@@ -364,7 +395,7 @@ function StudentForm() {
     textAreaValue,
     selectedCheckboxes,
     radioNumbers,
-    fileState,
+    // fileState,
     fieldSets,
   ])
 
@@ -538,7 +569,6 @@ function StudentForm() {
                   )}
                 {field.type !== 'checkbox' &&
                   field.type !== 'radio' &&
-                  field.type !== 'file' &&
                   (field.step === activeStep || activeStep === 2) && (
                     <FormControl
                       key={field.id}
@@ -593,7 +623,7 @@ function StudentForm() {
                     </FormControl>
                   )}
 
-                {field.type === 'file' &&
+                {/* {field.type === 'file' &&
                   (field.step === activeStep || activeStep === 2) && (
                     <FormControl
                       key={field.id}
@@ -616,7 +646,7 @@ function StudentForm() {
                       <FormErrorMessage>{`${field.name} é necessário`}</FormErrorMessage>
                       <FormHelperText>{field.description}</FormHelperText>
                     </FormControl>
-                  )}
+                  )} */}
               </Box>
             )
           })}
@@ -669,82 +699,112 @@ function StudentForm() {
 
   return (
     <Box>
-      <Flex
-        p={8}
-        rounded="lg"
-        bg="#FBFBFB"
-        boxShadow="lg"
-        direction="row"
-        align="center"
-        justifyContent="center"
-      >
-        <Stack spacing={6} w="full" justifyContent="center" align="center">
-          <Text fontSize="3xl" fontWeight="semibold" color="#444A63">
-            Formulário
-          </Text>
-
-          <Text fontSize="sm" fontWeight="regular" color="#444A63">
-            {
-              'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
-            }
-          </Text>
-
-          <FormSteps />
-        </Stack>
-      </Flex>
-      <FormControl>
-        {renderFields(2)}
-        <Flex
-          direction="row"
-          justify="space-between"
-          paddingInline={20}
-          p={8}
-          w="100%"
-        >
-          {activeStep < 2 && (
-            <Button
-              colorScheme="blue"
-              variant="ghost"
-              onClick={() => handleClearFields(activeStep)}
-            >
-              Limpar Formulário
-            </Button>
-          )}
-          <Flex direction="row" justify="right" w="75%">
-            {activeStep > 0 && (
-              <Button
-                onClick={() => setActiveStep(activeStep - 1)}
-                colorScheme="blue"
-                variant="ghost"
+      <Stack>
+        <Skeleton isLoaded={!isFormLoading}>
+          {form ? (
+            <Stack>
+              <Flex
+                p={8}
+                rounded="lg"
                 bg="#FBFBFB"
+                boxShadow="lg"
+                direction="row"
+                align="center"
+                justifyContent="center"
               >
-                Voltar
-              </Button>
-            )}
-          </Flex>
-          <Tooltip
-            label="Por favor, preencha todos os campos obrigatórios!"
-            aria-label="Erro de preenchimento"
-            isDisabled={stepFieldsFilled[activeStep]}
+                <Stack
+                  spacing={6}
+                  w="full"
+                  justifyContent="center"
+                  align="center"
+                >
+                  <Text fontSize="3xl" fontWeight="semibold" color="#444A63">
+                    {formData.title}
+                  </Text>
+
+                  <Text fontSize="md" fontWeight="regular" color="#444A63">
+                    {formData.description}
+                  </Text>
+
+                  <Text fontSize={{ base: 'sm', md: 'sm' }} color="gray.500">
+                    Última atualização em{' '}
+                    {formatDate(
+                      String(formData.last_update),
+                      'DD/MM/YYYY [ás] HH:mm',
+                    )}
+                  </Text>
+
+                  <FormSteps />
+                </Stack>
+              </Flex>
+              <FormControl>
+                {renderFields(2)}
+                <Flex
+                  direction="row"
+                  justify="space-between"
+                  paddingInline={20}
+                  p={8}
+                  w="100%"
+                >
+                  {activeStep < 2 && (
+                    <Button
+                      colorScheme="blue"
+                      variant="ghost"
+                      onClick={() => handleClearFields(activeStep)}
+                    >
+                      Limpar Formulário
+                    </Button>
+                  )}
+                  <Flex direction="row" justify="right" w="75%">
+                    {activeStep > 0 && (
+                      <Button
+                        onClick={() => setActiveStep(activeStep - 1)}
+                        colorScheme="blue"
+                        variant="ghost"
+                        bg="#FBFBFB"
+                      >
+                        Voltar
+                      </Button>
+                    )}
+                  </Flex>
+                  <Tooltip
+                    label="Por favor, preencha todos os campos obrigatórios!"
+                    aria-label="Erro de preenchimento"
+                    isDisabled={stepFieldsFilled[activeStep]}
+                  >
+                    <span>
+                      <Button
+                        onClick={() => setActiveStep(activeStep + 1)}
+                        type="submit"
+                        bg="#495796"
+                        colorScheme="blue"
+                        color="#FBFBFB"
+                        variant="solid"
+                        isDisabled={!stepFieldsFilled[activeStep]}
+                      >
+                        {activeStep === 0 ? 'Próximo' : ''}
+                        {activeStep === 1 ? 'Próximo' : ''}
+                        {activeStep === 2 ? 'Enviar' : ''}
+                      </Button>
+                    </span>
+                  </Tooltip>
+                </Flex>
+              </FormControl>
+            </Stack>
+          ) : (
+            <Box>Formulário não encontrado</Box>
+          )}
+        </Skeleton>
+        <HStack justify="flex-end">
+          <Button
+            size="lg"
+            colorScheme="blue"
+            onClick={() => navigate('/dashboard/home')}
           >
-            <span>
-              <Button
-                onClick={() => setActiveStep(activeStep + 1)}
-                type="submit"
-                bg="#495796"
-                colorScheme="blue"
-                color="#FBFBFB"
-                variant="solid"
-                isDisabled={!stepFieldsFilled[activeStep]}
-              >
-                {activeStep === 0 ? 'Próximo' : ''}
-                {activeStep === 1 ? 'Próximo' : ''}
-                {activeStep === 2 ? 'Enviar' : ''}
-              </Button>
-            </span>
-          </Tooltip>
-        </Flex>
-      </FormControl>
+            Voltar
+          </Button>
+        </HStack>
+      </Stack>
     </Box>
   )
 }
