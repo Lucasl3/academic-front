@@ -16,9 +16,21 @@ import { ISidebarContentProps } from '../../types'
 import NavItem from '../NavItem'
 
 const SidebarContent = ({ linkItems, ...rest }: ISidebarContentProps) => {
-  const { sidebar } = useContext(AppContext)
+  const { sidebar, user } = useContext(AppContext)
   const { onClose, width } = sidebar
   const [isMobile] = useMediaQuery('(max-width: 768px)')
+
+  const checkPermission = (isAdmin: boolean, isProtected: boolean) => {
+    if (isAdmin) {
+      return true
+    }
+
+    if (isProtected) {
+      return false
+    }
+
+    return true
+  }
 
   return (
     <Box
@@ -40,14 +52,17 @@ const SidebarContent = ({ linkItems, ...rest }: ISidebarContentProps) => {
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      {linkItems.map((link) => (
-        <NavItem
-          key={link.name}
-          name={link.name}
-          to={link.to}
-          icon={link.icon}
-        />
-      ))}
+      {linkItems.map(
+        (link) =>
+          checkPermission(user?.admin, link.protected) && (
+            <NavItem
+              key={link.name}
+              name={link.name}
+              to={link.to}
+              icon={link.icon}
+            />
+          ),
+      )}
     </Box>
   )
 }

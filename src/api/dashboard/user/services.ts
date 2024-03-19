@@ -4,6 +4,7 @@ import {
   TPutUserParams,
   TPostUserParams,
   TGetUsersParams,
+  IPostLoginParams,
 } from './types'
 
 export const getUsers = async ({ search }: TGetUsersParams) => {
@@ -26,6 +27,12 @@ export const postUser = async (params: TPostUserParams) => {
 
 export const putUser = async (params: TPutUserParams) => {
   const response = await http.put('/user/', params)
+
+  return response.data
+}
+
+export const postLogin = async (params: IPostLoginParams) => {
+  const response = await http.post('/user/login/', params)
 
   return response.data
 }

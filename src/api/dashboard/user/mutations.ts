@@ -2,12 +2,14 @@ import { AxiosError } from 'axios'
 
 import { UseMutationOptions, useMutation } from '@tanstack/react-query'
 
-import { postUser, putUser } from './services'
+import { postUser, putUser, postLogin } from './services'
 import {
   TPostUserParams,
   TPostUserResponse,
   TPutUserParams,
   TPutUserResponse,
+  IPostLoginParams,
+  IPostLoginResponse,
 } from './types'
 
 export const useMutationPostUser = (
@@ -27,6 +29,21 @@ export const useMutationPutUser = (
   const mutationFunction = (params: TPutUserParams) => putUser(params)
 
   return useMutation<TPutUserResponse, AxiosError, TPutUserParams>({
+    mutationFn: mutationFunction,
+    ...options,
+  })
+}
+
+export const useMutationLogin = (
+  options?: UseMutationOptions<
+    IPostLoginResponse,
+    AxiosError,
+    IPostLoginParams
+  >,
+) => {
+  const mutationFunction = (params: IPostLoginParams) => postLogin(params)
+
+  return useMutation<IPostLoginResponse, AxiosError, IPostLoginParams>({
     mutationFn: mutationFunction,
     ...options,
   })

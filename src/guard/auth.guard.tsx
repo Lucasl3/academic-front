@@ -1,21 +1,51 @@
-import React, { useEffect, useContext } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { Outlet, Navigate } from 'react-router-dom'
 
+import { useToast } from '@chakra-ui/react'
+
 import { getGoogleUserInfo } from '@/api/auth/google/services'
+import { IGetGoogleUserInfoDTO } from '@/api/auth/google/types'
+import { useMutationLogin } from '@/api/dashboard/user/mutations'
 import LayoutLoading from '@/common/Layout/LayoutLoading'
 import { AppContext } from '@/contexts/AppContext'
 
 const PrivateRoutes = () => {
-  const [isAuthenticating, setIsAuthenticating] = React.useState(true)
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false)
+  const [isAuthenticating, setIsAuthenticating] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [userInfo, setUserInfo] = useState<IGetGoogleUserInfoDTO | null>(null)
   const { setUser } = useContext(AppContext)
+  const toast = useToast()
   const accessToken = localStorage.getItem('accessToken')
+  const { mutate: postLogin } = useMutationLogin({
+    onSuccess: (data) => {
+      const admin = data.coProfile === 1
+      setUser({
+        email: data.dsEmail,
+        name: data.noUser,
+        admin: admin,
+        picture: userInfo?.picture || '',
+      })
+    },
+    onError: () => {
+      toast({
+        title: 'Erro ao validar conta',
+        description: 'Tente novamente mais tarde',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    },
+  })
 
   useEffect(() => {
     async function checkAuthentication() {
       await getGoogleUserInfo({ accessToken: accessToken || '' })
         .then((userInfo) => {
-          setUser({ ...userInfo, admin: true })
+          setUserInfo(userInfo)
+          postLogin({
+            noUser: userInfo.name,
+            dsEmail: userInfo.email,
+          })
           setIsAuthenticated(true)
         })
         .catch(() => {

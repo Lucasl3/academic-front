@@ -3,7 +3,6 @@ import { FcGoogle } from 'react-icons/fc'
 import { useNavigate } from 'react-router-dom'
 
 import {
-  Box,
   Flex,
   Hide,
   Text,

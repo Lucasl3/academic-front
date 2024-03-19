@@ -11,6 +11,7 @@ export interface ILinkItem {
   name: string
   icon: IconType
   to: string
+  protected: boolean
 }
 
 export interface INavItemProps extends FlexProps {

@@ -35,3 +35,8 @@ export type TPostUserParams = IPostUserDTO
 export type TPostUserResponse = IGetUserDTO
 export type TPutUserParams = IPutUserDTO
 export type TPutUserResponse = IGetUserDTO
+export type IPostLoginParams = {
+  dsEmail: string
+  noUser: string
+}
+export type IPostLoginResponse = IGetUserDTO

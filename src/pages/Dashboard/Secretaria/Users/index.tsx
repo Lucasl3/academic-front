@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { IoMdSearch } from 'react-icons/io'
 import { TfiReload } from 'react-icons/tfi'
 
@@ -19,12 +19,14 @@ import {
 import { useQueryUsers } from '@/api/dashboard/user/queries'
 import DataTable from '@/components/DataDisplay/DataTable'
 import { IHeader } from '@/components/DataDisplay/DataTable/types'
+import { AppContext } from '@/contexts/AppContext'
 import { profilesLabels, SECRETARY } from '@/utils/profile'
 
 import AdminSwitch from './parts/AdminSwitch'
 
 const Users = () => {
   const toast = useToast()
+  const { user: loggedUser } = useContext(AppContext)
   const [searchText, setSearchText] = useState('')
 
   const {
@@ -61,7 +63,7 @@ const Users = () => {
       }
     })
 
-    return mappedUsers
+    return mappedUsers.filter((user) => loggedUser.email !== user.email)
   }, [users])
 
   const header: Array<IHeader> = [
