@@ -3,11 +3,12 @@ import { NavLink } from 'react-router-dom'
 
 import { Icon, Flex, Link } from '@chakra-ui/react'
 
-import { SidebarContext } from '@/contexts/SidebarContext'
+import { AppContext } from '@/contexts/AppContext'
 
 import { INavItemProps } from '../../types'
 const NavItem = ({ name, to, icon }: INavItemProps) => {
-  const { onClose } = useContext(SidebarContext)
+  const { sidebar } = useContext(AppContext)
+  const { onClose } = sidebar
 
   return (
     <Link

@@ -11,10 +11,7 @@ const Aluno = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const initialPath = findElementAfter(
-    location.pathname.split('/'),
-    'secretaria',
-  )
+  const initialPath = findElementAfter(location.pathname.split('/'), 'aluno')
 
   const tabs: Array<ITabItem> = [
     {

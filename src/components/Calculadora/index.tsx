@@ -7,13 +7,7 @@ import {
   Tab,
   TabPanels,
   TabPanel,
-  Flex,
   Text,
-  FormControl,
-  FormLabel,
-  Input,
-  Button,
-  useMediaQuery,
 } from '@chakra-ui/react'
 
 import CalculadoraFaltas from './faltas'
@@ -21,16 +15,7 @@ import CalculadoraNotas from './notas'
 
 const Calculadora = () => {
   return (
-    <Flex
-      boxShadow="lg"
-      rounded="lg"
-      p={4}
-      bg="#FBFBFB"
-      sx={{
-        flexDirection: 'column',
-        width: '100%',
-      }}
-    >
+    <Stack boxShadow="lg" rounded="lg" p={4} bg="#FBFBFB" flex={6}>
       <Text fontSize="lg" fontWeight="semibold" color="#444A63">
         Calculadora IC
       </Text>
@@ -62,7 +47,7 @@ const Calculadora = () => {
           </TabPanel>
         </TabPanels>
       </Tabs>
-    </Flex>
+    </Stack>
   )
 }
 

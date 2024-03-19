@@ -97,7 +97,7 @@ function DataTable({
           query={isHighlightedColumn ? (highlightedText as string) : ''}
           styles={{ bg: 'orange.100', fontWeight: '600' }}
         >
-          {(value || '') as string}
+          {String(value)}
         </Highlight>
       ),
     }
@@ -184,7 +184,7 @@ function DataTable({
 
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="8px">
-      <Box bg="#FBFBFB" pb={5} pt={2} px={2} borderRadius="lg">
+      <Box bg="#FBFBFB" pb={5} pt={2} px={2} borderRadius="lg" overflowX="auto">
         <Table>
           <Thead>
             {table.getHeaderGroups().map((headerGroup) => (
