@@ -27,6 +27,7 @@ const PrivateRoutes = () => {
       })
     },
     onError: () => {
+      localStorage.removeItem('accessToken')
       toast({
         title: 'Erro ao validar conta',
         description: 'Tente novamente mais tarde',
