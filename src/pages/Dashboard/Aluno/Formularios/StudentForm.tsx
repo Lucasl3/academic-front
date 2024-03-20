@@ -42,133 +42,133 @@ import { useQueryForm } from '@/api/dashboard/forms/queries'
 import UploadFile from '@/components/UploadFile'
 import { formatDate } from '@/utils/date'
 
-const fieldSets: {
-  id: string
-  name: string
-  description?: string
-  type: string
-  step: number
-  isRequired: boolean
-  options?: string[] | { id: number; label: string }[]
-  placeholder?: string
-  value?: string | [number]
-}[] = [
-  {
-    id: '1',
-    name: 'Nome Completo',
-    type: 'text',
-    step: 0,
-    isRequired: true,
-    placeholder: 'Informe seu nome',
-  },
-  {
-    id: '2',
-    name: 'Matrícula',
-    type: 'number',
-    step: 0,
-    isRequired: true,
-    placeholder: 'Informe sua matrícula',
-  },
-  {
-    id: '3',
-    name: 'Curso',
-    type: 'radio',
-    step: 0,
-    isRequired: true,
-    options: ['Engenharia de Computação', 'Ciência da Computação'],
-  },
-  {
-    id: '4',
-    name: 'Email institucional',
-    type: 'email',
-    step: 0,
-    isRequired: true,
-    placeholder: 'Informe seu email institucional',
-  },
-  {
-    id: '5',
-    name: 'Ano de Ingresso',
-    type: 'number',
-    step: 0,
-    isRequired: true,
-    placeholder: 'Informe seu ano de ingresso',
-  },
-  {
-    id: '6',
-    name: 'Período Atual',
-    type: 'number',
-    step: 0,
-    isRequired: true,
-    placeholder: 'Informe seu período atual',
-  },
-  {
-    id: '7',
-    name: 'Endereço',
-    type: 'text',
-    step: 0,
-    isRequired: true,
-    placeholder: 'Informe seu endereço',
-  },
-  {
-    id: '8',
-    name: 'Celular',
-    type: 'tel',
-    step: 0,
-    isRequired: true,
-    placeholder: 'Informe seu número de celular',
-  },
-  {
-    id: '9',
-    name: 'Tipo de Trancamento',
-    type: 'radio',
-    step: 1,
-    isRequired: true,
-    options: ['Trancamento de Curso', 'Trancamento de Disciplina'],
-  },
-  {
-    id: '10',
-    name: 'Anexo de Documentos',
-    type: 'file',
-    step: 1,
-    isRequired: true,
-  },
-  {
-    id: '11',
-    name: 'ACE(s) desejada(s)',
-    type: 'checkbox',
-    step: 1,
-    isRequired: true,
-    options: [
-      {
-        id: 1,
-        label: 'Teste 1',
-      },
-      {
-        id: 2,
-        label: 'Teste 2',
-      },
-      {
-        id: 3,
-        label: 'Teste 3',
-      },
-      {
-        id: 4,
-        label: 'Teste 4',
-      },
-      {
-        id: 5,
-        label: 'Teste 5',
-      },
-    ],
-  },
-  {
-    id: '12',
-    name: 'Anexo de Documentos 2',
-    type: 'file',
-    step: 1,
-    isRequired: true,
-  },
-]
+// const fieldSets: {
+//   id: string
+//   name: string
+//   description?: string
+//   type: string
+//   step: number
+//   isRequired: boolean
+//   options?: string[] | { id: number; label: string }[]
+//   placeholder?: string
+//   value?: string | [number]
+// }[] = [
+//   {
+//     id: '1',
+//     name: 'Nome Completo',
+//     type: 'text',
+//     step: 0,
+//     isRequired: true,
+//     placeholder: 'Informe seu nome',
+//   },
+//   {
+//     id: '2',
+//     name: 'Matrícula',
+//     type: 'number',
+//     step: 0,
+//     isRequired: true,
+//     placeholder: 'Informe sua matrícula',
+//   },
+//   {
+//     id: '3',
+//     name: 'Curso',
+//     type: 'radio',
+//     step: 0,
+//     isRequired: true,
+//     options: ['Engenharia de Computação', 'Ciência da Computação'],
+//   },
+//   {
+//     id: '4',
+//     name: 'Email institucional',
+//     type: 'email',
+//     step: 0,
+//     isRequired: true,
+//     placeholder: 'Informe seu email institucional',
+//   },
+//   {
+//     id: '5',
+//     name: 'Ano de Ingresso',
+//     type: 'number',
+//     step: 0,
+//     isRequired: true,
+//     placeholder: 'Informe seu ano de ingresso',
+//   },
+//   {
+//     id: '6',
+//     name: 'Período Atual',
+//     type: 'number',
+//     step: 0,
+//     isRequired: true,
+//     placeholder: 'Informe seu período atual',
+//   },
+//   {
+//     id: '7',
+//     name: 'Endereço',
+//     type: 'text',
+//     step: 0,
+//     isRequired: true,
+//     placeholder: 'Informe seu endereço',
+//   },
+//   {
+//     id: '8',
+//     name: 'Celular',
+//     type: 'tel',
+//     step: 0,
+//     isRequired: true,
+//     placeholder: 'Informe seu número de celular',
+//   },
+//   {
+//     id: '9',
+//     name: 'Tipo de Trancamento',
+//     type: 'radio',
+//     step: 1,
+//     isRequired: true,
+//     options: ['Trancamento de Curso', 'Trancamento de Disciplina'],
+//   },
+//   {
+//     id: '10',
+//     name: 'Anexo de Documentos',
+//     type: 'file',
+//     step: 1,
+//     isRequired: true,
+//   },
+//   {
+//     id: '11',
+//     name: 'ACE(s) desejada(s)',
+//     type: 'checkbox',
+//     step: 1,
+//     isRequired: true,
+//     options: [
+//       {
+//         id: 1,
+//         label: 'Teste 1',
+//       },
+//       {
+//         id: 2,
+//         label: 'Teste 2',
+//       },
+//       {
+//         id: 3,
+//         label: 'Teste 3',
+//       },
+//       {
+//         id: 4,
+//         label: 'Teste 4',
+//       },
+//       {
+//         id: 5,
+//         label: 'Teste 5',
+//       },
+//     ],
+//   },
+//   {
+//     id: '12',
+//     name: 'Anexo de Documentos 2',
+//     type: 'file',
+//     step: 1,
+//     isRequired: true,
+//   },
+// ]
 
 const COLORS = {
   0: '#F7F7FA',
@@ -232,7 +232,7 @@ function StudentForm() {
   const toast = useToast()
   const navigate = useNavigate()
   const { id } = useParams()
-  console.log('id', id)
+  // console.log('id', id)
 
   const { data: form, isFetching: isFormLoading } = useQueryForm(
     {
@@ -251,43 +251,91 @@ function StudentForm() {
   )
 
   const formData = useMemo(() => {
-    console.log(form)
+    // console.log(form)
     return {
       id: form?.coForm,
       title: form?.noForm,
       description: form?.dsForm,
       last_update: form?.dtUpdatedAt,
-      steps: form?.steps,
+      steps: form?.ncoQuestion,
     }
   }, [form])
 
+  // console.log('formData', formData)
+
+  const test = ['checkbox', 'radio', 'text', 'file']
+
+  // console.log('test', test, test[1])
+
   const len_steps = formData.steps?.length
+  // console.log('len_steps', len_steps)
+
+  const typeConvert = (type: number) => {
+    if (type === 1) {
+      return 'radio'
+    } else if (type === 2) {
+      return 'text'
+    } else if (type === 3) {
+      return 'file'
+    }
+  }
+
+  const fieldSets = formData.steps?.map((step: any, index: number) => {
+    const type = typeConvert(step.coTypeQuestion)
+    // console.log('type', type)
+    return {
+      id: step.coFormQuestion,
+      name: step.noQuestion,
+      description: step.dsQuestion,
+      type: 'text',
+      step: index,
+      isRequired: false,
+      options: step.ncoFormItem,
+      placeholder: 'Informe o valor',
+      value: '',
+    }
+  }, [])
+
+  // console.log('fields', fieldSets)
 
   const { activeStep, setActiveStep } = useSteps({
     index: 0,
     count: 3,
   })
 
-  const [textAreaValue, setTextAreaValue] = React.useState<TextAreaValue>(
-    Object.fromEntries(
-      fieldSets.map((field) => [field.id, { value: '', step: field.step }]),
-    ),
+  React.useEffect(() => {
+    console.log('activeStep', activeStep)
+    console.log('fieldSets', fieldSets)
+    console.log('currentFields', currentFields)
+  }, [activeStep])
+
+  const currentFields = fieldSets?.filter(
+    (field: any) => field.step === activeStep || activeStep === 2,
   )
 
-  const handleResetText = (stepToReset: number) => {
-    setTextAreaValue((prevTextAreaValue) => {
-      const updatedTextAreaValue: TextAreaValue = {}
+  // const [textAreaValue, setTextAreaValue] = React.useState<TextAreaValue>(
+  //   Object.fromEntries(
+  //     fieldSets.map((field: any) => [
+  //       field.id,
+  //       { value: field.value, step: field.step },
+  //     ]),
+  //   ),
+  // )
 
-      Object.keys(prevTextAreaValue).forEach((key) => {
-        if (prevTextAreaValue[key]?.step === stepToReset) {
-          updatedTextAreaValue[key] = { value: '', step: stepToReset }
-        } else {
-          updatedTextAreaValue[key] = prevTextAreaValue[key]
-        }
-      })
-      return updatedTextAreaValue
-    })
-  }
+  // const handleResetText = (stepToReset: number) => {
+  //   setTextAreaValue((prevTextAreaValue) => {
+  //     const updatedTextAreaValue: TextAreaValue = {}
+
+  //     Object.keys(prevTextAreaValue).forEach((key) => {
+  //       if (prevTextAreaValue[key]?.step === stepToReset) {
+  //         updatedTextAreaValue[key] = { value: '', step: stepToReset }
+  //       } else {
+  //         updatedTextAreaValue[key] = prevTextAreaValue[key]
+  //       }
+  //     })
+  //     return updatedTextAreaValue
+  //   })
+  // }
 
   const [selectedCheckboxes, setSelectedCheckboxes] = React.useState<
     Array<ICheckboxOption>
@@ -354,7 +402,7 @@ function StudentForm() {
   const handleClearFields = (step: number) => {
     setTouchedFields({})
     setClickedFields({})
-    handleResetText(step)
+    // handleResetText(step)
     handleResetCheckbox()
     handleResetRadio(step)
     // handleClearFiles(step)
@@ -364,40 +412,50 @@ function StudentForm() {
 
   const filledFields: FilledFields = {}
 
-  React.useEffect(() => {
-    fieldSets.forEach((field) => {
-      if (field.type === 'checkbox') {
-        filledFields[field.id] = selectedCheckboxes.length > 0
-      } else if (field.type === 'radio') {
-        filledFields[field.id] =
-          !!radioNumbers[field.id] && radioNumbers[field.id].value !== ''
-      }
-      //  else if (field.type === 'file') {
-      //   filledFields[field.id] =
-      //     fileState.find((item) => item.id === field.id)?.isFilled || false
-      // }
-      else {
-        filledFields[field.id] = !!textAreaValue[field.id]?.value
-      }
-    })
+  // React.useEffect(() => {
+  //   fieldSets.forEach((field: any) => {
+  //     if (field.type === 'checkbox') {
+  //       filledFields[field.id] = selectedCheckboxes.length > 0
+  //     } else if (field.type === 'radio') {
+  //       filledFields[field.id] =
+  //         !!radioNumbers[field.id] && radioNumbers[field.id].value !== ''
+  //     }
+  //     //  else if (field.type === 'file') {
+  //     //   filledFields[field.id] =
+  //     //     fileState.find((item) => item.id === field.id)?.isFilled || false
+  //     // }
+  //     else {
+  //       filledFields[field.id] = !!textAreaValue[field.id]?.value
+  //     }
+  //   })
 
-    const isStepFilled = fieldSets
-      .filter((field) => field.step === activeStep)
-      .every((field) => filledFields[field.id])
+  //   const isStepFilled = fieldSets
+  //     .filter((field: any) => field.step === activeStep)
+  //     .every((field: any) => filledFields[field.id])
 
-    setStepFieldsFilled((prev) => {
-      const newFilled = [...prev]
-      newFilled[activeStep] = isStepFilled
-      return newFilled
-    })
-  }, [
-    activeStep,
-    textAreaValue,
-    selectedCheckboxes,
-    radioNumbers,
-    // fileState,
-    fieldSets,
-  ])
+  //   setStepFieldsFilled((prev) => {
+  //     const newFilled = [...prev]
+  //     newFilled[activeStep] = isStepFilled
+  //     return newFilled
+  //   })
+  // }, [
+  //   activeStep,
+  //   textAreaValue,
+  //   selectedCheckboxes,
+  //   radioNumbers,
+  //   // fileState,
+  //   fieldSets,
+  // ])
+
+  // const handleValueChange = (fieldId: string, value: any) => {
+  //   console.log('fieldId', fieldId)
+  //   console.log('value', value)
+  //   fieldSets.forEach((field: any) => {
+  //     if (field.id === fieldId) {
+  //       field.value = value
+  //     }
+  //   })
+  // }
 
   const renderFields = (columns: number) => {
     const handleFieldTouch = (fieldId: string) => {
@@ -417,12 +475,10 @@ function StudentForm() {
       }))
     }
 
-    const currentFields = fieldSets.filter(
-      (field) => field.step === activeStep || activeStep === 2,
-    )
+    // console.log('sets', fieldSets)
 
     const rows = Math.ceil(currentFields.length / columns)
-    const fields = [...currentFields, ...Array(rows * columns).fill(null)]
+    const fields = [...currentFields, ...Array(rows * columns)]
 
     const columnSize = Math.floor(100 / columns)
 
@@ -430,7 +486,7 @@ function StudentForm() {
       <Stack key={rowIndex} spacing={6} direction="row">
         {fields
           .slice(rowIndex * columns, (rowIndex + 1) * columns)
-          .map((field, index) => {
+          .map((field) => {
             if (!field) return null
 
             const isStep2 = activeStep === 2
@@ -438,10 +494,12 @@ function StudentForm() {
             const isError =
               touchedFields[field.id] &&
               field.isRequired &&
-              (textAreaValue[field.id]?.value === '' ||
-                textAreaValue[field.id] === undefined) &&
+              // (textAreaValue[field.id]?.value === '' ||
+              //   textAreaValue[field.id] === undefined) &&
               radioNumbers[field.id] === undefined &&
               selectedCheckboxes.length === 0
+
+            console.log('idcao', field.id)
 
             return (
               <Box
@@ -481,6 +539,7 @@ function StudentForm() {
                               isChecked={selectedCheckboxes.includes(option)}
                               onChange={() => {
                                 handleSelectedCheckboxes(option)
+                                // handleValueChange(field.id, option)
                                 touchedFields[field.id] = true
                               }}
                               value={option.label}
@@ -533,7 +592,8 @@ function StudentForm() {
                             ...prev,
                             [field.id]: { value: value, step: field.step },
                           }))
-                          console.log('field', field)
+                          // console.log('field', field)
+                          // handleValueChange(field.id, value)
                         }}
                         value={
                           radioNumbers[field.id]
@@ -569,6 +629,7 @@ function StudentForm() {
                   )}
                 {field.type !== 'checkbox' &&
                   field.type !== 'radio' &&
+                  field.type !== 'file' &&
                   (field.step === activeStep || activeStep === 2) && (
                     <FormControl
                       key={field.id}
@@ -593,21 +654,18 @@ function StudentForm() {
                         type={field.type}
                         placeholder={field.placeholder}
                         onChange={(e) => {
-                          ;(field.value = e.target.value),
-                            setTextAreaValue((prev) => ({
-                              ...prev,
-                              [field.id]: {
-                                value: e.target.value,
-                                step: field.step,
-                              },
-                            }))
-                          console.log('field', field)
+                          field.value = e.target.value
+                          // handleValueChange(field.id, field.value)
+                          // setTextAreaValue((prev) => ({
+                          //   ...prev,
+                          //   [field.id]: {
+                          //     value: e.target.value,
+                          //     step: field.step,
+                          //   },
+                          // }))
+                          // console.log('field', field)
                         }}
-                        value={
-                          textAreaValue[field.id]?.value !== undefined
-                            ? textAreaValue[field.id]?.value
-                            : ''
-                        }
+                        // value={field.value}
                         borderColor={isDisabled ? 'gray.100' : 'gray.400'}
                         isDisabled={isDisabled}
                         textColor={isDisabled ? 'gray.600' : 'gray.800'}
@@ -623,7 +681,7 @@ function StudentForm() {
                     </FormControl>
                   )}
 
-                {/* {field.type === 'file' &&
+                {field.type === 'file' &&
                   (field.step === activeStep || activeStep === 2) && (
                     <FormControl
                       key={field.id}
@@ -638,16 +696,16 @@ function StudentForm() {
                       // isDisabled={isDisabled}
                     >
                       <FormLabel paddingBottom={4}>{field.name}</FormLabel>
-                      {/* <UploadFile id="file1" file={null} onFileChange={(file) => setTeste(file)} /> */}
-                      {/* <UploadFile
-                        id={field.id}
-                        handleFill={handleFill}
-                        step={activeStep}
-                      /> */}
+                      <UploadFile
+                        id={'file' + field.id}
+                        file={field.value}
+                        onFileChange={(file) => (field.value = file)}
+                      />
+
                       <FormErrorMessage>{`${field.name} é necessário`}</FormErrorMessage>
                       <FormHelperText>{field.description}</FormHelperText>
                     </FormControl>
-                  )} */}
+                  )}
               </Box>
             )
           })}
@@ -796,7 +854,7 @@ function StudentForm() {
             <Box>Formulário não encontrado</Box>
           )}
         </Skeleton>
-        <HStack justify="flex-end">
+        {/* <HStack justify="flex-end">
           <Button
             size="lg"
             colorScheme="blue"
@@ -804,7 +862,7 @@ function StudentForm() {
           >
             Voltar
           </Button>
-        </HStack>
+        </HStack> */}
       </Stack>
     </Box>
   )
