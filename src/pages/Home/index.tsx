@@ -68,10 +68,6 @@ const Home = () => {
 
   const [isMobile] = useMediaQuery('(max-width: 768px)')
 
-  useEffect(() => {
-    console.log(newsData)
-  }, [])
-
   return (
     <Stack minH="100vh" gap={8}>
       <Flex p={8} rounded="lg" bg="#FBFBFB" boxShadow="lg">
@@ -87,7 +83,6 @@ const Home = () => {
           {newsData.map((item, index) => (
             <Flex
               key={index}
-              // display="flex !important"
               align="center"
               height={{ base: '200px', lg: '400px' }}
               position="relative"
