@@ -1,14 +1,17 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 import {
   Avatar,
   Box,
   Flex,
+  Image,
   Stack,
+  Text,
   useMediaQuery,
   useToast,
 } from '@chakra-ui/react'
 
+import { useQueryNews } from '@/api/dashboard/news/queries'
 import { useQueryTutorials } from '@/api/dashboard/tutorial/queries'
 import Calculadora from '@/components/Calculadora'
 import Carousel from '@/components/Carousel'
@@ -16,6 +19,30 @@ import TutoriaisHome from '@/components/Tutoriais'
 
 const Home = () => {
   const toast = useToast()
+
+  const { data: news = [], isFetching: isNewsLoading } = useQueryNews({
+    onError: () => {
+      toast({
+        title: 'Houve um erro ao buscar as notícias.',
+        status: 'error',
+        duration: 5000,
+      })
+    },
+  })
+
+  const newsData = useMemo(() => {
+    return news?.map((item) => {
+      return {
+        id: item.coNews,
+        title: item.noNews,
+        description: item.dsNews,
+        date: item.dtNews,
+        image:
+          'https://t3.ftcdn.net/jpg/05/35/35/38/360_F_535353834_fAKyu7nTpbpNux5XdR5T63OUJ6gDOHlD.jpg',
+      }
+    })
+  }, [news])
+
   const { data: tutorials = [], isFetching: isTutorialsLoading } =
     useQueryTutorials({
       onError: () => {
@@ -41,6 +68,10 @@ const Home = () => {
 
   const [isMobile] = useMediaQuery('(max-width: 768px)')
 
+  useEffect(() => {
+    console.log(newsData)
+  }, [])
+
   return (
     <Stack minH="100vh" gap={8}>
       <Flex p={8} rounded="lg" bg="#FBFBFB" boxShadow="lg">
@@ -53,16 +84,33 @@ const Home = () => {
           speed={500}
           autoplaySpeed={5000}
         >
-          {[0, 1, 2, 3].map((index) => (
+          {newsData.map((item, index) => (
             <Flex
               key={index}
-              display="flex !important"
+              // display="flex !important"
               align="center"
-              justify="center"
-              height={['300px', '400px']}
-              bg="gray.400"
+              height={{ base: '200px', lg: '400px' }}
+              position="relative"
             >
-              <Box>{index}</Box>
+              <Image src={item.image} fit="cover" width="100%" />
+              <Box
+                bottom="0"
+                position="absolute"
+                backgroundColor="blue.500"
+                borderRadius="0.3rem"
+                p="2"
+                margin={4}
+              >
+                <Text
+                  sx={{
+                    fontSize: { base: 'sm', lg: 'lg' },
+                    color: 'white',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {item.title}
+                </Text>
+              </Box>
             </Flex>
           ))}
         </Carousel>
