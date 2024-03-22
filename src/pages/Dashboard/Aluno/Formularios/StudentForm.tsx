@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
+import { act } from 'react-dom/test-utils'
+import { set } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import {
@@ -207,29 +209,15 @@ const smoothClasses = {
   },
 }
 
-interface TextAreaValue {
-  [key: string]: { value: string; step: number } | undefined
-}
-
 interface ICheckboxOption {
   id: number
   label: string
-}
-
-// interface IFileState {
-//   id: string
-//   isFilled: boolean
-// }
-
-interface FilledFields {
-  [key: string]: boolean
 }
 
 function StudentForm() {
   const toast = useToast()
   const navigate = useNavigate()
   const { id } = useParams()
-  // console.log('id', id)
 
   const { data: form, isFetching: isFormLoading } = useQueryForm(
     {
@@ -257,18 +245,35 @@ function StudentForm() {
     }
   }, [form])
 
+  const { activeStep, setActiveStep } = useSteps({
+    index: 0,
+    count: 3,
+  })
+
   const [fieldSets, setFieldSets] = React.useState<any>(null)
+
+  const [handleFilled, setHandleFilled] = React.useState<Array<boolean>>([])
+
+  const handleFilledFields = (step: number) => {
+    currentFields?.forEach((field: any) => {
+      if (field.step === step) {
+        setHandleFilled((prev) => {
+          prev[step] = !(field.isRequired && field.value === null)
+          return prev
+        })
+      }
+    })
+  }
 
   useEffect(() => {
     const aux = formData.questions?.map((question: any, index: number) => {
-      console.log(question.coTypeQuestion)
       return {
         id: question.coFormQuestion,
         name: question.noQuestion,
         description: question.dsQuestion,
         type: question.coTypeQuestion,
         step: index,
-        isRequired: false,
+        isRequired: true,
         options: question.ncoFormItem,
         placeholder: 'Informe o valor',
         value: null,
@@ -281,45 +286,32 @@ function StudentForm() {
   const handleValueChange = (fieldId: string, value: any) => {
     const aux = fieldSets?.map((field: any) => {
       if (field.id === fieldId) {
-        field.value = value
+        if (value !== null && value !== undefined && value !== '') {
+          field.value = value
+        }
+      }
+      return field
+    })
+
+    handleFilledFields(activeStep)
+    setFieldSets(aux)
+  }
+
+  const handleClearFields = (step: number) => {
+    const aux = fieldSets?.map((field: any) => {
+      if (field.step === step) {
+        field.value = null
       }
       return field
     })
 
     setFieldSets(aux)
+    handleFilledFields(activeStep)
   }
-
-  const { activeStep, setActiveStep } = useSteps({
-    index: 0,
-    count: 3,
-  })
 
   const currentFields = fieldSets?.filter(
     (field: any) => field.step === activeStep || activeStep === 2,
   )
-  // const [textAreaValue, setTextAreaValue] = React.useState<TextAreaValue>(
-  //   Object.fromEntries(
-  //     fieldSets.map((field: any) => [
-  //       field.id,
-  //       { value: field.value, step: field.step },
-  //     ]),
-  //   ),
-  // )
-
-  // const handleResetText = (stepToReset: number) => {
-  //   setTextAreaValue((prevTextAreaValue) => {
-  //     const updatedTextAreaValue: TextAreaValue = {}
-
-  //     Object.keys(prevTextAreaValue).forEach((key) => {
-  //       if (prevTextAreaValue[key]?.step === stepToReset) {
-  //         updatedTextAreaValue[key] = { value: '', step: stepToReset }
-  //       } else {
-  //         updatedTextAreaValue[key] = prevTextAreaValue[key]
-  //       }
-  //     })
-  //     return updatedTextAreaValue
-  //   })
-  // }
 
   const [selectedCheckboxes, setSelectedCheckboxes] = React.useState<
     Array<ICheckboxOption>
@@ -337,99 +329,12 @@ function StudentForm() {
     }
   }
 
-  const handleResetCheckbox = () => {
-    setSelectedCheckboxes([])
-  }
-
-  const [radioNumbers, setRadioNumbers] = React.useState<{
-    [key: string]: { value: string; step: number }
-  }>({})
-
-  const handleResetRadio = (stepToReset: number) => {
-    setRadioNumbers((prevNumbers) => {
-      const updatedNumbers = { ...prevNumbers }
-      Object.keys(updatedNumbers).forEach((key) => {
-        if (updatedNumbers[key].step === stepToReset) {
-          delete updatedNumbers[key]
-        }
-      })
-      return updatedNumbers
-    })
-  }
-
-  // const [fileState, setFileState] = React.useState<IFileState[]>([])
-
-  // const handleFill = (id: string, isFilled: boolean): void => {
-  //   setFileState((prev) => {
-  //     const index = prev.findIndex((item) => item.id === id)
-
-  //     if (index !== -1) {
-  //       return prev.map((item, i) => {
-  //         if (i === index) {
-  //           return { ...item, isFilled: isFilled }
-  //         }
-  //         return item
-  //       })
-  //     } else {
-  //       return [...prev, { id: id, isFilled: isFilled }]
-  //     }
-  //   })
-  // }
-
   type TouchedFields = {
     [key: string]: boolean
   }
 
   const [touchedFields, setTouchedFields] = React.useState<TouchedFields>({})
   const [clickedFields, setClickedFields] = React.useState<TouchedFields>({})
-
-  const handleClearFields = (step: number) => {
-    setTouchedFields({})
-    setClickedFields({})
-    // handleResetText(step)
-    handleResetCheckbox()
-    handleResetRadio(step)
-    // handleClearFiles(step)
-  }
-
-  const [stepFieldsFilled, setStepFieldsFilled] = React.useState<boolean[]>([])
-
-  const filledFields: FilledFields = {}
-
-  // React.useEffect(() => {
-  //   fieldSets.forEach((field: any) => {
-  //     if (field.type === 'checkbox') {
-  //       filledFields[field.id] = selectedCheckboxes.length > 0
-  //     } else if (field.type === 'radio') {
-  //       filledFields[field.id] =
-  //         !!radioNumbers[field.id] && radioNumbers[field.id].value !== ''
-  //     }
-  //     //  else if (field.type === 'file') {
-  //     //   filledFields[field.id] =
-  //     //     fileState.find((item) => item.id === field.id)?.isFilled || false
-  //     // }
-  //     else {
-  //       filledFields[field.id] = !!textAreaValue[field.id]?.value
-  //     }
-  //   })
-
-  //   const isStepFilled = fieldSets
-  //     .filter((field: any) => field.step === activeStep)
-  //     .every((field: any) => filledFields[field.id])
-
-  //   setStepFieldsFilled((prev) => {
-  //     const newFilled = [...prev]
-  //     newFilled[activeStep] = isStepFilled
-  //     return newFilled
-  //   })
-  // }, [
-  //   activeStep,
-  //   textAreaValue,
-  //   selectedCheckboxes,
-  //   radioNumbers,
-  //   // fileState,
-  //   fieldSets,
-  // ])
 
   const renderFields = (columns: number) => {
     const handleFieldTouch = (fieldId: string) => {
@@ -457,10 +362,7 @@ function StudentForm() {
           const isStep2 = activeStep === 2
           const isDisabled = isStep2 ? true : false
           const isError =
-            touchedFields[field.id] &&
-            field.isRequired &&
-            radioNumbers[field.id] === undefined &&
-            selectedCheckboxes.length === 0
+            touchedFields[field.id] && field.isRequired && field.value === null
 
           return (
             <Box
@@ -479,14 +381,12 @@ function StudentForm() {
                     isRequired={field.isRequired}
                     isInvalid={isError}
                     p={6}
-                    // paddingTop={4}
                     paddingInline={10}
                     w="100%"
                     border="1px solid #E1E1E3"
                     rounded="lg"
                     boxShadow="md"
                     bg="#FBFBFB"
-                    // isDisabled={isDisabled}
                   >
                     <FormLabel paddingBottom={4}>{field.name}</FormLabel>
                     <Stack spacing={4} direction={['column']}>
@@ -574,49 +474,6 @@ function StudentForm() {
                     )}
                   </FormControl>
                 )}
-              {field.type !== 'checkbox' &&
-                field.type !== 'radio' &&
-                field.type !== 'file' &&
-                (field.step === activeStep || activeStep === 2) && (
-                  <FormControl
-                    key={field.id}
-                    id={field.id}
-                    isRequired={field.isRequired}
-                    isInvalid={isError}
-                    p={6}
-                    paddingInline={10}
-                    w="100%"
-                    border="1px solid #E1E1E3"
-                    rounded="lg"
-                    boxShadow="md"
-                    bg="#FBFBFB"
-                  >
-                    <FormLabel paddingBottom={4}>{field.name}</FormLabel>
-                    <Input
-                      variant={isDisabled ? 'filled' : 'flushed'}
-                      onFocus={() => handleFieldClick(field.id)}
-                      onBlur={() => handleFieldTouch(field.id)}
-                      type={field.type}
-                      placeholder={field.placeholder}
-                      onChange={(e) => {
-                        field.value = e.target.value
-                      }}
-                      // value={field.value}
-                      borderColor={isDisabled ? 'gray.100' : 'gray.400'}
-                      isDisabled={isDisabled}
-                      textColor={isDisabled ? 'gray.600' : 'gray.800'}
-                    />
-                    {!isError && field.description && (
-                      <FormHelperText>{field.description}</FormHelperText>
-                    )}
-                    {isError && (
-                      <FormErrorMessage>
-                        Este campo é obrigatório
-                      </FormErrorMessage>
-                    )}
-                  </FormControl>
-                )}
-
               {field.type === 'file' &&
                 (field.step === activeStep || activeStep === 2) && (
                   <FormControl
@@ -643,6 +500,48 @@ function StudentForm() {
 
                     <FormErrorMessage>{`${field.name} é necessário`}</FormErrorMessage>
                     <FormHelperText>{field.description}</FormHelperText>
+                  </FormControl>
+                )}
+              {field.type !== 'checkbox' &&
+                field.type !== 'radio' &&
+                field.type !== 'file' &&
+                (field.step === activeStep || activeStep === 2) && (
+                  <FormControl
+                    key={field.id}
+                    id={field.id}
+                    isRequired={field.isRequired}
+                    isInvalid={isError}
+                    p={6}
+                    paddingInline={10}
+                    w="100%"
+                    border="1px solid #E1E1E3"
+                    rounded="lg"
+                    boxShadow="md"
+                    bg="#FBFBFB"
+                  >
+                    <FormLabel paddingBottom={4}>{field.name}</FormLabel>
+                    <Input
+                      variant={isDisabled ? 'filled' : 'flushed'}
+                      onFocus={() => handleFieldClick(field.id)}
+                      onBlur={() => handleFieldTouch(field.id)}
+                      type={field.type}
+                      placeholder={field.placeholder}
+                      onChange={(e) => {
+                        handleValueChange(field.id, e.target.value)
+                      }}
+                      value={field.value || ''}
+                      borderColor={isDisabled ? 'gray.100' : 'gray.400'}
+                      isDisabled={isDisabled}
+                      textColor={isDisabled ? 'gray.600' : 'gray.800'}
+                    />
+                    {!isError && field.description && (
+                      <FormHelperText>{field.description}</FormHelperText>
+                    )}
+                    {isError && (
+                      <FormErrorMessage>
+                        Este campo é obrigatório
+                      </FormErrorMessage>
+                    )}
                   </FormControl>
                 )}
             </Box>
@@ -759,9 +658,9 @@ function StudentForm() {
                       </Button>
                     )}
                     <Tooltip
-                      label="Por favor, preencha todos os campos obrigatórios!"
+                      label="Preencha todos os campos obrigatórios!"
                       aria-label="Erro de preenchimento"
-                      isDisabled={stepFieldsFilled[activeStep]}
+                      isDisabled={handleFilled[activeStep]}
                     >
                       <Button
                         onClick={() => setActiveStep(activeStep + 1)}
@@ -770,7 +669,7 @@ function StudentForm() {
                         colorScheme="blue"
                         color="#FBFBFB"
                         variant="solid"
-                        isDisabled={!stepFieldsFilled[activeStep]}
+                        isDisabled={!handleFilled[activeStep]}
                       >
                         {activeStep === 0 ? 'Próximo' : ''}
                         {activeStep === 1 ? 'Próximo' : ''}
@@ -785,15 +684,6 @@ function StudentForm() {
             <Box>Formulário não encontrado</Box>
           )}
         </Skeleton>
-        {/* <HStack justify="flex-end">
-          <Button
-            size="lg"
-            colorScheme="blue"
-            onClick={() => navigate('/dashboard/home')}
-          >
-            Voltar
-          </Button>
-        </HStack> */}
       </Stack>
     </Box>
   )
