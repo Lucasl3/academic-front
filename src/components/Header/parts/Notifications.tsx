@@ -54,6 +54,9 @@ const Notifications = () => {
   })
 
   const { mutate: toggleRead } = useMutationUpdateNotificationStatus({
+    onSuccess: () => {
+      refetchNotifications()
+    },
     onError: () => {
       toast({
         title: 'Houve um erro ao atualizar a notificação',
