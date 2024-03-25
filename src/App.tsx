@@ -14,6 +14,7 @@ import AlunoHome from '@/pages/Dashboard/Aluno/Home'
 import AlunoSolicitacoes from '@/pages/Dashboard/Aluno/Solicitacoes'
 import AlunoSolicitacoesDetalhes from '@/pages/Dashboard/Aluno/Solicitacoes/View'
 import AlunoTutorial from '@/pages/Dashboard/Aluno/Tutorial'
+import NewsPage from '@/pages/Dashboard/News'
 import Secretaria from '@/pages/Dashboard/Secretaria'
 import Demandas from '@/pages/Dashboard/Secretaria/Demandas'
 import DemandaView from '@/pages/Dashboard/Secretaria/Demandas/View'
@@ -75,6 +76,7 @@ class App extends React.Component {
                 <Route path="/dashboard" element={<TemplatePage />}>
                   <Route index element={<Navigate to="/dashboard/home" />} />
                   <Route path="home" element={<Home />} />
+                  <Route path="news/:id" element={<NewsPage />} />
                   <Route path="aluno" element={<Aluno />}>
                     <Route index element={<AlunoHome />} />
                     <Route path="formularios">

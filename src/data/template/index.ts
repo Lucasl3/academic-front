@@ -5,7 +5,7 @@ import { TTemplateSidebarProps } from './types'
 export const sidebarProps = {
   linkItems: [
     {
-      name: 'Home',
+      name: 'Início',
       icon: FiHome,
       to: '/dashboard/home',
       protected: false,
