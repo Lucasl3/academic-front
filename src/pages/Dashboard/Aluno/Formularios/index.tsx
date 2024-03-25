@@ -1,22 +1,45 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 
-import { Button, HStack, Stack, Text } from '@chakra-ui/react'
+import {
+  Button,
+  HStack,
+  Skeleton,
+  Stack,
+  Text,
+  useToast,
+} from '@chakra-ui/react'
 
+import { useQueryForms } from '@/api/dashboard/forms/queries'
 import FormularioCard from '@/components/DataDisplay/FormularioCard'
 import { status } from '@/components/Tags/FormularioStatus/types'
 
 const Formularios = () => {
-  const loremIpsum =
-    'Lorem ipsum dolor sit amet. Nam molestias impedit qui consequuntur distinctio et cumque voluptas qui vero possimus. Ut galisum dolorum aut adipisci consequatur et modi voluptatibus aut nesciunt fugiat non eligendi exercitationem.'
+  const toast = useToast()
 
-  const cursos = [
-    'ENGENHARIA DE COMPUTAÇÃO',
-    'CIÊNCIA DA COMPUTAÇÃO',
-    'ENGENHARIA DE COMPUTAÇÃO',
-  ]
+  const { data: forms, isFetching: isFormsLoading } = useQueryForms({
+    onError: () => {
+      toast({
+        title: 'Houve um erro ao buscar os Formulários.',
+        status: 'error',
+        duration: 5000,
+      })
+    },
+  })
 
-  const availableDate = ['15/01/2024', '31/01/2024']
+  const FormsData = useMemo(() => {
+    return forms?.map((form: any) => {
+      return {
+        id: form.coForm,
+        title: form.noForm,
+        description: form.dsForm,
+        status: 'available',
+        availableDate: '15/01/2024',
+        course: 'ENGENHARIA DE COMPUTAÇÃO',
+        isClosed: false,
+      }
+    })
+  }, [forms])
 
   return (
     <Stack gap={5}>
@@ -25,27 +48,42 @@ const Formularios = () => {
           Formulários
         </Text>
       </HStack>
+      {isFormsLoading &&
+        Array.from({ length: 3 }).map((_, index) => (
+          <Skeleton key={index} height="108px" />
+        ))}
       <Stack gap={3}>
-        {['available', 'available', 'closed'].map((data, index) => {
-          const isClosed = data === 'closed'
-
-          return (
-            <FormularioCard
-              key={index}
-              to={
-                isClosed
-                  ? undefined
-                  : `/dashboard/aluno/formularios/detalhes/${index}`
-              }
-              title={`Título do Formulário ${index + 1}`}
-              date={availableDate[index]}
-              description={loremIpsum}
-              course={cursos[index]}
-              statusTag={data as status}
-              isClosed={isClosed}
-            />
-          )
-        })}
+        {!isFormsLoading && FormsData?.length === 0 && (
+          <Text
+            fontSize="xl"
+            fontWeight="medium"
+            color="#444A63"
+            textAlign="center"
+          >
+            Nenhum formulário encontrado
+          </Text>
+        )}
+        {!isFormsLoading &&
+          FormsData?.map((form: any) => {
+            const isClosed = form.isClosed === 'closed'
+            return (
+              <FormularioCard
+                key={form.id}
+                to={
+                  isClosed
+                    ? undefined
+                    : `/dashboard/aluno/formularios/detalhes/${form.id}`
+                }
+                title={form.title}
+                description={form.description}
+                tooltipText="Clique para preencher o formulário"
+                statusTag={form.status as status}
+                date={form.availableDate}
+                course={form.course}
+                isClosed={form.isClosed}
+              />
+            )
+          })}
       </Stack>
     </Stack>
   )
