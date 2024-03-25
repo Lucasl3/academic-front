@@ -9,3 +9,7 @@ export const formatDate = (
 
   return date.format(format)
 }
+
+export const getCurrentDate = (format: string = 'DD/MM/YYYY') => {
+  return moment().format(format)
+}
