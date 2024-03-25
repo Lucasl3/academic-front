@@ -1,9 +1,9 @@
 import http from '../../http'
-import {
-  TGetTutorialParams,
-  TPostTutorialParams,
-  TPutTutorialParams,
-} from './types'
+// import {
+//   TGetTutorialParams,
+//   TPostTutorialParams,
+//   TPutTutorialParams,
+// } from './types'
 
 export const getForms = async () => {
   const response = await http.get('/form')
@@ -17,14 +17,8 @@ export const getForm = async ({ id }: { id: number }) => {
   return response.data
 }
 
-// export const getTutorial = async ({ id }: TGetTutorialParams) => {
-//   const response = await http.get(`/tutorial/${id}`)
-
-//   return response.data
-// }
-
-// export const postTutorial = async (params: TPostTutorialParams) => {
-//   const response = await http.post('/tutorial/', params)
+// export const postSolicitation = async (params: any) => {
+//   const response = await http.post('/solicitation/', params)
 
 //   return response.data
 // }

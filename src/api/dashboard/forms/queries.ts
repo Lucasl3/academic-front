@@ -1,11 +1,11 @@
 import { UseQueryOptions, useQuery, QueryKey } from '@tanstack/react-query'
 
 import { getForms, getForm } from './services'
-import {
-  TGetTutorialsResponse,
-  TGetTutorialParams,
-  TGetTutorialResponse,
-} from './types'
+// import {
+//   TGetTutorialsResponse,
+//   TGetTutorialParams,
+//   TGetTutorialResponse,
+// } from './types'
 
 export const useQueryForms = (options?: UseQueryOptions<any>) => {
   const queryFunction = () => getForms()

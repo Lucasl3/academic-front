@@ -12,13 +12,19 @@ import {
   IconButton,
 } from '@chakra-ui/react'
 
-interface HandleFillProps {
+interface IUploadFileProps {
   id: string
   file: File | null
+  isDisabled?: boolean
   onFileChange?: (file: File | null) => void
 }
 
-const UploadFile: React.FC<HandleFillProps> = ({ id, file, onFileChange }) => {
+const UploadFile: React.FC<IUploadFileProps> = ({
+  id,
+  file,
+  isDisabled,
+  onFileChange,
+}) => {
   const [hovered, setHovered] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(file)
 
@@ -44,7 +50,7 @@ const UploadFile: React.FC<HandleFillProps> = ({ id, file, onFileChange }) => {
       paddingBottom="8px"
       fontSize="14px"
     >
-      <FormControl>
+      <FormControl isDisabled={isDisabled}>
         <Input
           id={id}
           type="file"
@@ -62,7 +68,7 @@ const UploadFile: React.FC<HandleFillProps> = ({ id, file, onFileChange }) => {
             cursor="pointer"
             borderRadius="4px"
             bgColor={hovered ? 'gray.200' : '#fff'}
-            onMouseEnter={() => setHovered(true)}
+            onMouseEnter={() => setHovered(!isDisabled)}
             onMouseLeave={() => setHovered(false)}
           >
             <Icon as={FaUpload} color="blue.500" mr="2" />

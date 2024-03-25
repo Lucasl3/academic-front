@@ -12,6 +12,7 @@ export const AppContext = createContext<IContextProps>({
     width: 48,
   },
   user: {
+    co_user: 0,
     email: '',
     name: '',
     picture: '',
@@ -22,6 +23,7 @@ export const AppContext = createContext<IContextProps>({
 
 function AppContextProvider({ children }: React.PropsWithChildren) {
   const [user, setUser] = React.useState<IContextProps['user']>({
+    co_user: 0,
     email: '',
     name: '',
     picture: '',

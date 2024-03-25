@@ -1,7 +1,9 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useContext } from 'react'
 import { act } from 'react-dom/test-utils'
 import { set } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
+
+import { send } from 'process'
 
 import {
   Stack,
@@ -38,136 +40,10 @@ import {
 } from '@chakra-ui/react'
 
 import { useQueryForm } from '@/api/dashboard/forms/queries'
+import { useMutationPostSolicitation } from '@/api/dashboard/solicitation/mutations'
 import UploadFile from '@/components/UploadFile'
+import { AppContext } from '@/contexts/AppContext'
 import { formatDate } from '@/utils/date'
-
-// const fieldSets: {
-//   id: string
-//   name: string
-//   description?: string
-//   type: string
-//   step: number
-//   isRequired: boolean
-//   options?: string[] | { id: number; label: string }[]
-//   placeholder?: string
-//   value?: string | [number]
-// }[] = [
-//   {
-//     id: '1',
-//     name: 'Nome Completo',
-//     type: 'text',
-//     step: 0,
-//     isRequired: true,
-//     placeholder: 'Informe seu nome',
-//   },
-//   {
-//     id: '2',
-//     name: 'Matrícula',
-//     type: 'number',
-//     step: 0,
-//     isRequired: true,
-//     placeholder: 'Informe sua matrícula',
-//   },
-//   {
-//     id: '3',
-//     name: 'Curso',
-//     type: 'radio',
-//     step: 0,
-//     isRequired: true,
-//     options: ['Engenharia de Computação', 'Ciência da Computação'],
-//   },
-//   {
-//     id: '4',
-//     name: 'Email institucional',
-//     type: 'email',
-//     step: 0,
-//     isRequired: true,
-//     placeholder: 'Informe seu email institucional',
-//   },
-//   {
-//     id: '5',
-//     name: 'Ano de Ingresso',
-//     type: 'number',
-//     step: 0,
-//     isRequired: true,
-//     placeholder: 'Informe seu ano de ingresso',
-//   },
-//   {
-//     id: '6',
-//     name: 'Período Atual',
-//     type: 'number',
-//     step: 0,
-//     isRequired: true,
-//     placeholder: 'Informe seu período atual',
-//   },
-//   {
-//     id: '7',
-//     name: 'Endereço',
-//     type: 'text',
-//     step: 0,
-//     isRequired: true,
-//     placeholder: 'Informe seu endereço',
-//   },
-//   {
-//     id: '8',
-//     name: 'Celular',
-//     type: 'tel',
-//     step: 0,
-//     isRequired: true,
-//     placeholder: 'Informe seu número de celular',
-//   },
-//   {
-//     id: '9',
-//     name: 'Tipo de Trancamento',
-//     type: 'radio',
-//     step: 1,
-//     isRequired: true,
-//     options: ['Trancamento de Curso', 'Trancamento de Disciplina'],
-//   },
-//   {
-//     id: '10',
-//     name: 'Anexo de Documentos',
-//     type: 'file',
-//     step: 1,
-//     isRequired: true,
-//   },
-//   {
-//     id: '11',
-//     name: 'ACE(s) desejada(s)',
-//     type: 'checkbox',
-//     step: 1,
-//     isRequired: true,
-//     options: [
-//       {
-//         id: 1,
-//         label: 'Teste 1',
-//       },
-//       {
-//         id: 2,
-//         label: 'Teste 2',
-//       },
-//       {
-//         id: 3,
-//         label: 'Teste 3',
-//       },
-//       {
-//         id: 4,
-//         label: 'Teste 4',
-//       },
-//       {
-//         id: 5,
-//         label: 'Teste 5',
-//       },
-//     ],
-//   },
-//   {
-//     id: '12',
-//     name: 'Anexo de Documentos 2',
-//     type: 'file',
-//     step: 1,
-//     isRequired: true,
-//   },
-// ]
 
 const COLORS = {
   0: '#F7F7FA',
@@ -218,6 +94,7 @@ function StudentForm() {
   const toast = useToast()
   const navigate = useNavigate()
   const { id } = useParams()
+  const { user } = useContext(AppContext)
 
   const { data: form, isFetching: isFormLoading } = useQueryForm(
     {
@@ -234,6 +111,7 @@ function StudentForm() {
       },
     },
   )
+  // console.log('form', form)
 
   const formData = useMemo(() => {
     return {
@@ -241,20 +119,90 @@ function StudentForm() {
       title: form?.noForm,
       description: form?.dsForm,
       last_update: form?.dtUpdatedAt,
-      questions: form?.ncoQuestion,
+      steps: form?.ncoStep,
     }
   }, [form])
 
+  const { mutate: postSolicitation, isLoading: isSolicitationLoading } =
+    useMutationPostSolicitation({
+      onSuccess: () => {
+        toast({
+          title: 'Solicitação criada com sucesso!',
+          status: 'success',
+          duration: 5000,
+        })
+        navigate('/dashboard/aluno/solicitacoes')
+      },
+      onError: () => {
+        toast({
+          title: 'Houve um erro ao criar a Solicitação.',
+          status: 'error',
+          duration: 3000,
+        })
+      },
+    })
+
+  const onSubmit = () => {
+    const data: any = []
+    fieldSets?.forEach((field: any) => {
+      const questionValue = handleAnswerQuestion(field)
+      const question = {
+        coFormQuestion: field.id,
+        ...questionValue,
+      }
+      // console.log('question', question)
+      data.push(question)
+    })
+    const solicitation = {
+      coForm: formData.id,
+      coUser: user.co_user,
+      ncoAnswerFormQuestion: data,
+    }
+
+    console.log('solicitation', solicitation)
+
+    postSolicitation(solicitation)
+  }
+
+  const handleAnswerQuestion = (question: any) => {
+    if (question.type === 'radio') {
+      return {
+        ndsAnswerQuestionItem: [Number(question.value)],
+        ndsAnswerQuestionStr: [],
+      }
+      // } else if (question.type === 'checkbox') {
+      //   return  ndsAnswerQuestionItem: question.value.map((item: any) => Number(item))
+    } else {
+      return {
+        ndsAnswerQuestionStr: [question.value],
+        ndsAnswerQuestionItem: [],
+      }
+    }
+  }
+
+  const lenSteps = formData.steps?.length + 1
   const { activeStep, setActiveStep } = useSteps({
     index: 0,
-    count: 3,
+    count: lenSteps || 0,
   })
+
+  console.log('activeStep', activeStep)
+  console.log('steps', formData.steps?.length + 1)
 
   const [fieldSets, setFieldSets] = React.useState<any>(null)
 
   const [handleFilled, setHandleFilled] = React.useState<Array<boolean>>([])
 
   const handleFilledFields = (step: number) => {
+    if (step === lenSteps - 1) {
+      console.log('final step', step)
+      currentFields?.forEach((field: any) => {
+        setHandleFilled((prev) => {
+          prev[step] = true
+          return prev
+        })
+      })
+    }
     currentFields?.forEach((field: any) => {
       if (field.step === step) {
         setHandleFilled((prev) => {
@@ -266,27 +214,32 @@ function StudentForm() {
   }
 
   useEffect(() => {
-    const aux = formData.questions?.map((question: any, index: number) => {
-      return {
-        id: question.coFormQuestion,
-        name: question.noQuestion,
-        description: question.dsQuestion,
-        type: question.coTypeQuestion,
-        step: index,
-        isRequired: true,
-        options: question.ncoFormItem,
-        placeholder: 'Informe o valor',
-        value: null,
-      }
+    const questions: any = []
+    formData.steps?.map((step: any, index: number) => {
+      step.ncoFormQuestion?.map((question: any, index: number) => {
+        questions.push({
+          id: question.coFormQuestion,
+          name: question.noQuestion,
+          description: question.dsQuestion,
+          type: question.coTypeQuestion,
+          step: step.coFormStep - 1,
+          isRequired: true,
+          options: question.ncoFormItem,
+          placeholder: 'Informe o valor',
+          value: null,
+        })
+      })
     })
 
-    setFieldSets(aux)
+    // console.log('questions', questions)
+
+    setFieldSets(questions)
   }, [formData])
 
   const handleValueChange = (fieldId: string, value: any) => {
     const aux = fieldSets?.map((field: any) => {
       if (field.id === fieldId) {
-        if (value !== null && value !== undefined && value !== '') {
+        if (value !== null && value !== undefined) {
           field.value = value
         }
       }
@@ -310,7 +263,7 @@ function StudentForm() {
   }
 
   const currentFields = fieldSets?.filter(
-    (field: any) => field.step === activeStep || activeStep === 2,
+    (field: any) => field.step === activeStep || activeStep === lenSteps - 1,
   )
 
   const [selectedCheckboxes, setSelectedCheckboxes] = React.useState<
@@ -359,10 +312,22 @@ function StudentForm() {
         {currentFields?.map((field: any) => {
           if (!field) return null
 
-          const isStep2 = activeStep === 2
-          const isDisabled = isStep2 ? true : false
+          const isFinalStep = activeStep === lenSteps - 1
+          // console.log('isFinalStep', isFinalStep)
+          const isDisabled = isFinalStep ? true : false
           const isError =
             touchedFields[field.id] && field.isRequired && field.value === null
+
+          // console.log(
+          //   'len',
+          //   lenSteps,
+          //   'active',
+          //   activeStep,
+          //   'final',
+          //   isFinalStep,
+          //   'finalfields',
+          //   activeStep === lenSteps - 1,
+          // )
 
           return (
             <Box
@@ -374,7 +339,7 @@ function StudentForm() {
               paddingTop={4}
             >
               {field.type === 'checkbox' &&
-                (field.step === activeStep || activeStep === 2) && (
+                (field.step === activeStep || activeStep === lenSteps - 1) && (
                   <FormControl
                     key={field.id}
                     id={field.id}
@@ -399,7 +364,6 @@ function StudentForm() {
                             isChecked={selectedCheckboxes.includes(option)}
                             onChange={() => {
                               handleSelectedCheckboxes(option)
-                              // handleValueChange(field.id, option)
                               touchedFields[field.id] = true
                             }}
                             value={option.label}
@@ -428,7 +392,7 @@ function StudentForm() {
                   </FormControl>
                 )}
               {field.type === 'radio' &&
-                (field.step === activeStep || activeStep === 2) && (
+                (field.step === activeStep || activeStep === lenSteps - 1) && (
                   <FormControl
                     key={field.id}
                     id={field.id}
@@ -475,7 +439,7 @@ function StudentForm() {
                   </FormControl>
                 )}
               {field.type === 'file' &&
-                (field.step === activeStep || activeStep === 2) && (
+                (field.step === activeStep || activeStep === lenSteps - 1) && (
                   <FormControl
                     key={field.id}
                     isRequired={field.isRequired}
@@ -486,7 +450,6 @@ function StudentForm() {
                     rounded="lg"
                     boxShadow="md"
                     bg="#FBFBFB"
-                    // isDisabled={isDisabled}
                   >
                     <FormLabel paddingBottom={4}>{field.name}</FormLabel>
                     <UploadFile
@@ -496,6 +459,7 @@ function StudentForm() {
                         field.value = file
                         handleValueChange(field.id, file)
                       }}
+                      isDisabled={isDisabled}
                     />
 
                     <FormErrorMessage>{`${field.name} é necessário`}</FormErrorMessage>
@@ -505,7 +469,7 @@ function StudentForm() {
               {field.type !== 'checkbox' &&
                 field.type !== 'radio' &&
                 field.type !== 'file' &&
-                (field.step === activeStep || activeStep === 2) && (
+                (field.step === activeStep || activeStep === lenSteps - 1) && (
                   <FormControl
                     key={field.id}
                     id={field.id}
@@ -552,11 +516,13 @@ function StudentForm() {
   }
 
   function FormSteps() {
-    const steps = [
-      { title: 'Aluno', description: 'Dados Iniciais' },
-      { title: 'Documentos', description: 'Dados do Formulário' },
-      { title: 'Enviar', description: 'Revisão dos Dados' },
-    ]
+    const steps = formData.steps?.map((step: any) => {
+      return {
+        title: step.noFormStep,
+        description: step.dsFormStep,
+      }
+    })
+    steps?.push({ title: 'Enviar', description: 'Revisão dos Dados' })
 
     return (
       <Stepper
@@ -568,7 +534,7 @@ function StudentForm() {
         variant="solid"
         p={5}
       >
-        {steps.map((step, index) => (
+        {steps.map((step: any, index: number) => (
           <Step
             style={{ color: '#495796' }}
             key={index}
@@ -637,9 +603,11 @@ function StudentForm() {
               <FormControl w="full">
                 {renderFields(2)}
                 <HStack my={4} justify="space-between">
-                  <Flex display={activeStep < 2 ? 'none' : 'block'} />
+                  <Flex
+                    display={activeStep < lenSteps - 1 ? 'none' : 'block'}
+                  />
                   <Button
-                    display={activeStep < 2 ? 'block' : 'none'}
+                    display={activeStep < lenSteps - 1 ? 'block' : 'none'}
                     colorScheme="blue"
                     variant="ghost"
                     onClick={() => handleClearFields(activeStep)}
@@ -653,29 +621,44 @@ function StudentForm() {
                         colorScheme="blue"
                         variant="ghost"
                         bg="#FBFBFB"
+                        isDisabled={isSolicitationLoading}
                       >
                         Voltar
                       </Button>
                     )}
-                    <Tooltip
-                      label="Preencha todos os campos obrigatórios!"
-                      aria-label="Erro de preenchimento"
-                      isDisabled={handleFilled[activeStep]}
-                    >
+                    {activeStep < lenSteps - 1 ? (
+                      <Tooltip
+                        label="Preencha todos os campos obrigatórios!"
+                        aria-label="Erro de preenchimento"
+                        isDisabled={handleFilled[activeStep]}
+                      >
+                        <Button
+                          onClick={() => {
+                            if (activeStep < lenSteps) {
+                              setActiveStep(activeStep + 1)
+                            }
+                          }}
+                          bg="#495796"
+                          colorScheme="blue"
+                          color="#FBFBFB"
+                          variant="solid"
+                          isDisabled={!handleFilled[activeStep]}
+                        >
+                          Próximo
+                        </Button>
+                      </Tooltip>
+                    ) : (
                       <Button
-                        onClick={() => setActiveStep(activeStep + 1)}
-                        type="submit"
                         bg="#495796"
                         colorScheme="blue"
                         color="#FBFBFB"
                         variant="solid"
-                        isDisabled={!handleFilled[activeStep]}
+                        onClick={onSubmit}
+                        isLoading={isSolicitationLoading}
                       >
-                        {activeStep === 0 ? 'Próximo' : ''}
-                        {activeStep === 1 ? 'Próximo' : ''}
-                        {activeStep === 2 ? 'Enviar' : ''}
+                        Enviar
                       </Button>
-                    </Tooltip>
+                    )}
                   </HStack>
                 </HStack>
               </FormControl>
