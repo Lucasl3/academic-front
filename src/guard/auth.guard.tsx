@@ -20,6 +20,7 @@ const PrivateRoutes = () => {
     onSuccess: (data) => {
       const admin = data.coProfile === 1
       setUser({
+        co_user: data.coUser,
         email: data.dsEmail,
         name: data.noUser,
         admin: admin,

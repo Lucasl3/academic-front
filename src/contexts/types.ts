@@ -1,4 +1,5 @@
 export interface IUserProps {
+  co_user: number
   email: string
   name: string
   picture: string

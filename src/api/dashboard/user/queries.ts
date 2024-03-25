@@ -1,6 +1,6 @@
 import { UseQueryOptions, useQuery, QueryKey } from '@tanstack/react-query'
 
-import { getUsers } from './services'
+import { getUsers, getUser } from './services'
 import { TGetUsersParams, TGetUsersResponse } from './types'
 
 export const useQueryUsers = (
@@ -17,3 +17,18 @@ export const useQueryUsers = (
 }
 
 useQueryUsers.queryKey = ['users']
+
+export const useQueryUser = (
+  input: { id: number },
+  options?: UseQueryOptions<any>,
+) => {
+  const queryFunction = () => getUser(input)
+
+  return useQuery<any>({
+    queryKey: useQueryUser.queryKey(input),
+    queryFn: queryFunction,
+    ...options,
+  })
+}
+
+useQueryUser.queryKey = (input: { id: number }): QueryKey => ['user', input]
