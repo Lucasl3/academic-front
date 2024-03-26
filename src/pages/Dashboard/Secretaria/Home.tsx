@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
   Stack,
@@ -11,9 +11,27 @@ import {
   Badge,
 } from '@chakra-ui/react'
 
+import { getSolicitations } from '@/api/dashboard/solicitation/services'
 import NumberCaption from '@/components/DataDisplay/NumberCaption'
 
 const SecretariaHome = () => {
+  const [naoAtendidas, setNaoAtendidas] = useState(0)
+  const [emAndamento, setEmAndamento] = useState(0)
+  const [resolvidas, setResolvidas] = useState(0)
+  const [total, setTotal] = useState(0)
+
+  useEffect(() => {
+    getSolicitations().then((res) => {
+      console.log(res)
+      setTotal(res.length)
+      setNaoAtendidas(
+        res.filter((s: any) => s.coStatus === 0 || s.coStatus === 1).length,
+      )
+      setEmAndamento(res.filter((s: any) => s.coStatus === 2).length)
+      setResolvidas(res.filter((s: any) => s.coStatus === 3).length)
+    })
+  }, [])
+
   return (
     <Stack gap={5}>
       <Stack>
@@ -22,10 +40,18 @@ const SecretariaHome = () => {
             Status das demandas
           </Text>
           <HStack flexWrap="wrap" align="flex-start">
-            <NumberCaption number={7} caption="Não atendidas" flex={1} />
-            <NumberCaption number={15} caption="Em andamento" flex={1} />
-            <NumberCaption number={37} caption="Resolvidas" flex={1} />
-            <NumberCaption number={59} caption="Total" flex={1} />
+            <NumberCaption
+              number={naoAtendidas}
+              caption="Não atendidas"
+              flex={1}
+            />
+            <NumberCaption
+              number={emAndamento}
+              caption="Em andamento"
+              flex={1}
+            />
+            <NumberCaption number={resolvidas} caption="Resolvidas" flex={1} />
+            <NumberCaption number={total} caption="Total" flex={1} />
           </HStack>
         </Stack>
       </Stack>
