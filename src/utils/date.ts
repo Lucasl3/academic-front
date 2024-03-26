@@ -1,12 +1,12 @@
-import moment from 'moment'
 import 'moment/locale/pt-br'
+import moment from 'moment-timezone'
 
 export const formatDate = (
   timestamp: string,
   format: string = 'DD/MM/YYYY',
 ) => {
   if (!timestamp) return ''
-  const date = moment(timestamp)
+  const date = moment.utc(timestamp).tz('UTC')
 
   return date.format(format)
 }
@@ -21,7 +21,7 @@ export const formatDateWithDayOfWeek = (
 ) => {
   if (!timestamp) return ''
   moment.locale('pt-br')
-  const date = moment(timestamp)
+  const date = moment.utc(timestamp).tz('UTC')
   const formattedDate = date.format(format)
   const dayOfWeek = date.format('dddd')
   const time = date.format('HH:mm')
