@@ -16,10 +16,10 @@ const StatusSolicitacao = ({
       }}
     >
       {statusSolicitacoes.map((status, index) => (
-        <Flex key={index} sx={{ gap: 5, marginBottom: 5}}>
-          <Flex>{status.data}</Flex>
+        <Flex key={index} sx={{ gap: 10, marginBottom: 5}}>
+          <Flex fontSize={'sm'}>{status.data}</Flex>
           <Flex sx={{
-            width: '80%',
+            width: '100%',
             wordBreak: 'break-word',
             background: '#E1E6FC',
             borderRadius: '8px',
