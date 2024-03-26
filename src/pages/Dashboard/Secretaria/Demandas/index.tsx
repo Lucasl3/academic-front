@@ -13,6 +13,7 @@ const Demandas = () => {
   const statusName = ['created', 'received', 'in_progress', 'done']
   const [demandas, setDemandas] = React.useState([
     {
+      id: 0,
       titulo: '',
       descricao: '',
       usuario: '',
@@ -27,6 +28,7 @@ const Demandas = () => {
         return getForm({ id: item.coForm }).then((response) => {
           return getUser({ id: item.coUser }).then((user) => {
             return {
+              id: item.coSolicitation,
               titulo: response.noForm,
               descricao: response.dsForm,
               usuario: user.noUser,
@@ -59,7 +61,7 @@ const Demandas = () => {
         {demandas.map((item, index) => (
           <DemandCard
             key={index}
-            to={`/dashboard/secretaria/demandas/detalhes/${index}`}
+            to={`/dashboard/secretaria/demandas/detalhes/${item.id}`}
             id={index}
             datetime={formatDateWithDayOfWeek(item.data || '')}
             title={item.titulo}

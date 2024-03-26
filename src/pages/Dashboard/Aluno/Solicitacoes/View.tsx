@@ -31,8 +31,8 @@ import StatusSolicitacao from '@/components/StatusSolicitacao'
 function AlunoSolicitacao() {
   const toast = useToast()
   const navigate = useNavigate()
-  // const { id } = useParams()
-  const id = 1
+  const { id } = useParams()
+  // const id = 1
 
   const { data: solicitacao, isFetching: isSolicitacaoLoading } =
     useQuerySolicitation(
@@ -137,7 +137,13 @@ function AlunoSolicitacao() {
               <Stepper
                 index={activeStep}
                 orientation="vertical"
-                minHeight="450px"
+                minHeight={
+                  statusSolic?.length === 1
+                    ? 'auto'
+                    : activeStep === statusSolic?.length
+                      ? '450px'
+                      : '700px'
+                }
                 marginY="16px"
               >
                 {statusSolic?.map((step: any, index: number) => (

@@ -1,4 +1,4 @@
-import React, { useMemo, useContext, useEffect } from 'react'
+import React, { useMemo, useContext, useEffect, RefObject } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 
 import {
@@ -32,8 +32,22 @@ import {
   StepTitle,
   StepDescription,
   StepSeparator,
+  useDisclosure,
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  AlertDialogFooter,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogHeader,
 } from '@chakra-ui/react'
+import { FocusableElement } from '@chakra-ui/utils'
 
+import {
+  useMutationDeleteSolicitation,
+  useMutationPostFormMessage,
+  useMutationUpdateStatusSolicitation,
+} from '@/api/dashboard/solicitation/mutations'
 import { useQuerySolicitation } from '@/api/dashboard/solicitation/queries'
 import StatusSolicitacao from '@/components/StatusSolicitacao'
 import { formatDate } from '@/utils/date'
@@ -41,8 +55,7 @@ import { formatDate } from '@/utils/date'
 const View = () => {
   const toast = useToast()
   const navigate = useNavigate()
-  // const { id } = useParams()
-  const id = 2
+  const { id } = useParams()
 
   const { data: solicitacao, isFetching: isSolicitacaoLoading } =
     useQuerySolicitation(
@@ -64,6 +77,8 @@ const View = () => {
   const solicitacaoData = useMemo(() => {
     if (!solicitacao) return null
 
+    // console.log('solicitacao', solicitacao)
+
     return {
       id: solicitacao?.coSolicitation,
       title: solicitacao?.title,
@@ -78,6 +93,150 @@ const View = () => {
     }
   }, [solicitacao])
 
+  const { mutate: postFormMessage, isLoading: isFormMessageLoading } =
+    useMutationPostFormMessage({
+      onSuccess: () => {
+        toast({
+          title: 'Mensagem enviada com sucesso!',
+          status: 'success',
+          duration: 5000,
+        }),
+          navigate(0)
+      },
+      onError: () => {
+        toast({
+          title: 'Houve um erro ao enviar a mensagem.',
+          status: 'error',
+          duration: 3000,
+        })
+      },
+    })
+
+  const [messageText, setMessageText] = React.useState('' as string)
+
+  const onSubmit = () => {
+    const data = {
+      coSolicitation: solicitacaoData?.id,
+      dsMessage: messageText,
+      coStatus: activeStep,
+    }
+
+    console.log(data)
+
+    postFormMessage(data)
+  }
+
+  const { mutate: deleteSolicitation, isLoading: isDeleteSolicitationLoading } =
+    useMutationDeleteSolicitation({
+      onSuccess: () => {
+        toast({
+          title: 'Solicitação encerrada com sucesso!',
+          status: 'success',
+          duration: 5000,
+        }),
+          navigate('/dashboard/secretaria/demandas')
+      },
+      onError: () => {
+        toast({
+          title: 'Houve um erro ao encerrar a solicitação.',
+          status: 'error',
+          duration: 3000,
+        })
+      },
+    })
+
+  const onEncerrar = () => {
+    deleteSolicitation({ id: solicitacaoData?.id })
+  }
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const cancelRef = React.useRef<FocusableElement | null>(null)
+
+  const ApagarSolicitacaoButton = () => {
+    return (
+      <>
+        <HStack justify="right" p={4}>
+          <Button onClick={onOpen} bg="#822727" colorScheme="red">
+            Apagar Solicitação
+          </Button>
+
+          <AlertDialog
+            motionPreset="slideInBottom"
+            leastDestructiveRef={cancelRef}
+            onClose={onClose}
+            isOpen={isOpen}
+            isCentered
+          >
+            <AlertDialogOverlay />
+
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                Tem certeza que deseja apagar a Solicitação?
+              </AlertDialogHeader>
+              <AlertDialogCloseButton />
+              <AlertDialogBody>
+                Esta ação é irreversível. Só a apague se ela estiver incorreta
+                ou não for mais necessária.
+              </AlertDialogBody>
+              <AlertDialogFooter>
+                <Button
+                  ref={cancelRef as RefObject<HTMLButtonElement>}
+                  onClick={onClose}
+                >
+                  Não
+                </Button>
+                <Button
+                  colorScheme="red"
+                  bg="#822727"
+                  ml={3}
+                  isLoading={isDeleteSolicitationLoading}
+                  onClick={onEncerrar}
+                >
+                  Sim
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </HStack>
+      </>
+    )
+  }
+
+  const {
+    mutate: updateStatusSolicitation,
+    isLoading: isUpdateStatusSolicitationLoading,
+  } = useMutationUpdateStatusSolicitation({
+    onSuccess: () => {
+      toast({
+        title: 'Status atualizado com sucesso!',
+        status: 'success',
+        duration: 5000,
+      }),
+        navigate(0)
+    },
+    onError: () => {
+      toast({
+        title: 'Houve um erro ao atualizar o status.',
+        status: 'error',
+        duration: 3000,
+      })
+    },
+  })
+
+  const onAprovar = () => {
+    if (activeStep < messages?.length) {
+      setActiveStep(activeStep + 1)
+      const data = {
+        coSolicitation: solicitacaoData?.id,
+        coStatus: activeStep + 1,
+      }
+
+      // console.log(data)
+
+      updateStatusSolicitation(data)
+    }
+  }
+
   const questions = solicitacaoData?.questions?.map((question: any) => {
     if (!question) return null
     return {
@@ -87,8 +246,6 @@ const View = () => {
       answer: question.answer,
     }
   })
-
-  // console.log(questions)
 
   const renderQuestions = () => {
     return (
@@ -131,9 +288,13 @@ const View = () => {
     }[] = []
 
     if (status.messages?.length > 0) {
-      mensagem_status = status.messages?.map((message: any) => {
+      mensagem_status = status?.messages?.map((message: any) => {
+        const data_str =
+          message?.dtUpdatedAt !== null
+            ? formatDate(String(message?.dtUpdatedAt), 'DD/MM/YYYY [às] HH:mm')
+            : '30/01/2024 às 09:00'
         return {
-          data: message?.dsUpdatedAt || '30/01/2024 09:00',
+          data: data_str,
           mensagem: message?.dsMessageForm,
         }
       })
@@ -149,8 +310,6 @@ const View = () => {
       done: status.done,
     }
   })
-
-  console.log(messages)
 
   const statusIndex = messages?.findIndex(
     (status: any) => status.done === false,
@@ -177,7 +336,18 @@ const View = () => {
           bg="#FBFBFB"
           p={6}
         >
-          <Stepper index={activeStep} orientation="vertical" size="lg">
+          <Stepper
+            index={activeStep}
+            orientation="vertical"
+            size="lg"
+            minHeight={
+              messages?.length === 1
+                ? 'auto'
+                : activeStep === messages?.length
+                  ? '450px'
+                  : '700px'
+            }
+          >
             {messages?.map((step: any, index: number) => {
               return (
                 <Step key={index}>
@@ -202,7 +372,7 @@ const View = () => {
                           rounded="lg"
                           boxShadow="md"
                           bg="#E1E6FC"
-                          p={6}
+                          p={4}
                           marginTop={4}
                           marginBottom={4}
                         >
@@ -216,10 +386,19 @@ const View = () => {
                                 variant="outline"
                                 bgColor={'#FBFBFB'}
                                 placeholder="Informe o comentário"
+                                onChange={(e) => {
+                                  setMessageText(e.target.value)
+                                }}
                               />
                             </FormControl>
                             <HStack justify="right" paddingTop={1}>
-                              <Button colorScheme="purple" variant="ghost">
+                              <Button
+                                colorScheme="purple"
+                                variant="ghost"
+                                onClick={onSubmit}
+                                isDisabled={messageText === ''}
+                                isLoading={isFormMessageLoading}
+                              >
                                 Enviar resposta
                               </Button>
                             </HStack>
@@ -227,13 +406,10 @@ const View = () => {
                         </Box>
                         <HStack justify="right">
                           <Button
-                            onClick={() => {
-                              if (activeStep < messages?.length) {
-                                setActiveStep(activeStep + 1)
-                              }
-                            }}
+                            onClick={onAprovar}
                             bg="#3182ce"
                             colorScheme="blue"
+                            isLoading={isUpdateStatusSolicitationLoading}
                           >
                             Aprovar Status
                           </Button>
@@ -354,21 +530,7 @@ const View = () => {
                 </AccordionItem>
               </Box>
             </Accordion>
-            {activeStep === messages?.length && (
-              <HStack justify="right" p={4}>
-                <Button
-                  onClick={() => {
-                    if (activeStep < messages?.length) {
-                      setActiveStep(activeStep + 1)
-                    }
-                  }}
-                  bg="#822727"
-                  colorScheme="red"
-                >
-                  Encerrar Solicitação
-                </Button>
-              </HStack>
-            )}
+            {ApagarSolicitacaoButton()}
           </Stack>
         ) : (
           <Text>Solicitação não encontrada</Text>

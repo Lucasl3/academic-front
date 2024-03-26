@@ -29,6 +29,27 @@ export const postSolicitation = async (params: TPostSolicitationParams) => {
   return response.data
 }
 
+export const updateStatusSolicitation = async (params: {
+  id: number
+  status: number
+}) => {
+  const response = await http.post('/solicitation/update_status/', params)
+
+  return response.data
+}
+
+export const deleteSolicitation = async ({ id }: { id: number }) => {
+  const response = await http.delete(`/solicitation/${id}`)
+
+  return response.data
+}
+
+export const postFormMessage = async (params: any) => {
+  const response = await http.post('/form-message/', params)
+
+  return response.data
+}
+
 // export const putTutorial = async (params: TPutTutorialParams) => {
 //   const response = await http.put('/tutorial/', params)
 
