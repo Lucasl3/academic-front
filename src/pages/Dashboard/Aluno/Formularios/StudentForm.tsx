@@ -159,7 +159,7 @@ function StudentForm() {
       ncoAnswerFormQuestion: data,
     }
 
-    console.log('solicitation', solicitation)
+    // console.log('solicitation', solicitation)
 
     postSolicitation(solicitation)
   }
@@ -180,14 +180,16 @@ function StudentForm() {
     }
   }
 
+  // console.log('formData', formData)
+
   const lenSteps = formData.steps?.length + 1
   const { activeStep, setActiveStep } = useSteps({
     index: 0,
     count: lenSteps || 0,
   })
 
-  console.log('activeStep', activeStep)
-  console.log('steps', formData.steps?.length + 1)
+  // console.log('activeStep', activeStep)
+  // console.log('steps', formData.steps?.length + 1)
 
   const [fieldSets, setFieldSets] = React.useState<any>(null)
 
@@ -195,7 +197,7 @@ function StudentForm() {
 
   const handleFilledFields = (step: number) => {
     if (step === lenSteps - 1) {
-      console.log('final step', step)
+      // console.log('final step', step)
       currentFields?.forEach((field: any) => {
         setHandleFilled((prev) => {
           prev[step] = true
@@ -215,14 +217,14 @@ function StudentForm() {
 
   useEffect(() => {
     const questions: any = []
-    formData.steps?.map((step: any, index: number) => {
+    formData.steps?.map((step: any, step_index: number) => {
       step.ncoFormQuestion?.map((question: any, index: number) => {
         questions.push({
           id: question.coFormQuestion,
           name: question.noQuestion,
           description: question.dsQuestion,
           type: question.coTypeQuestion,
-          step: step.coFormStep - 1,
+          step: step_index,
           isRequired: true,
           options: question.ncoFormItem,
           placeholder: 'Informe o valor',
@@ -316,7 +318,9 @@ function StudentForm() {
           // console.log('isFinalStep', isFinalStep)
           const isDisabled = isFinalStep ? true : false
           const isError =
-            touchedFields[field.id] && field.isRequired && field.value === null
+            touchedFields[field.id] &&
+            field.isRequired &&
+            (field.value === null || field.value === '')
 
           // console.log(
           //   'len',
