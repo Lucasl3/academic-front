@@ -13,6 +13,7 @@ import {
 import { useQueryForms } from '@/api/dashboard/forms/queries'
 import FormularioCard from '@/components/DataDisplay/FormularioCard'
 import { status } from '@/components/Tags/FormularioStatus/types'
+import { formatDate, isPastDate } from '@/utils/date'
 
 const Formularios = () => {
   const toast = useToast()
@@ -29,14 +30,17 @@ const Formularios = () => {
 
   const FormsData = useMemo(() => {
     return forms?.map((form: any) => {
+      const isClosed = isPastDate(form.dtLimit)
       return {
         id: form.coForm,
         title: form.noForm,
         description: form.dsForm,
-        status: 'available',
-        availableDate: '15/01/2024',
-        course: 'ENGENHARIA DE COMPUTAÇÃO',
-        isClosed: false,
+        status: isClosed ? 'closed' : 'available',
+        availableDate: formatDate(form.dtLimit),
+        isClosed: isClosed,
+        tooltipText: isClosed
+          ? 'Este formulário está encerrado'
+          : 'Clique para preencher o formulário',
       }
     })
   }, [forms])
@@ -65,21 +69,15 @@ const Formularios = () => {
         )}
         {!isFormsLoading &&
           FormsData?.map((form: any) => {
-            const isClosed = form.isClosed === 'closed'
             return (
               <FormularioCard
                 key={form.id}
-                to={
-                  isClosed
-                    ? undefined
-                    : `/dashboard/aluno/formularios/detalhes/${form.id}`
-                }
+                to={`/dashboard/aluno/formularios/detalhes/${form.id}`}
                 title={form.title}
                 description={form.description}
-                tooltipText="Clique para preencher o formulário"
+                tooltipText={form.tooltipText}
                 statusTag={form.status as status}
                 date={form.availableDate}
-                course={form.course}
                 isClosed={form.isClosed}
               />
             )

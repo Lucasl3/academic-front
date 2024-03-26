@@ -546,11 +546,7 @@ function StudentForm() {
         p={5}
       >
         {steps.map((step: any, index: number) => (
-          <Step
-            style={{ color: '#495796' }}
-            key={index}
-            onClick={() => setActiveStep(index)}
-          >
+          <Step style={{ color: '#495796' }} key={index}>
             <StepIndicator>
               <StepStatus
                 complete={<StepIcon />}
