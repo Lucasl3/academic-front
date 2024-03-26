@@ -1,7 +1,6 @@
-/* eslint-disable prettier/prettier */
 import React from 'react'
 
-import { Flex } from '@chakra-ui/react'
+import { Box, Flex, HStack, Stack } from '@chakra-ui/react'
 
 const StatusSolicitacao = ({
   statusSolicitacoes,
@@ -9,25 +8,25 @@ const StatusSolicitacao = ({
   statusSolicitacoes: Array<{ data?: string; mensagem?: string }>
 }) => {
   return (
-    <Flex
-      sx={{
-        flexDirection: 'column',
-        width: '100%',
-      }}
-    >
+    <Stack gap={5}>
       {statusSolicitacoes.map((status, index) => (
-        <Flex key={index} sx={{ gap: 10, marginBottom: 5}}>
-          <Flex fontSize={'sm'}>{status.data}</Flex>
-          <Flex sx={{
-            width: '100%',
-            wordBreak: 'break-word',
-            background: '#E1E6FC',
-            borderRadius: '8px',
-            padding: '10px'
-          }}>{status.mensagem}</Flex>
-        </Flex>
+        <HStack key={index}>
+          <Flex fontSize="sm" flex={1}>
+            {status.data}
+          </Flex>
+          <Flex
+            flex={6}
+            w="full"
+            wordBreak="break-word"
+            bg="#E1E6FC"
+            borderRadius="8px"
+            padding="10px"
+          >
+            {status.mensagem}
+          </Flex>
+        </HStack>
       ))}
-    </Flex>
+    </Stack>
   )
 }
 

@@ -51,22 +51,11 @@ const SecretariaHome = () => {
       Promise.all(novasDemandas)
         .then((data) => {
           setDemandasNovas(data)
-          // // Definir as demandas recentes com base nas datas mais recentes
-          // const demandasOrdenadasPorData = data.sort(
-          //   (a, b) => b.data.getTime() - a.data.getTime(),
-          // )
-          // const demandasRecentesAtualizadas = demandasOrdenadasPorData.slice(
-          //   0,
-          //   5,
-          // ) // Pegar as 5 demandas mais recentes
-          // console.log(demandasRecentesAtualizadas)
-          // setDemandasRecentes(demandasRecentesAtualizadas)
         })
         .catch((error) => {
           console.error(error)
         })
       const recentes = res.map((demanda: any) => {
-        console.log(demanda)
         return getForm({ id: demanda.coForm }).then((form) => {
           return {
             id: demanda.coSolicitation,
@@ -81,7 +70,6 @@ const SecretariaHome = () => {
           const demandasComData = dadosRecentes.filter(
             (item) => item.data !== null,
           )
-          console.log(demandasComData)
 
           // Verificar se há demandas com data para evitar erro de ordenação
           if (demandasComData.length > 0) {
@@ -111,7 +99,7 @@ const SecretariaHome = () => {
         .catch((error) => {
           console.error(error)
         })
-      console.log(recentes)
+
       setTotal(res.length)
       setNaoAtendidas(
         res.filter((s: any) => s.coStatus === 0 || s.coStatus === 1).length,

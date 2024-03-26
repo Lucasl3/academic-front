@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { set } from 'react-hook-form'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 import {
   Box,
@@ -23,6 +22,7 @@ import {
   useToast,
   Skeleton,
   Stack,
+  Tag,
 } from '@chakra-ui/react'
 
 import { useQuerySolicitation } from '@/api/dashboard/solicitation/queries'
@@ -31,9 +31,7 @@ import { formatDate } from '@/utils/date'
 
 function AlunoSolicitacao() {
   const toast = useToast()
-  const navigate = useNavigate()
   const { id } = useParams()
-  // const id = 1
 
   const { data: solicitacao, isFetching: isSolicitacaoLoading } =
     useQuerySolicitation(
@@ -79,12 +77,14 @@ function AlunoSolicitacao() {
         }
       })
     }
-    const description = (
-      <StatusSolicitacao statusSolicitacoes={mensagem_status} />
-    )
+
+    const Description = () => {
+      if (mensagem_status.length === 0) return null
+      return <StatusSolicitacao statusSolicitacoes={mensagem_status} />
+    }
 
     return {
-      description: description,
+      description: <Description />,
       title: status?.dsStatus,
       done: status.done,
     }
@@ -102,8 +102,6 @@ function AlunoSolicitacao() {
   useEffect(() => {
     setActiveStep(statusIndex)
   }, [statusIndex])
-
-  const [isMobile] = useMediaQuery('(max-width: 768px)')
 
   return (
     <Stack gap={5}>
@@ -160,11 +158,9 @@ function AlunoSolicitacao() {
                     </StepIndicator>
                     <Box>
                       <StepTitle>{step?.title}</StepTitle>
-                      {step?.description !== '' &&
-                        step?.description !== undefined && (
-                          <StepDescription>{step?.description}</StepDescription>
-                        )}
-
+                      {step?.description && (
+                        <StepDescription>{step?.description}</StepDescription>
+                      )}
                       <StepSeparator />
                     </Box>
                   </Step>

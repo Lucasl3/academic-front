@@ -40,6 +40,7 @@ import {
   AlertDialogBody,
   AlertDialogCloseButton,
   AlertDialogHeader,
+  Textarea,
 } from '@chakra-ui/react'
 import { FocusableElement } from '@chakra-ui/utils'
 
@@ -57,27 +58,28 @@ const View = () => {
   const navigate = useNavigate()
   const { id } = useParams()
 
-  const { data: solicitacao, isFetching: isSolicitacaoLoading } =
-    useQuerySolicitation(
-      {
-        id: Number(id),
+  const {
+    data: solicitacao,
+    isFetching: isSolicitacaoLoading,
+    refetch: refetchSolicitation,
+  } = useQuerySolicitation(
+    {
+      id: Number(id),
+    },
+    {
+      enabled: !!id,
+      onError: () => {
+        toast({
+          title: 'Houve um erro ao buscar a Solicitação.',
+          status: 'error',
+          duration: 5000,
+        })
       },
-      {
-        enabled: !!id,
-        onError: () => {
-          toast({
-            title: 'Houve um erro ao buscar a Solicitação.',
-            status: 'error',
-            duration: 5000,
-          })
-        },
-      },
-    )
+    },
+  )
 
   const solicitacaoData = useMemo(() => {
     if (!solicitacao) return null
-
-    // console.log('solicitacao', solicitacao)
 
     return {
       id: solicitacao?.coSolicitation,
@@ -100,8 +102,8 @@ const View = () => {
           title: 'Mensagem enviada com sucesso!',
           status: 'success',
           duration: 5000,
-        }),
-          navigate(0)
+        })
+        refetchSolicitation()
       },
       onError: () => {
         toast({
@@ -159,7 +161,6 @@ const View = () => {
           <Button onClick={onOpen} bg="#822727" colorScheme="red">
             Apagar Solicitação
           </Button>
-
           <AlertDialog
             motionPreset="slideInBottom"
             leastDestructiveRef={cancelRef}
@@ -168,7 +169,6 @@ const View = () => {
             isCentered
           >
             <AlertDialogOverlay />
-
             <AlertDialogContent>
               <AlertDialogHeader>
                 Tem certeza que deseja apagar a Solicitação?
@@ -341,86 +341,80 @@ const View = () => {
             index={activeStep === 0 ? 1 : activeStep}
             orientation="vertical"
             size="lg"
-            minHeight={
-              messages?.length === 1
-                ? 'auto'
-                : activeStep === messages?.length
-                  ? '450px'
-                  : '700px'
-            }
           >
             {messages?.map((step: any, index: number) => {
               return (
-                <Step key={index}>
-                  <StepIndicator>
-                    <StepStatus
-                      complete={<StepIcon />}
-                      incomplete={<StepNumber />}
-                      active={<StepNumber />}
-                    />
-                  </StepIndicator>
-
-                  <Box>
-                    <StepTitle>{step?.title}</StepTitle>
-                    <StepDescription>{step.description}</StepDescription>
-
-                    {index === activeStep && (
-                      <Stack>
-                        <Box
-                          key={index}
-                          id={'id' + index}
-                          border="1px solid #E1E1E3"
-                          rounded="lg"
-                          boxShadow="md"
-                          bg="#E1E6FC"
-                          p={4}
-                          marginTop={4}
-                          marginBottom={4}
-                        >
-                          <Stack w="full">
-                            <FormControl key={index} id={'id' + index}>
-                              <FormLabel color="#444A63" paddingBottom={1}>
-                                Escreva aqui seu comentário para o aluno caso
-                                haja alguma dúvida ou erro
-                              </FormLabel>
-                              <Input
-                                variant="outline"
-                                bgColor={'#FBFBFB'}
-                                placeholder="Informe o comentário"
-                                onChange={(e) => {
-                                  setMessageText(e.target.value)
-                                }}
-                              />
-                            </FormControl>
-                            <HStack justify="right" paddingTop={1}>
-                              <Button
-                                colorScheme="purple"
-                                variant="ghost"
-                                onClick={onSubmit}
-                                isDisabled={messageText === ''}
-                                isLoading={isFormMessageLoading}
-                              >
-                                Enviar resposta
-                              </Button>
-                            </HStack>
-                          </Stack>
-                        </Box>
-                        <HStack justify="right">
-                          <Button
-                            onClick={onAprovar}
-                            bg="#3182ce"
-                            colorScheme="blue"
-                            isLoading={isUpdateStatusSolicitationLoading}
+                <Box key={index} w="full">
+                  <Step>
+                    <StepIndicator>
+                      <StepStatus
+                        complete={<StepIcon />}
+                        incomplete={<StepNumber />}
+                        active={<StepNumber />}
+                      />
+                    </StepIndicator>
+                    <Box w="full">
+                      <StepTitle as={Box} mb={4}>
+                        {step?.title}
+                      </StepTitle>
+                      <StepDescription>{step.description}</StepDescription>
+                      {index === activeStep && (
+                        <Stack>
+                          <Box
+                            key={index}
+                            id={'id' + index}
+                            border="1px solid #E1E1E3"
+                            rounded="lg"
+                            boxShadow="md"
+                            bg="#E1E6FC"
+                            p={4}
+                            marginTop={4}
+                            marginBottom={4}
                           >
-                            Aprovar Status
-                          </Button>
-                        </HStack>
-                      </Stack>
-                    )}
-                  </Box>
-
-                  <StepSeparator />
-                </Step>
+                            <Stack w="full">
+                              <FormControl key={index} id={'id' + index}>
+                                <FormLabel color="#444A63" paddingBottom={1}>
+                                  Escreva aqui seu comentário para o aluno caso
+                                  haja alguma dúvida ou erro
+                                </FormLabel>
+                                <Textarea
+                                  variant="outline"
+                                  bgColor={'#FBFBFB'}
+                                  placeholder="Informe o comentário"
+                                  onChange={(e) => {
+                                    setMessageText(e.target.value)
+                                  }}
+                                />
+                              </FormControl>
+                              <HStack justify="right" paddingTop={1}>
+                                <Button
+                                  colorScheme="purple"
+                                  variant="ghost"
+                                  onClick={onSubmit}
+                                  isDisabled={messageText === ''}
+                                  isLoading={isFormMessageLoading}
+                                >
+                                  Enviar resposta
+                                </Button>
+                              </HStack>
+                            </Stack>
+                          </Box>
+                          <HStack justify="right">
+                            <Button
+                              onClick={onAprovar}
+                              bg="#3182ce"
+                              colorScheme="blue"
+                              isLoading={isUpdateStatusSolicitationLoading}
+                            >
+                              Aprovar Status
+                            </Button>
+                          </HStack>
+                        </Stack>
+                      )}
+                    </Box>
+                    <StepSeparator />
+                  </Step>
+                </Box>
               )
             })}
           </Stepper>
@@ -477,66 +471,69 @@ const View = () => {
               borderBottomWidth="2px"
               margin={2}
             />
-            <Accordion defaultIndex={[0, 1]} allowMultiple boxShadow="md">
-              <Box>
-                <AccordionItem bg={'#E2E8F0'}>
-                  <h2>
-                    <AccordionButton
-                      _expanded={{ bg: '#E2E8F0', color: '#444A63' }}
-                      bg="white"
-                      rounded={8}
+            <Accordion defaultIndex={[0, 1]} allowMultiple>
+              <Stack gap={5}>
+                <AccordionItem bg={'#E2E8F0'} boxShadow="md">
+                  <AccordionButton
+                    _expanded={{ bg: '#E2E8F0', color: '#444A63' }}
+                    bg="white"
+                    rounded={8}
+                  >
+                    <Box
+                      as="span"
+                      fontWeight="medium"
+                      fontSize="xl"
+                      flex="1"
+                      textAlign="left"
+                      marginInline={2}
+                      margin={2}
+                      color="#444A63"
                     >
-                      <Box
-                        as="span"
-                        fontWeight="medium"
-                        fontSize="xl"
-                        flex="1"
-                        textAlign="left"
-                        marginInline={2}
-                        margin={2}
-                        color="#444A63"
-                      >
-                        Resposta do Formulário
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                  </h2>
+                      Resposta do Formulário
+                    </Box>
+                    <AccordionIcon />
+                  </AccordionButton>
                   <AccordionPanel pb={4}>{renderQuestions()}</AccordionPanel>
                 </AccordionItem>
-              </Box>
-              <Box marginTop={5}>
-                <AccordionItem bg={'#E2E8F0'}>
-                  <h2>
-                    <AccordionButton
-                      _expanded={{ bg: '#E2E8F0', color: '#444A63' }}
-                      bg="white"
-                      rounded={8}
+                <AccordionItem bg={'#E2E8F0'} boxShadow="md">
+                  <AccordionButton
+                    _expanded={{ bg: '#E2E8F0', color: '#444A63' }}
+                    bg="white"
+                    rounded={8}
+                  >
+                    <Box
+                      as="span"
+                      fontWeight="medium"
+                      fontSize="xl"
+                      flex="1"
+                      textAlign="left"
+                      marginInline={2}
+                      margin={2}
+                      color="#444A63"
                     >
-                      <Box
-                        as="span"
-                        fontWeight="medium"
-                        fontSize="xl"
-                        flex="1"
-                        textAlign="left"
-                        marginInline={2}
-                        margin={2}
-                        color="#444A63"
-                      >
-                        Status da Solicitação
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                  </h2>
+                      Status da Solicitação
+                    </Box>
+                    <AccordionIcon />
+                  </AccordionButton>
                   <AccordionPanel pb={4}>{renderMessages()}</AccordionPanel>
                 </AccordionItem>
-              </Box>
+              </Stack>
             </Accordion>
-            {ApagarSolicitacaoButton()}
           </Stack>
         ) : (
           <Text>Solicitação não encontrada</Text>
         )}
       </Skeleton>
+      <HStack justify="space-between">
+        <Button
+          variant="ghost"
+          color="#444A63"
+          onClick={() => navigate('/dashboard/secretaria/demandas')}
+        >
+          Voltar
+        </Button>
+        <ApagarSolicitacaoButton />
+      </HStack>
     </Stack>
   )
 }

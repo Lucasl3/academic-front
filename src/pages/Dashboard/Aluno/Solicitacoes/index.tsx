@@ -3,15 +3,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Box, Button, Stack, HStack, Text } from '@chakra-ui/react'
 
 import { getForm } from '@/api/dashboard/forms/services'
-import {
-  getSolicitationByUser,
-  getSolicitations,
-} from '@/api/dashboard/solicitation/services'
-import { getUser } from '@/api/dashboard/user/services'
+import { getSolicitationByUser } from '@/api/dashboard/solicitation/services'
 import RequestCard from '@/components/DataDisplay/RequestCard'
 import { status } from '@/components/Tags/RequestStatus/types'
 import { AppContext } from '@/contexts/AppContext'
-import { formatDateWithDayOfWeek } from '@/utils/date'
+import { formatDateWithDayOfWeek, formatDate } from '@/utils/date'
 
 type Solicitation = {
   id: number
@@ -32,7 +28,10 @@ const Solicitacoes = () => {
           return {
             id: solicitation.coSolicitation,
             title: form.noForm,
-            date: solicitation.dtCreatedAt || '',
+            date: formatDate(
+              solicitation.dtCreatedAt || '',
+              'DD/MM/YYYY [às] HH:mm',
+            ),
             status: statusName[solicitation.coStatus],
           }
         })
@@ -68,7 +67,7 @@ const Solicitacoes = () => {
               key={index}
               to={`detalhes/${data.id}`}
               title={data.title}
-              date={formatDateWithDayOfWeek(data.date)}
+              date={data.date}
               status={data.status as status}
             />
           )

@@ -7,7 +7,7 @@ import { getSolicitations } from '@/api/dashboard/solicitation/services'
 import { getUser } from '@/api/dashboard/user/services'
 import DemandCard from '@/components/DataDisplay/DemandCard'
 import { status } from '@/components/Tags/RequestStatus/types'
-import { formatDateWithDayOfWeek } from '@/utils/date'
+import { formatDateWithDayOfWeek, formatDate } from '@/utils/date'
 
 const Demandas = () => {
   const statusName = ['created', 'received', 'in_progress', 'done']
@@ -63,13 +63,12 @@ const Demandas = () => {
             key={index}
             to={`/dashboard/secretaria/demandas/detalhes/${item.id}`}
             id={index}
-            datetime={formatDateWithDayOfWeek(item.data || '')}
+            datetime={formatDate(item.data || '', 'DD/MM/YYYY [às] HH:mm')}
             title={item.titulo}
             status={item.status as status}
             user={{
               name: item.usuario,
-              picture:
-                'https://w7.pngwing.com/pngs/178/595/png-transparent-user-profile-computer-icons-login-user-avatars-thumbnail.png',
+              picture: '',
             }}
           />
         ))}
