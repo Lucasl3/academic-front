@@ -1,14 +1,50 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import { Box, Button, Stack, HStack, Text } from '@chakra-ui/react'
 
+import { getForm } from '@/api/dashboard/forms/services'
+import {
+  getSolicitationByUser,
+  getSolicitations,
+} from '@/api/dashboard/solicitation/services'
+import { getUser } from '@/api/dashboard/user/services'
 import RequestCard from '@/components/DataDisplay/RequestCard'
 import { status } from '@/components/Tags/RequestStatus/types'
+import { AppContext } from '@/contexts/AppContext'
+import { formatDateWithDayOfWeek } from '@/utils/date'
+
+type Solicitation = {
+  title: string
+  date: string
+  status: status
+}
 
 const Solicitacoes = () => {
-  const loremIpsum =
-    'Lorem ipsum dolor sit amet. Nam molestias impedit qui consequuntur distinctio et cumque voluptas qui vero possimus. Ut galisum dolorum aut adipisci consequatur et modi voluptatibus aut nesciunt fugiat non eligendi exercitationem.'
+  const { user: loggedUser } = useContext(AppContext)
+  const statusName = ['created', 'received', 'in_progress', 'done']
+  const [solicitations, setSolicitations] = useState([] as Solicitation[])
 
+  useEffect(() => {
+    getSolicitationByUser({ id: loggedUser.co_user }).then((solicitations) => {
+      const solicitaions = solicitations.map((solicitation: any) => {
+        return getForm({ id: solicitation.coForm }).then((form) => {
+          return {
+            title: form.noForm,
+            date: solicitation.dtCreatedAt || '',
+            status: statusName[solicitation.coStatus],
+          }
+        })
+      })
+
+      Promise.all(solicitaions)
+        .then((data) => {
+          setSolicitations(data)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    })
+  }, [])
   return (
     <Stack gap={5}>
       <HStack justify="space-between">
@@ -17,14 +53,21 @@ const Solicitacoes = () => {
         </Text>
       </HStack>
       <Stack gap={3}>
-        {['done', 'in_progress', 'received', 'viewed'].map((data, index) => {
+        {solicitations.length === 0 && (
+          <Box>
+            <Text fontSize="md" color="#444A63">
+              Nenhuma solicitação encontrada
+            </Text>
+          </Box>
+        )}
+        {solicitations.map((data, index) => {
           return (
             <RequestCard
               key={index}
               to={`detalhes/${index}`}
-              title={`Título da Solicitação ${index + 1}`}
-              date="SEGUNDA, 15/01/2024 ÀS 11:06"
-              status={data as status}
+              title={data.title}
+              date={formatDateWithDayOfWeek(data.date)}
+              status={data.status as status}
             />
           )
         })}

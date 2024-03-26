@@ -34,10 +34,10 @@ const RequestStatusTag = ({ tag }: IRequestStatusTagProps) => {
       colorScheme: 'orange',
       icon: IoEyeOff,
     },
-    viewed: {
-      name: 'Visualizado',
+    created: {
+      name: 'Criado',
       colorScheme: 'blue',
-      icon: IoEye,
+      icon: FaCheck,
     },
     default: {
       name: 'default',
