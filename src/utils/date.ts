@@ -6,7 +6,7 @@ export const formatDate = (
   format: string = 'DD/MM/YYYY',
 ) => {
   if (!timestamp) return ''
-  const date = moment.utc(timestamp).tz('UTC')
+  const date = moment.utc(timestamp).tz('America/Maceio')
 
   return date.format(format)
 }

@@ -14,6 +14,7 @@ import { AppContext } from '@/contexts/AppContext'
 import { formatDateWithDayOfWeek } from '@/utils/date'
 
 type Solicitation = {
+  id: number
   title: string
   date: string
   status: status
@@ -29,6 +30,7 @@ const Solicitacoes = () => {
       const solicitaions = solicitations.map((solicitation: any) => {
         return getForm({ id: solicitation.coForm }).then((form) => {
           return {
+            id: solicitation.coSolicitation,
             title: form.noForm,
             date: solicitation.dtCreatedAt || '',
             status: statusName[solicitation.coStatus],
@@ -64,7 +66,7 @@ const Solicitacoes = () => {
           return (
             <RequestCard
               key={index}
-              to={`detalhes/${index}`}
+              to={`detalhes/${data.id}`}
               title={data.title}
               date={formatDateWithDayOfWeek(data.date)}
               status={data.status as status}
