@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 
 import { Avatar, HStack, Stack, Text } from '@chakra-ui/react'
 
+import RequestStatus from '@/components/Tags/RequestStatus'
+
 import { IDemandCardProps } from './types'
 
 const DemandCard = ({
@@ -10,6 +12,7 @@ const DemandCard = ({
   datetime,
   title,
   user,
+  status,
   to,
   onClick,
 }: IDemandCardProps) => {
@@ -27,7 +30,7 @@ const DemandCard = ({
       rounded="lg"
       p="6"
       bg="#FBFBFB"
-      gap={2}
+      gap={3}
       onClick={handleOnClick}
     >
       <HStack justify="space-between">
@@ -35,13 +38,16 @@ const DemandCard = ({
           <Avatar size="sm" name={user.name} src={user.picture} />
           <Text fontWeight="medium">{user.name}</Text>
         </HStack>
-        <Text fontSize="sm" fontWeight="medium">
+        <Text fontSize="sm" fontWeight="medium" textAlign="end">
           {datetime}
         </Text>
       </HStack>
-      <Text fontSize="xl" fontWeight="semibold">
-        {title}
-      </Text>
+      <HStack justify="space-between">
+        <Text fontSize="xl" fontWeight="semibold">
+          {title}
+        </Text>
+        {status && <RequestStatus tag={status} />}
+      </HStack>
     </Stack>
   )
 }

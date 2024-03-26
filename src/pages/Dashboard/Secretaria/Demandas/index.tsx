@@ -6,15 +6,18 @@ import { getForm } from '@/api/dashboard/forms/services'
 import { getSolicitations } from '@/api/dashboard/solicitation/services'
 import { getUser } from '@/api/dashboard/user/services'
 import DemandCard from '@/components/DataDisplay/DemandCard'
+import { status } from '@/components/Tags/RequestStatus/types'
 import { formatDateWithDayOfWeek } from '@/utils/date'
 
 const Demandas = () => {
+  const statusName = ['created', 'received', 'in_progress', 'done']
   const [demandas, setDemandas] = React.useState([
     {
       titulo: '',
       descricao: '',
       usuario: '',
       data: null,
+      status: '',
     },
   ])
 
@@ -28,6 +31,7 @@ const Demandas = () => {
               descricao: response.dsForm,
               usuario: user.noUser,
               data: item.dtCreatedAt,
+              status: statusName[item.coStatus],
             }
           })
         })
@@ -59,6 +63,7 @@ const Demandas = () => {
             id={index}
             datetime={formatDateWithDayOfWeek(item.data || '')}
             title={item.titulo}
+            status={item.status as status}
             user={{
               name: item.usuario,
               picture:
