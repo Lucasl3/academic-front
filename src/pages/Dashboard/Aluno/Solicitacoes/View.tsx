@@ -27,6 +27,7 @@ import {
 
 import { useQuerySolicitation } from '@/api/dashboard/solicitation/queries'
 import StatusSolicitacao from '@/components/StatusSolicitacao'
+import { formatDate } from '@/utils/date'
 
 function AlunoSolicitacao() {
   const toast = useToast()
@@ -64,14 +65,16 @@ function AlunoSolicitacao() {
 
   const statusSolic = solicitacaoData?.status.map((status: any) => {
     let mensagem_status: {
-      data?: string | undefined
-      mensagem?: string | undefined
+      data?: string | ''
+      mensagem?: string | ''
     }[] = []
 
     if (status.messages?.length > 0) {
       mensagem_status = status.messages?.map((message: any) => {
         return {
-          data: message?.dsUpdatedAt || '30/01/2024 09:00',
+          data:
+            formatDate(String(message?.dtUpdatedAt), 'DD/MM/YYYY [às] HH:mm') ||
+            '30/01/2024 09:00',
           mensagem: message?.dsMessageForm,
         }
       })
@@ -135,14 +138,14 @@ function AlunoSolicitacao() {
               </Text>
               <Text>{solicitacaoData?.description}</Text>
               <Stepper
-                index={activeStep}
+                index={activeStep === 0 ? 1 : activeStep}
                 orientation="vertical"
                 minHeight={
                   statusSolic?.length === 1
                     ? 'auto'
                     : activeStep === statusSolic?.length
-                      ? '450px'
-                      : '700px'
+                      ? '400px'
+                      : '500px'
                 }
                 marginY="16px"
               >
@@ -155,14 +158,15 @@ function AlunoSolicitacao() {
                         active={<StepNumber />}
                       />
                     </StepIndicator>
-
                     <Box>
                       <StepTitle>{step?.title}</StepTitle>
-                      {step.description !== '' && (
-                        <StepDescription>{step.description}</StepDescription>
-                      )}
+                      {step?.description !== '' &&
+                        step?.description !== undefined && (
+                          <StepDescription>{step?.description}</StepDescription>
+                        )}
+
+                      <StepSeparator />
                     </Box>
-                    <StepSeparator />
                   </Step>
                 ))}
               </Stepper>
