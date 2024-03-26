@@ -12,7 +12,7 @@ import Formularios from '@/pages/Dashboard/Aluno/Formularios'
 import StudentForm from '@/pages/Dashboard/Aluno/Formularios/StudentForm'
 import AlunoHome from '@/pages/Dashboard/Aluno/Home'
 import AlunoSolicitacoes from '@/pages/Dashboard/Aluno/Solicitacoes'
-import AlunoSolicitacoesDetalhes from '@/pages/Dashboard/Aluno/Solicitacoes/View'
+import AlunoSolicitacao from '@/pages/Dashboard/Aluno/Solicitacoes/View'
 import AlunoTutorial from '@/pages/Dashboard/Aluno/Tutorial'
 import NewsPage from '@/pages/Dashboard/News'
 import Secretaria from '@/pages/Dashboard/Secretaria'
@@ -87,7 +87,7 @@ class App extends React.Component {
                       <Route index element={<AlunoSolicitacoes />} />
                       <Route
                         path="detalhes/:id"
-                        element={<AlunoSolicitacoesDetalhes />}
+                        element={<AlunoSolicitacao />}
                       />
                     </Route>
                   </Route>

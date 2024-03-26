@@ -29,18 +29,3 @@ export const useMutationPostSolicitation = (
     ...options,
   })
 }
-
-// // export const useMutationPutTutorial = (
-// //   options?: UseMutationOptions<
-// //     TPutTutorialResponse,
-// //     AxiosError,
-// //     TPutTutorialParams
-// //   >,
-// // ) => {
-// //   const mutationFunction = (params: TPutTutorialParams) => putTutorial(params)
-
-// //   return useMutation<TPutTutorialResponse, AxiosError, TPutTutorialParams>({
-// //     mutationFn: mutationFunction,
-// //     ...options,
-// //   })
-// // }
