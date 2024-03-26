@@ -1,5 +1,5 @@
-import React from 'react'
-import { FiMenu, FiBell, FiChevronDown } from 'react-icons/fi'
+import React, { useContext } from 'react'
+import { FiMenu, FiChevronDown } from 'react-icons/fi'
 import { Link as ReactRouterLink } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 
@@ -16,18 +16,20 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  MenuDivider,
-  MenuGroup,
   Button,
-  Circle,
   useMediaQuery,
 } from '@chakra-ui/react'
 
+import { AppContext } from '@/contexts/AppContext'
+
+import Notifications from './parts/Notifications'
 import { IHeaderProps } from './types'
 
 const Header = ({ loggedUser, onOpen, ...rest }: IHeaderProps) => {
+  const { user } = useContext(AppContext)
   const [isMobile] = useMediaQuery('(max-width: 768px)')
   const navigate = useNavigate()
+  const isAdmin = user?.admin
 
   const handleSignOut = () => {
     localStorage.removeItem('accessToken')
@@ -59,37 +61,7 @@ const Header = ({ loggedUser, onOpen, ...rest }: IHeaderProps) => {
       )}
       {loggedUser ? (
         <HStack spacing={{ base: 2, md: 6 }}>
-          <Menu placement="bottom-end">
-            <MenuButton
-              as={IconButton}
-              size="lg"
-              variant="ghost"
-              aria-label="open menu"
-              icon={
-                <>
-                  <FiBell />
-                  {false && (
-                    <Circle
-                      size="16px"
-                      color="white"
-                      position="absolute"
-                      top="6px"
-                      right="3px"
-                      fontSize="xs"
-                      bgColor="red.500"
-                    >
-                      4
-                    </Circle>
-                  )}
-                </>
-              }
-            />
-            <MenuList>
-              <MenuGroup title="Notificações">
-                <Box p="3">Teste</Box>
-              </MenuGroup>
-            </MenuList>
-          </Menu>
+          {isAdmin && <Notifications />}
           <Flex alignItems="center">
             <Menu>
               <MenuButton
