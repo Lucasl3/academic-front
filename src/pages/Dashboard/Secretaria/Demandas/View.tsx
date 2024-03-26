@@ -224,16 +224,16 @@ const View = () => {
   })
 
   const onAprovar = () => {
-    if (activeStep < messages?.length) {
+    if (activeStep < messages?.length - 1) {
       setActiveStep(activeStep + 1)
       const data = {
         coSolicitation: solicitacaoData?.id,
-        coStatus: activeStep + 1,
+        coStatus: activeStep,
       }
 
-      // console.log(data)
-
       updateStatusSolicitation(data)
+    } else if (activeStep === messages?.length - 1) {
+      setActiveStep(activeStep + 1)
     }
   }
 

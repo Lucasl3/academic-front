@@ -225,15 +225,13 @@ function StudentForm() {
           description: question.dsQuestion,
           type: question.coTypeQuestion,
           step: step_index,
-          isRequired: true,
+          isRequired: question.isRequired,
           options: question.ncoFormItem,
           placeholder: 'Informe o valor',
           value: null,
         })
       })
     })
-
-    // console.log('questions', questions)
 
     setFieldSets(questions)
   }, [formData])
@@ -456,18 +454,25 @@ function StudentForm() {
                     bg="#FBFBFB"
                   >
                     <FormLabel paddingBottom={4}>{field.name}</FormLabel>
-                    <UploadFile
-                      id={'file' + field.id}
-                      file={field.value}
-                      onFileChange={(file) => {
-                        field.value = file
-                        handleValueChange(field.id, file)
+                    <Input
+                      variant={isDisabled ? 'filled' : 'flushed'}
+                      onFocus={() => handleFieldClick(field.id)}
+                      onBlur={() => handleFieldTouch(field.id)}
+                      type="text"
+                      placeholder={field.placeholder}
+                      onChange={(e) => {
+                        handleValueChange(field.id, e.target.value)
                       }}
+                      value={field.value || ''}
+                      borderColor={isDisabled ? 'gray.100' : 'gray.400'}
                       isDisabled={isDisabled}
+                      textColor={isDisabled ? 'gray.600' : 'gray.800'}
                     />
-
                     <FormErrorMessage>{`${field.name} é necessário`}</FormErrorMessage>
-                    <FormHelperText>{field.description}</FormHelperText>
+                    <FormHelperText>
+                      {field.description} Não se esqueça de adicionar um link no
+                      drive público para nós conseguirmos acessar os documentos!
+                    </FormHelperText>
                   </FormControl>
                 )}
               {field.type !== 'checkbox' &&
