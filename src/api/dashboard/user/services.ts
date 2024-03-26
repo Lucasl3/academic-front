@@ -26,7 +26,7 @@ export const postUser = async (params: TPostUserParams) => {
 }
 
 export const putUser = async (params: TPutUserParams) => {
-  const response = await http.put('/user/', params)
+  const response = await http.put(`/user/${params.coUser}/`, params)
 
   return response.data
 }
