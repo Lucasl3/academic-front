@@ -134,7 +134,7 @@ const Notifications = () => {
           </>
         }
       />
-      <MenuList>
+      <MenuList maxW="350px">
         <HStack px={3} py={2} justify="space-between">
           <Text fontWeight="medium" fontSize="sm">
             Notificações
@@ -144,7 +144,23 @@ const Notifications = () => {
           </Text>
         </HStack>
         <Divider borderColor="gray.400" />
-        <Stack w="300px" maxH="308px" py={3} justify="center">
+        <Stack
+          maxH="275px"
+          py={3}
+          overflowY="auto"
+          css={{
+            '&::-webkit-scrollbar': {
+              width: '4px',
+            },
+            '&::-webkit-scrollbar-track': {
+              width: '6px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: '#CBD5E0',
+              borderRadius: '24px',
+            },
+          }}
+        >
           {isNotificationsFetching ? (
             <Flex justify="center" p={2}>
               <CircularProgress thickness={4} isIndeterminate color="#495796" />
