@@ -15,6 +15,10 @@ export const getCurrentDate = (format: string = 'DD/MM/YYYY') => {
   return moment().format(format)
 }
 
+export const isPastDate = (timestamp: string) => {
+  return moment(timestamp).isBefore(moment())
+}
+
 export const formatDateWithDayOfWeek = (
   timestamp: string,
   format: string = 'DD/MM/YYYY',
