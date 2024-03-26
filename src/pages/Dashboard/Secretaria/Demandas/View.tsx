@@ -224,14 +224,15 @@ const View = () => {
   })
 
   const onAprovar = () => {
-    if (activeStep < messages?.length - 1) {
-      setActiveStep(activeStep + 1)
+    if (activeStep + 1 < messages?.length) {
       const data = {
         coSolicitation: solicitacaoData?.id,
-        coStatus: activeStep,
+        coStatus: activeStep + 1,
       }
-
       updateStatusSolicitation(data)
+      console.log(data)
+
+      setActiveStep(activeStep + 1)
     } else if (activeStep === messages?.length - 1) {
       setActiveStep(activeStep + 1)
     }
@@ -316,7 +317,7 @@ const View = () => {
   )
 
   const { activeStep, setActiveStep } = useSteps({
-    index: 0,
+    index: 1,
     count: messages?.length,
   })
 
@@ -337,7 +338,7 @@ const View = () => {
           p={6}
         >
           <Stepper
-            index={activeStep}
+            index={activeStep === 0 ? 1 : activeStep}
             orientation="vertical"
             size="lg"
             minHeight={
@@ -476,7 +477,7 @@ const View = () => {
               borderBottomWidth="2px"
               margin={2}
             />
-            <Accordion defaultIndex={[1]} allowMultiple boxShadow="md">
+            <Accordion defaultIndex={[0, 1]} allowMultiple boxShadow="md">
               <Box>
                 <AccordionItem bg={'#E2E8F0'}>
                   <h2>

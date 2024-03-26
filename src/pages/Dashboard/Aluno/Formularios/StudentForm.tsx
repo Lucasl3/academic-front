@@ -165,17 +165,19 @@ function StudentForm() {
   }
 
   const handleAnswerQuestion = (question: any) => {
-    if (question.type === 'radio') {
-      return {
-        ndsAnswerQuestionItem: [Number(question.value)],
-        ndsAnswerQuestionStr: [],
-      }
-      // } else if (question.type === 'checkbox') {
-      //   return  ndsAnswerQuestionItem: question.value.map((item: any) => Number(item))
-    } else {
-      return {
-        ndsAnswerQuestionStr: [question.value],
-        ndsAnswerQuestionItem: [],
+    if (question.isRequired) {
+      if (question.type === 'radio') {
+        return {
+          ndsAnswerQuestionItem: [Number(question.value)],
+          ndsAnswerQuestionStr: [],
+        }
+        // } else if (question.type === 'checkbox') {
+        //   return  ndsAnswerQuestionItem: question.value.map((item: any) => Number(item))
+      } else {
+        return {
+          ndsAnswerQuestionStr: [question.value],
+          ndsAnswerQuestionItem: [],
+        }
       }
     }
   }
