@@ -17,6 +17,12 @@ export const getSolicitation = async ({ id }: { id: number }) => {
   return response.data
 }
 
+export const getSolicitationByUser = async ({ id }: { id: number }) => {
+  const response = await http.get(`/solicitation/list_by_user/?co_user=${id}`)
+
+  return response.data
+}
+
 export const postSolicitation = async (params: TPostSolicitationParams) => {
   const response = await http.post('/solicitation/', params)
 
