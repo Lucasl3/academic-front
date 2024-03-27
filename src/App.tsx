@@ -1,13 +1,19 @@
-import React from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import React, { useContext, ReactNode } from 'react'
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+} from 'react-router-dom'
 
 import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 
 import TemplatePage from '@/common/Templates/TemplatePage'
 import AppContextProvider from '@/contexts/AppContext'
+import { AppContext } from '@/contexts/AppContext'
 import PrivateRoutes from '@/guard/auth.guard'
 import Login from '@/pages/Auth/Login'
-import Aluno from '@/pages/Dashboard/Aluno'
 import Formularios from '@/pages/Dashboard/Aluno/Formularios'
 import StudentForm from '@/pages/Dashboard/Aluno/Formularios/StudentForm'
 import AlunoHome from '@/pages/Dashboard/Aluno/Home'
@@ -16,9 +22,10 @@ import AlunoSolicitacao from '@/pages/Dashboard/Aluno/Solicitacoes/View'
 import AlunoTutoriais from '@/pages/Dashboard/Aluno/Tutoriais'
 import AlunoTutorial from '@/pages/Dashboard/Aluno/Tutoriais/View'
 import NewsPage from '@/pages/Dashboard/News'
-import Secretaria from '@/pages/Dashboard/Secretaria'
 import Demandas from '@/pages/Dashboard/Secretaria/Demandas'
 import DemandaView from '@/pages/Dashboard/Secretaria/Demandas/View'
+import SecretariaFormularios from '@/pages/Dashboard/Secretaria/Formularios'
+import CreateFormulario from '@/pages/Dashboard/Secretaria/Formularios/Create'
 import SecretariaHome from '@/pages/Dashboard/Secretaria/Home'
 import Tutoriais from '@/pages/Dashboard/Secretaria/Tutoriais'
 import CreateTutorial from '@/pages/Dashboard/Secretaria/Tutoriais/Create'
@@ -63,6 +70,16 @@ export const theme = extendTheme({
     },
   },
 })
+
+const CheckSecretaria: React.FC = () => {
+  const { user } = useContext(AppContext)
+  return user.admin ? <Outlet /> : <Navigate to="/dashboard/home" />
+}
+
+const CheckAluno: React.FC = () => {
+  const { user } = useContext(AppContext)
+  return !user.admin ? <Outlet /> : <Navigate to="/dashboard/home" />
+}
 class App extends React.Component {
   render() {
     return (
@@ -77,41 +94,50 @@ class App extends React.Component {
                   <Route index element={<Navigate to="/dashboard/home" />} />
                   <Route path="home" element={<Home />} />
                   <Route path="news/:id" element={<NewsPage />} />
-                  <Route path="aluno" element={<Aluno />}>
-                    <Route index element={<AlunoHome />} />
-                    <Route path="tutoriais">
-                      <Route index element={<AlunoTutoriais />} />
-                      <Route path=":id" element={<AlunoTutorial />} />
-                    </Route>
-                    <Route path="formularios">
-                      <Route index element={<Formularios />} />
-                      <Route path="detalhes/:id" element={<StudentForm />} />
-                    </Route>
-                    <Route path="solicitacoes">
-                      <Route index element={<AlunoSolicitacoes />} />
-                      <Route
-                        path="detalhes/:id"
-                        element={<AlunoSolicitacao />}
-                      />
+                  <Route element={<CheckAluno />}>
+                    <Route path="aluno">
+                      <Route path="inicio" element={<AlunoHome />} />
+                      <Route path="tutoriais">
+                        <Route index element={<AlunoTutoriais />} />
+                        <Route path=":id" element={<AlunoTutorial />} />
+                      </Route>
+                      <Route path="formularios">
+                        <Route index element={<Formularios />} />
+                        <Route path="detalhes/:id" element={<StudentForm />} />
+                      </Route>
+                      <Route path="solicitacoes">
+                        <Route index element={<AlunoSolicitacoes />} />
+                        <Route
+                          path="detalhes/:id"
+                          element={<AlunoSolicitacao />}
+                        />
+                        <Route
+                          path="tutorial/:id"
+                          element={<AlunoTutorial />}
+                        />
+                      </Route>
                     </Route>
                   </Route>
-                  <Route
-                    path="aluno/tutorial/:id"
-                    element={<AlunoTutorial />}
-                  />
-                  <Route path="secretaria" element={<Secretaria />}>
-                    <Route index element={<SecretariaHome />} />
-                    <Route path="demandas">
-                      <Route index element={<Demandas />} />
-                      <Route path="detalhes/:id" element={<DemandaView />} />
-                    </Route>
-                    <Route path="tutoriais">
-                      <Route index element={<Tutoriais />} />
-                      <Route path="criar" element={<CreateTutorial />} />
-                      <Route path="detalhes/:id" element={<EditTutorial />} />
-                    </Route>
-                    <Route path="usuarios">
-                      <Route index element={<Users />} />
+
+                  <Route element={<CheckSecretaria />}>
+                    <Route path="secretaria">
+                      <Route path="inicio" element={<SecretariaHome />} />
+                      <Route path="demandas">
+                        <Route index element={<Demandas />} />
+                        <Route path="detalhes/:id" element={<DemandaView />} />
+                      </Route>
+                      <Route path="tutoriais">
+                        <Route index element={<Tutoriais />} />
+                        <Route path="criar" element={<CreateTutorial />} />
+                        <Route path="detalhes/:id" element={<EditTutorial />} />
+                      </Route>
+                      <Route path="usuarios">
+                        <Route index element={<Users />} />
+                      </Route>
+                      <Route path="formularios">
+                        <Route index element={<SecretariaFormularios />} />
+                        <Route path="criar" element={<CreateFormulario />} />
+                      </Route>
                     </Route>
                   </Route>
                 </Route>

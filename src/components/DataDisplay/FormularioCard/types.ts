@@ -1,5 +1,3 @@
-import { IconType } from 'react-icons'
-
 import { status } from '@/components/Tags/FormularioStatus/types'
 
 export interface IFormularioCardProps {
@@ -10,4 +8,5 @@ export interface IFormularioCardProps {
   statusTag?: status
   tooltipText?: string
   isClosed?: boolean
+  noRedirect?: boolean
 }
