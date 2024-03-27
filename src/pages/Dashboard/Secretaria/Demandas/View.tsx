@@ -123,8 +123,6 @@ const View = () => {
       coStatus: activeStep,
     }
 
-    console.log(data)
-
     postFormMessage(data)
   }
 
@@ -230,7 +228,6 @@ const View = () => {
         coStatus: activeStep + 1,
       }
       updateStatusSolicitation(data)
-      console.log(data)
 
       setActiveStep(activeStep + 1)
     } else if (activeStep === messages?.length - 1) {
@@ -301,12 +298,13 @@ const View = () => {
       })
     }
 
-    const description = (
-      <StatusSolicitacao statusSolicitacoes={mensagem_status} />
-    )
+    const Description = () => {
+      if (mensagem_status.length === 0) return null
+      return <StatusSolicitacao statusSolicitacoes={mensagem_status} />
+    }
 
     return {
-      description: description,
+      description: <Description />,
       title: status?.dsStatus,
       done: status.done,
     }
@@ -357,7 +355,9 @@ const View = () => {
                       <StepTitle as={Box} mb={4}>
                         {step?.title}
                       </StepTitle>
-                      <StepDescription>{step.description}</StepDescription>
+                      {step?.description && (
+                        <StepDescription>{step.description}</StepDescription>
+                      )}
                       {index === activeStep && (
                         <Stack>
                           <Box
