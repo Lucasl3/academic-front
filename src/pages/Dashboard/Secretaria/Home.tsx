@@ -16,6 +16,7 @@ import {
 import { getForm } from '@/api/dashboard/forms/services'
 import { getSolicitations } from '@/api/dashboard/solicitation/services'
 import NumberCaption from '@/components/DataDisplay/NumberCaption'
+import { formatDate } from '@/utils/date'
 
 const SecretariaHome = () => {
   const navigate = useNavigate()
@@ -40,14 +41,16 @@ const SecretariaHome = () => {
 
   useEffect(() => {
     getSolicitations().then((res) => {
-      const novasDemandas = res.map((demanda: any) => {
-        return getForm({ id: demanda.coForm }).then((form) => {
-          return {
-            id: demanda.coSolicitation,
-            title: form.noForm,
-          }
+      const novasDemandas = res
+        .filter((s: any) => s.coStatus === 0 || s.coStatus === 1)
+        .map((demanda: any) => {
+          return getForm({ id: demanda.coForm }).then((form) => {
+            return {
+              id: demanda.coSolicitation,
+              title: form.noForm,
+            }
+          })
         })
-      })
       Promise.all(novasDemandas)
         .then((data) => {
           setDemandasNovas(data)
@@ -60,7 +63,7 @@ const SecretariaHome = () => {
           return {
             id: demanda.coSolicitation,
             title: form.noForm,
-            data: demanda.dtUpdatedAt,
+            data: formatDate(demanda.dtUpdatedAt),
           }
         })
       })
@@ -72,21 +75,21 @@ const SecretariaHome = () => {
           if (demandasComData.length > 0) {
             // Ordenar as demandas com base nas datas mais recentes
             const demandasOrdenadasPorData = demandasComData.sort((a, b) => {
-              const dateA =
-                a.data instanceof Date
-                  ? a.data.getTime()
-                  : Number.MIN_SAFE_INTEGER
-              const dateB =
-                b.data instanceof Date
-                  ? b.data.getTime()
-                  : Number.MIN_SAFE_INTEGER
+              const parseDate = (dateString: any) => {
+                const [day, month, year] = dateString.split('/')
+                return new Date(`${year}-${month}-${day}`)
+              }
+
+              // Convertendo as strings de data em objetos Date
+              const dateA = parseDate(a.data).getTime()
+              const dateB = parseDate(b.data).getTime()
+
+              // Comparando as datas
               return dateB - dateA
             })
-
-            // Selecionar as 5 demandas mais recentes
             const demandasRecentesAtualizadas = demandasOrdenadasPorData.slice(
               0,
-              5,
+              4,
             )
             setDemandasRecentes(demandasRecentesAtualizadas)
           } else {
@@ -130,7 +133,16 @@ const SecretariaHome = () => {
         </Stack>
       </Stack>
       <Stack direction={{ base: 'column', md: 'row' }} gap={5}>
-        <Stack boxShadow="lg" rounded="lg" p="6" bg="#FBFBFB" gap={5} flex={1}>
+        <Stack
+          boxShadow="lg"
+          rounded="lg"
+          p="6"
+          bg="#FBFBFB"
+          gap={5}
+          flex={1}
+          overflowY={'auto'}
+          maxH={'300px'}
+        >
           <Text fontSize="xl" fontWeight="semibold">
             Novas demandas
             <Badge fontSize="md" ml="2" colorScheme="green">
