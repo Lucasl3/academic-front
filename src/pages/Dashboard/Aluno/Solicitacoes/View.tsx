@@ -18,11 +18,9 @@ import {
   StepTitle,
   Stepper,
   useSteps,
-  useMediaQuery,
   useToast,
   Skeleton,
   Stack,
-  Tag,
 } from '@chakra-ui/react'
 
 import { useQuerySolicitation } from '@/api/dashboard/solicitation/queries'
@@ -136,7 +134,7 @@ function AlunoSolicitacao() {
               </Text>
               <Text>{solicitacaoData?.description}</Text>
               <Stepper
-                index={activeStep === 0 ? 1 : activeStep}
+                index={activeStep + 1}
                 orientation="vertical"
                 marginY="16px"
               >

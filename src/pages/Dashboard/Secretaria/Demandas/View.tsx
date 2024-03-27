@@ -1,5 +1,5 @@
-import React, { useMemo, useContext, useEffect, RefObject } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import React, { useMemo, useEffect, RefObject } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import {
   Stack,
@@ -210,7 +210,8 @@ const View = () => {
         status: 'success',
         duration: 5000,
       }),
-        navigate(0)
+        refetchSolicitation()
+      setActiveStep(activeStep + 1)
     },
     onError: () => {
       toast({
@@ -222,16 +223,13 @@ const View = () => {
   })
 
   const onAprovar = () => {
-    if (activeStep + 1 < messages?.length) {
+    if (activeStep + 1 <= messages?.length) {
       const data = {
         coSolicitation: solicitacaoData?.id,
-        coStatus: activeStep + 1,
+        coStatus: activeStep,
       }
       updateStatusSolicitation(data)
-
-      setActiveStep(activeStep + 1)
-    } else if (activeStep === messages?.length - 1) {
-      setActiveStep(activeStep + 1)
+      console.log(data)
     }
   }
 
@@ -320,7 +318,7 @@ const View = () => {
   })
 
   useEffect(() => {
-    setActiveStep(statusIndex)
+    setActiveStep(statusIndex + 1)
   }, [statusIndex])
 
   const renderMessages = () => {
@@ -335,11 +333,7 @@ const View = () => {
           bg="#FBFBFB"
           p={6}
         >
-          <Stepper
-            index={activeStep === 0 ? 1 : activeStep}
-            orientation="vertical"
-            size="lg"
-          >
+          <Stepper index={activeStep} orientation="vertical" size="lg">
             {messages?.map((step: any, index: number) => {
               return (
                 <Box key={index} w="full">
@@ -527,7 +521,8 @@ const View = () => {
       <HStack justify="space-between">
         <Button
           variant="ghost"
-          color="#444A63"
+          colorScheme="red"
+          color="#822727"
           onClick={() => navigate('/dashboard/secretaria/demandas')}
         >
           Voltar
