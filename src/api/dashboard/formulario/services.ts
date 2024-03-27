@@ -11,20 +11,20 @@ export const getForms = async () => {
   return response.data
 }
 
-export const getTutorial = async ({ id }: TGetFormularioParams) => {
-  const response = await http.get(`/tutorial/${id}`)
+export const getFormulario = async ({ id }: TGetFormularioParams) => {
+  const response = await http.get(`/form/${id}`)
 
   return response.data
 }
 
-export const postTutorial = async (params: TPostFormularioParams) => {
-  const response = await http.post('/tutorial/', params)
+export const postFormulario = async (params: TPostFormularioParams) => {
+  const response = await http.post('/form/', params)
 
   return response.data
 }
 
-export const putTutorial = async (params: TPutFormularioParams) => {
-  const response = await http.put('/tutorial/', params)
+export const putFormulario = async (params: TPutFormularioParams) => {
+  const response = await http.put('/form/', params)
 
   return response.data
 }

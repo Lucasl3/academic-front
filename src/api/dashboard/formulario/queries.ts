@@ -1,6 +1,6 @@
 import { UseQueryOptions, useQuery, QueryKey } from '@tanstack/react-query'
 
-import { getForms, getTutorial } from './services'
+import { getForms, getFormulario } from './services'
 import {
   TGetFormsResponse,
   TGetFormularioParams,
@@ -19,20 +19,20 @@ export const useQueryForms = (options?: UseQueryOptions<TGetFormsResponse>) => {
 
 useQueryForms.queryKey = ['forms']
 
-export const useQueryTutorial = (
+export const useQueryFormulario = (
   input: TGetFormularioParams,
   options?: UseQueryOptions<TGetFormularioResponse>,
 ) => {
-  const queryFunction = () => getTutorial(input)
+  const queryFunction = () => getFormulario(input)
 
   return useQuery<TGetFormularioResponse>({
-    queryKey: useQueryTutorial.queryKey(input),
+    queryKey: useQueryFormulario.queryKey(input),
     queryFn: queryFunction,
     ...options,
   })
 }
 
-useQueryTutorial.queryKey = (input: TGetFormularioParams): QueryKey => [
+useQueryFormulario.queryKey = (input: TGetFormularioParams): QueryKey => [
   'formulario',
   input,
 ]

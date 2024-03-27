@@ -9,22 +9,23 @@ export interface IGeFormularioDTO {
   isDeleted: boolean
 }
 
-export interface ITutorialDTOBase {
-  noTutorial: string
-  dsTutorial: string
-  contentTutorial: string
+export interface IFormularioDTOBase {
+  noForm: string
+  dsForm: string
+  dtLimit: string
+  ncoStep: object[]
 }
 
-export interface IPostTutorialDTO extends ITutorialDTOBase {}
+export interface IPostFormularioDTO extends IFormularioDTOBase {}
 
-export interface IPutTutorialDTO extends ITutorialDTOBase {
-  coTutorial: number
+export interface IPutFormularioDTO extends IFormularioDTOBase {
+  coFormulario: number
 }
 
 export type TGetFormularioParams = { id: number }
 export type TGetFormsResponse = Array<IGeFormularioDTO>
 export type TGetFormularioResponse = IGeFormularioDTO
-export type TPostFormularioParams = IPostTutorialDTO
+export type TPostFormularioParams = IPostFormularioDTO
 export type TPostFormularioResponse = IGeFormularioDTO
-export type TPutFormularioParams = IPutTutorialDTO
+export type TPutFormularioParams = IPutFormularioDTO
 export type TPutFormularioResponse = IGeFormularioDTO

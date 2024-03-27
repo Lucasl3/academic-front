@@ -2,7 +2,7 @@ import { AxiosError } from 'axios'
 
 import { UseMutationOptions, useMutation } from '@tanstack/react-query'
 
-import { postTutorial, putTutorial } from './services'
+import { postFormulario, putFormulario } from './services'
 import {
   TPostFormularioParams,
   TPostFormularioResponse,
@@ -10,7 +10,7 @@ import {
   TPutFormularioResponse,
 } from './types'
 
-export const useMutationPostTutorial = (
+export const useMutationPostFormulario = (
   options?: UseMutationOptions<
     TPostFormularioResponse,
     AxiosError,
@@ -18,7 +18,7 @@ export const useMutationPostTutorial = (
   >,
 ) => {
   const mutationFunction = (params: TPostFormularioParams) =>
-    postTutorial(params)
+    postFormulario(params)
 
   return useMutation<
     TPostFormularioResponse,
@@ -30,14 +30,15 @@ export const useMutationPostTutorial = (
   })
 }
 
-export const useMutationPutTutorial = (
+export const useMutationPutFormulario = (
   options?: UseMutationOptions<
     TPutFormularioResponse,
     AxiosError,
     TPutFormularioParams
   >,
 ) => {
-  const mutationFunction = (params: TPutFormularioParams) => putTutorial(params)
+  const mutationFunction = (params: TPutFormularioParams) =>
+    putFormulario(params)
 
   return useMutation<TPutFormularioResponse, AxiosError, TPutFormularioParams>({
     mutationFn: mutationFunction,
