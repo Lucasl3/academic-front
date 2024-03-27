@@ -29,26 +29,24 @@ const Tutoriais = () => {
     })
 
   const tutorialsData = useMemo(() => {
-    return tutorials?.map((tutorial) => {
+    const tutorialsMapped = tutorials?.map((tutorial) => {
       return {
         id: tutorial.coTutorial,
         title: tutorial.noTutorial,
         description: tutorial.dsTutorial,
+        available: tutorial.coStatus,
         status: tutorial.coStatus ? 'available' : 'hidden',
       }
     })
+
+    return tutorialsMapped.filter((tutorial) => tutorial.available)
   }, [tutorials])
 
   return (
     <Stack gap={5}>
-      <HStack justify="space-between">
-        <Text fontSize="2xl" fontWeight="semibold" color="#444A63">
-          Gerenciamento de Tutoriais
-        </Text>
-        <Button as={Link} bg="#495796" colorScheme="blue" to="criar">
-          Criar Tutorial
-        </Button>
-      </HStack>
+      <Text fontSize="2xl" fontWeight="semibold" color="#444A63">
+        Tutoriais
+      </Text>
       {isTutorialsLoading &&
         Array.from({ length: 3 }).map((_, index) => (
           <Skeleton key={index} height="108px" />
@@ -61,18 +59,17 @@ const Tutoriais = () => {
             color="#444A63"
             textAlign="center"
           >
-            Nenhum tutorial encontrado
+            Sem tutoriais disponíveis
           </Text>
         )}
         {!isTutorialsLoading &&
           tutorialsData?.map((tutorial, index) => (
             <TutorialCard
               key={index}
-              to={`/dashboard/secretaria/tutoriais/detalhes/${tutorial.id}`}
+              to={`/dashboard/aluno/tutoriais/${tutorial.id}`}
               title={tutorial.title}
               description={tutorial.description}
-              tooltipText="Clique para editar"
-              statusTag={tutorial.status as status}
+              tooltipText="Clique para visualizar"
             />
           ))}
       </Stack>

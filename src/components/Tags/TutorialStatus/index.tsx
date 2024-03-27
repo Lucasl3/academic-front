@@ -19,7 +19,7 @@ const TutorialStatusTag = ({ tag }: ITutorialStatusTagProps) => {
   const styles: IStatusTagStyles = {
     hidden: {
       name: 'Oculto',
-      colorScheme: 'blackAlpha',
+      colorScheme: 'orange',
       icon: BiHide,
     },
     available: {

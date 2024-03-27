@@ -19,6 +19,10 @@ const Aluno = () => {
       label: 'Início',
     },
     {
+      id: 'tutoriais',
+      label: 'Tutoriais',
+    },
+    {
       id: 'formularios',
       label: 'Formulários',
     },

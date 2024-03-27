@@ -6,6 +6,7 @@ export interface IGetTutorialDTO {
   isDeleted: boolean
   noTutorial: string
   dsTutorial: string
+  coStatus: boolean
   contentTutorial: string
 }
 

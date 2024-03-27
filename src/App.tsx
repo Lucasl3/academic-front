@@ -13,7 +13,8 @@ import StudentForm from '@/pages/Dashboard/Aluno/Formularios/StudentForm'
 import AlunoHome from '@/pages/Dashboard/Aluno/Home'
 import AlunoSolicitacoes from '@/pages/Dashboard/Aluno/Solicitacoes'
 import AlunoSolicitacao from '@/pages/Dashboard/Aluno/Solicitacoes/View'
-import AlunoTutorial from '@/pages/Dashboard/Aluno/Tutorial'
+import AlunoTutoriais from '@/pages/Dashboard/Aluno/Tutoriais'
+import AlunoTutorial from '@/pages/Dashboard/Aluno/Tutoriais/View'
 import NewsPage from '@/pages/Dashboard/News'
 import Secretaria from '@/pages/Dashboard/Secretaria'
 import Demandas from '@/pages/Dashboard/Secretaria/Demandas'
@@ -78,6 +79,10 @@ class App extends React.Component {
                   <Route path="news/:id" element={<NewsPage />} />
                   <Route path="aluno" element={<Aluno />}>
                     <Route index element={<AlunoHome />} />
+                    <Route path="tutoriais">
+                      <Route index element={<AlunoTutoriais />} />
+                      <Route path=":id" element={<AlunoTutorial />} />
+                    </Route>
                     <Route path="formularios">
                       <Route index element={<Formularios />} />
                       <Route path="detalhes/:id" element={<StudentForm />} />

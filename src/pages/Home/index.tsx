@@ -55,15 +55,18 @@ const Home = () => {
     })
 
   const tutorialsData = useMemo(() => {
-    return tutorials?.map((tutorial) => {
+    const tutorialsMapped = tutorials?.map((tutorial) => {
       return {
         id: tutorial.coTutorial,
         title: tutorial.noTutorial,
         description: tutorial.dsTutorial,
+        available: tutorial.coStatus,
         image: 'https://via.placeholder.com/150/',
         url: '',
       }
     })
+
+    return tutorialsMapped.filter((tutorial) => tutorial.available)
   }, [tutorials])
 
   const [isMobile] = useMediaQuery('(max-width: 768px)')

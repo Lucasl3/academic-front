@@ -111,9 +111,8 @@ const ViewTutorial = () => {
       </Skeleton>
       <HStack justify="flex-end">
         <Button
-          size="lg"
           colorScheme="blue"
-          onClick={() => navigate('/dashboard/home')}
+          onClick={() => navigate('/dashboard/aluno/tutoriais')}
         >
           Voltar
         </Button>

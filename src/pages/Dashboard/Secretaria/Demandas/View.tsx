@@ -229,7 +229,6 @@ const View = () => {
         coStatus: activeStep,
       }
       updateStatusSolicitation(data)
-      console.log(data)
     }
   }
 

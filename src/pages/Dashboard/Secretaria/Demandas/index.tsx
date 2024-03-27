@@ -47,10 +47,6 @@ const Demandas = () => {
           console.error(error)
         })
     })
-
-    getUser({ id: 3 }).then((response) => {
-      console.log(response)
-    })
   }, [])
   return (
     <Stack gap={5}>

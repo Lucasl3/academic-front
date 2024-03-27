@@ -49,7 +49,7 @@ const TutoriaisHome = ({ tutorials, isLoading }: ITutorialsProps) => {
             color="#444A63"
             textAlign="center"
           >
-            Sem tutoriais
+            Sem tutoriais disponíveis
           </Text>
         )}
         {!isLoading &&

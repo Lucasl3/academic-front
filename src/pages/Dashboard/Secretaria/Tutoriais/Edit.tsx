@@ -31,19 +31,22 @@ import { useQueryTutorial } from '@/api/dashboard/tutorial/queries'
 import RichTexEditor from '@/components/RichTextEditor'
 import TutorialStatusTag from '@/components/Tags/TutorialStatus'
 
-import { TFormValues } from './types'
-interface IOption {
-  value: string
-  label: JSX.Element
+import { TFormValues, IOption } from './types'
+
+const available = {
+  value: 'available',
+  label: <TutorialStatusTag tag="available" />,
+}
+
+const hidden = {
+  value: 'hidden',
+  label: <TutorialStatusTag tag="hidden" />,
 }
 
 const EditTutorial = () => {
   const toast = useToast()
   const navigate = useNavigate()
   const { id } = useParams()
-  const [selectedOption, setSelectedOption] = React.useState<IOption | null>(
-    null,
-  )
 
   const { data: tutorial, isFetching: isTutorialLoading } = useQueryTutorial(
     {
@@ -86,29 +89,17 @@ const EditTutorial = () => {
       title: tutorial?.noTutorial,
       description: tutorial?.dsTutorial,
       content: tutorial?.contentTutorial,
-      status: 'available',
+      status: tutorial?.coStatus ? available : hidden,
     }
   }, [tutorial])
 
-  const options: Array<IOption> = [
-    {
-      value: 'hidden',
-      label: <TutorialStatusTag tag="hidden" />,
-    },
-    {
-      value: 'available',
-      label: <TutorialStatusTag tag="available" />,
-    },
-    {
-      value: 'incomplete',
-      label: <TutorialStatusTag tag="incomplete" />,
-    },
-  ]
+  const options: Array<IOption> = [available, hidden]
 
   const validateSchema = yup.object().shape({
     title: yup.string().required('O título é obrigatório'),
     description: yup.string().required('A descrição é obrigatória'),
     content: yup.string().required('O conteúdo é obrigatório'),
+    status: yup.object().required('O status é obrigatório'),
   })
 
   const formikRef = useRef<FormikProps<TFormValues>>(null)
@@ -119,6 +110,7 @@ const EditTutorial = () => {
       noTutorial: values.title,
       dsTutorial: values.description,
       contentTutorial: values.content,
+      coStatus: values?.status?.value === 'available' ? true : false,
     }
 
     putTutorial(payload)
@@ -143,13 +135,14 @@ const EditTutorial = () => {
               title: tutorialData?.title || '',
               description: tutorialData?.description || '',
               content: tutorialData?.content || '',
+              status: tutorialData?.status || available,
             }}
             validationSchema={validateSchema}
             onSubmit={onSubmit}
           >
             <Stack>
               <HStack>
-                <FormControl id="titulo" flex={3}>
+                <FormControl id="title" flex={3}>
                   <FormLabel color="#444A63">Título</FormLabel>
                   <Field
                     as={Input}
@@ -165,19 +158,32 @@ const EditTutorial = () => {
                     )}
                   </ErrorMessage>
                 </FormControl>
-                {/* <FormControl flex={1}>
+                <FormControl id="status" flex={1}>
                   <FormLabel color="#444A63">Status</FormLabel>
-                  <Select
-                    value={selectedOption}
-                    options={options}
-                    useBasicStyles
-                    variant="filled"
-                    selectedOptionStyle="check"
-                    onChange={(e) => setSelectedOption(e)}
-                  />
-                </FormControl> */}
+                  <Field name="status">
+                    {({ field, form }: FieldProps) => (
+                      <Select
+                        value={field.value}
+                        options={options}
+                        useBasicStyles
+                        variant="filled"
+                        selectedOptionStyle="check"
+                        onChange={(option) =>
+                          form.setFieldValue(field.name, option)
+                        }
+                      />
+                    )}
+                  </Field>
+                  <ErrorMessage name="status">
+                    {(message: string) => (
+                      <Text color="red.600" fontSize="sm">
+                        {message}
+                      </Text>
+                    )}
+                  </ErrorMessage>
+                </FormControl>
               </HStack>
-              <FormControl id="descrição">
+              <FormControl id="description">
                 <FormLabel color="#444A63">Descrição</FormLabel>
                 <Field
                   as={Textarea}
