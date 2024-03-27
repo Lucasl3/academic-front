@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import {
-  Stack,
-  Box,
-  Flex,
-  Button,
-  HStack,
-  Text,
-  Center,
-  Badge,
-} from '@chakra-ui/react'
+import { Stack, Button, HStack, Text, Badge } from '@chakra-ui/react'
 
 import { getForm } from '@/api/dashboard/forms/services'
 import { getSolicitations } from '@/api/dashboard/solicitation/services'
