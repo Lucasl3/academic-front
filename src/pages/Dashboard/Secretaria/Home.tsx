@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import {
   Stack,
@@ -16,6 +18,7 @@ import { getSolicitations } from '@/api/dashboard/solicitation/services'
 import NumberCaption from '@/components/DataDisplay/NumberCaption'
 
 const SecretariaHome = () => {
+  const navigate = useNavigate()
   const [naoAtendidas, setNaoAtendidas] = useState(0)
   const [demandasRecentes, setDemandasRecentes] = useState([
     {
@@ -37,17 +40,14 @@ const SecretariaHome = () => {
 
   useEffect(() => {
     getSolicitations().then((res) => {
-      const novasDemandas = res
-        .filter((s: any) => s.coStatus === 0 || s.coStatus === 1)
-        .map((demanda: any) => {
-          return getForm({ id: demanda.coForm }).then((form) => {
-            return {
-              id: demanda.coSolicitation,
-              title: form.noForm,
-            }
-          })
+      const novasDemandas = res.map((demanda: any) => {
+        return getForm({ id: demanda.coForm }).then((form) => {
+          return {
+            id: demanda.coSolicitation,
+            title: form.noForm,
+          }
         })
-
+      })
       Promise.all(novasDemandas)
         .then((data) => {
           setDemandasNovas(data)
@@ -66,12 +66,9 @@ const SecretariaHome = () => {
       })
       Promise.all(recentes)
         .then((dadosRecentes) => {
-          // Definir as demandas recentes com base nas datas mais recentes
           const demandasComData = dadosRecentes.filter(
             (item) => item.data !== null,
           )
-
-          // Verificar se há demandas com data para evitar erro de ordenação
           if (demandasComData.length > 0) {
             // Ordenar as demandas com base nas datas mais recentes
             const demandasOrdenadasPorData = demandasComData.sort((a, b) => {
@@ -137,12 +134,18 @@ const SecretariaHome = () => {
           <Text fontSize="xl" fontWeight="semibold">
             Novas demandas
             <Badge fontSize="md" ml="2" colorScheme="green">
-              +{naoAtendidas}
+              +{demandasNovas.length}
             </Badge>
           </Text>
           <Stack>
             {demandasNovas.map((demanda, index) => (
-              <Button key={index}>{demanda.title}</Button>
+              <Stack
+                key={index}
+                as={Link}
+                to={`/dashboard/secretaria/demandas/detalhes/${demanda.id}`}
+              >
+                <Button>{demanda.title}</Button>
+              </Stack>
             ))}
           </Stack>
         </Stack>
@@ -152,7 +155,12 @@ const SecretariaHome = () => {
           </Text>
           <Stack>
             {demandasRecentes.map((demanda, index) => (
-              <Button key={index}>{demanda.title}</Button>
+              <Button
+                key={index}
+                onClick={() => navigate('/demandas/detalhes/:id')}
+              >
+                {demanda.title}
+              </Button>
             ))}
           </Stack>
         </Stack>
