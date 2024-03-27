@@ -11,16 +11,7 @@ import { formatDateWithDayOfWeek, formatDate } from '@/utils/date'
 
 const Demandas = () => {
   const statusName = ['created', 'received', 'in_progress', 'done']
-  const [demandas, setDemandas] = React.useState([
-    {
-      id: 0,
-      titulo: '',
-      descricao: '',
-      usuario: '',
-      data: null,
-      status: '',
-    },
-  ])
+  const [demandas, setDemandas] = React.useState<any>([])
 
   useEffect(() => {
     getSolicitations().then((response) => {
@@ -48,22 +39,25 @@ const Demandas = () => {
         })
     })
   }, [])
+
+  console.log(demandas)
+
   return (
     <Stack gap={5}>
       <Text fontSize="2xl" fontWeight="semibold" color="#444A63">
         Gerenciamento de Demandas
       </Text>
-      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-        {demandas.map((item, index) => (
+      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4} w="full">
+        {demandas.map((item: any, index: number) => (
           <DemandCard
             key={index}
             to={`/dashboard/secretaria/demandas/detalhes/${item.id}`}
             id={index}
-            datetime={formatDate(item.data || '', 'DD/MM/YYYY [às] HH:mm')}
-            title={item.titulo}
-            status={item.status as status}
+            datetime={formatDate(item?.data || '', 'DD/MM/YYYY [às] HH:mm')}
+            title={item?.titulo}
+            status={item?.status as status}
             user={{
-              name: item.usuario,
+              name: item?.usuario,
               picture: '',
             }}
           />
