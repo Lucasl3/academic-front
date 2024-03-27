@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import { BsGear, BsList, BsPower } from 'react-icons/bs'
 
 import {
   Box,
@@ -20,16 +19,16 @@ const SidebarContent = ({ linkItems, ...rest }: ISidebarContentProps) => {
   const { onClose, width } = sidebar
   const [isMobile] = useMediaQuery('(max-width: 768px)')
 
-  const checkPermission = (isAdmin: boolean, isProtected: boolean) => {
-    if (isAdmin) {
+  const checkPermission = (isAdmin: boolean, users: string[]) => {
+    if (isAdmin && users.includes('secretaria')) {
       return true
     }
 
-    if (isProtected) {
-      return false
+    if (!isAdmin && users.includes('aluno')) {
+      return true
     }
 
-    return true
+    return false
   }
 
   return (
@@ -54,7 +53,7 @@ const SidebarContent = ({ linkItems, ...rest }: ISidebarContentProps) => {
       </Flex>
       {linkItems.map(
         (link) =>
-          checkPermission(user?.admin, link.protected) && (
+          checkPermission(user?.admin, link.users) && (
             <NavItem
               key={link.name}
               name={link.name}
