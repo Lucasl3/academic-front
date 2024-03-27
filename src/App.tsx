@@ -73,13 +73,14 @@ export const theme = extendTheme({
 
 const CheckSecretaria: React.FC = () => {
   const { user } = useContext(AppContext)
-  return user.admin ? <Outlet /> : <Navigate to="/dashboard/home" />
+  return user.admin ? <Outlet /> : <Navigate to="/login" />
 }
 
 const CheckAluno: React.FC = () => {
   const { user } = useContext(AppContext)
-  return !user.admin ? <Outlet /> : <Navigate to="/dashboard/home" />
+  return !user.admin ? <Outlet /> : <Navigate to="/login" />
 }
+
 class App extends React.Component {
   render() {
     return (

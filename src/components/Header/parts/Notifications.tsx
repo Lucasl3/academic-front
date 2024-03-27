@@ -74,7 +74,7 @@ const Notifications = () => {
         dsNotification: notification.dsNotification,
         read: notification.coStatus === 2,
         createdAt:
-          formatDate(notification.dtCreatedAt) ||
+          formatDate(notification.dtCreatedAt, 'DD/MM [às] HH:mm') ||
           getCurrentDate('DD/MM [às] HH:mm'),
       }
     })
