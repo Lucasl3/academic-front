@@ -512,22 +512,22 @@ const View = () => {
                 </AccordionItem>
               </Stack>
             </Accordion>
+            <HStack justify="space-between">
+              <Button
+                variant="ghost"
+                colorScheme="red"
+                color="#822727"
+                onClick={() => navigate('/dashboard/secretaria/demandas')}
+              >
+                Voltar
+              </Button>
+              <ApagarSolicitacaoButton />
+            </HStack>
           </Stack>
         ) : (
           <Text>Solicitação não encontrada</Text>
         )}
       </Skeleton>
-      <HStack justify="space-between">
-        <Button
-          variant="ghost"
-          colorScheme="red"
-          color="#822727"
-          onClick={() => navigate('/dashboard/secretaria/demandas')}
-        >
-          Voltar
-        </Button>
-        <ApagarSolicitacaoButton />
-      </HStack>
     </Stack>
   )
 }
