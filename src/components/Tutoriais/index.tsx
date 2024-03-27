@@ -57,7 +57,7 @@ const TutoriaisHome = ({ tutorials, isLoading }: ITutorialsProps) => {
             <Box
               key={index}
               as={Link}
-              to={`/dashboard/aluno/tutorial/${tutorial.id}`}
+              to={`/dashboard/aluno/tutoriais/${tutorial.id}`}
               listStyleType="none"
               py={1}
               m={0}
