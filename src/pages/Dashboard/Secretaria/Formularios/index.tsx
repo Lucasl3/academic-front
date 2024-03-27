@@ -67,9 +67,11 @@ const Formularios = () => {
           formsData?.map((formulario, index) => (
             <FormularioCard
               key={index}
+              to=""
               title={formulario.title}
               description={formulario.description}
               date={formulario.dueDate}
+              noRedirect
             />
           ))}
       </Stack>

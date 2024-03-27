@@ -4,8 +4,9 @@ export interface IFormularioCardProps {
   title: string
   description: string
   date: string
-  to?: string
+  to: string
   statusTag?: status
   tooltipText?: string
   isClosed?: boolean
+  noRedirect?: boolean
 }
