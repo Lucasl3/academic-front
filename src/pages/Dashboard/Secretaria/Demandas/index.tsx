@@ -40,8 +40,6 @@ const Demandas = () => {
     })
   }, [])
 
-  console.log(demandas)
-
   return (
     <Stack gap={5}>
       <Text fontSize="2xl" fontWeight="semibold" color="#444A63">
