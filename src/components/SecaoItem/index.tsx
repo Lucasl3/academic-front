@@ -5,8 +5,6 @@ import { Field, FieldArray, useFormikContext } from 'formik'
 
 import {
   Box,
-  Grid,
-  GridItem,
   HStack,
   FormControl,
   FormLabel,
@@ -26,7 +24,7 @@ const SecaoItem: React.FC<SecaoItemProps> = ({ secao, indexSecao, remove }) => {
   const { values, setFieldValue } = useFormikContext<FormValues>()
 
   const moveSection = (direction: number) => {
-    const newSecoes = [...values.secoes]
+    const newSecoes = [...values.ncoStep]
     const targetIndex = indexSecao + direction
 
     if (targetIndex < 0 || targetIndex >= newSecoes.length) return
@@ -34,7 +32,7 @@ const SecaoItem: React.FC<SecaoItemProps> = ({ secao, indexSecao, remove }) => {
       newSecoes[targetIndex],
       newSecoes[indexSecao],
     ]
-    setFieldValue('secoes', newSecoes)
+    setFieldValue('ncoStep', newSecoes)
   }
 
   return (
@@ -62,8 +60,8 @@ const SecaoItem: React.FC<SecaoItemProps> = ({ secao, indexSecao, remove }) => {
           as={Input}
           variant="flushed"
           mr={2}
-          id={`secoes.${indexSecao}.titulo`}
-          name={`secoes.${indexSecao}.titulo`}
+          id={`ncoStep.${indexSecao}.noFormStep`}
+          name={`ncoStep.${indexSecao}.noFormStep`}
           placeholder="Título da seção"
           type="text"
           maxLength="20"
@@ -81,14 +79,14 @@ const SecaoItem: React.FC<SecaoItemProps> = ({ secao, indexSecao, remove }) => {
         </Button>
       </HStack>
 
-      <FormLabel htmlFor={`secoes.${indexSecao}.descricao`}>
+      <FormLabel htmlFor={`ncoStep.${indexSecao}.dsFormStep`}>
         Descrição da Seção
       </FormLabel>
       <Field
         as={Input}
         variant="filled"
-        id={`secoes.${indexSecao}.descricao`}
-        name={`secoes.${indexSecao}.descricao`}
+        id={`ncoStep.${indexSecao}.dsFormStep`}
+        name={`ncoStep.${indexSecao}.dsFormStep`}
         placeholder="Descrição da seção"
         type="text"
         maxLength="30"
@@ -102,11 +100,11 @@ const SecaoItem: React.FC<SecaoItemProps> = ({ secao, indexSecao, remove }) => {
         border="2px"
         borderColor="gray.300"
       >
-        <FieldArray name={`secoes.${indexSecao}.questoes`}>
+        <FieldArray name={`ncoStep.${indexSecao}.ncoFormQuestion`}>
           {({ remove, push }) => (
             <Box>
-              {values.secoes[indexSecao].questoes.length > 0 &&
-                values.secoes[indexSecao].questoes.map(
+              {values.ncoStep[indexSecao].ncoFormQuestion.length > 0 &&
+                values.ncoStep[indexSecao].ncoFormQuestion.map(
                   (questao, indexQuestao) => (
                     <QuestaoItem
                       key={`questao-${indexSecao}-${indexQuestao}`}
@@ -124,11 +122,11 @@ const SecaoItem: React.FC<SecaoItemProps> = ({ secao, indexSecao, remove }) => {
                   width="full"
                   onClick={() =>
                     push({
-                      titulo: '',
-                      descricao: '',
-                      tipo: '',
-                      obrigatorio: true,
-                      itens: [],
+                      noQuestion: '',
+                      dsQuestion: '',
+                      coTypeQuestion: '',
+                      isRequired: true,
+                      ncoFormItem: [],
                     })
                   }
                 >
@@ -143,52 +141,5 @@ const SecaoItem: React.FC<SecaoItemProps> = ({ secao, indexSecao, remove }) => {
     </FormControl>
   )
 }
-
-/*
-  <FieldArray name={`questoes.${index}.itens`}>
-    {({ remove, push }) => (
-      <Box>
-        {secao.questoes &&
-          secao.questoes.length > 0 &&
-          secao.questoes.map((questao, questoes_index) => (
-            <HStack className="row" key={questoes_index} mb={2}>
-              <Field
-                as={Input}
-                name={`questoes.${index}.itens.${questoes_index}.descricao`}
-                placeholder="Item"
-                type="text"
-              />
-              <ErrorMessage
-                name={`questoes.${index}.itens.${questoes_index}.descricao`}
-                component="div"
-                className="field-error"
-              />
-              <Button colorScheme="blue" onClick={() => remove(index)}>
-                <Icon as={FiArrowUp} />
-              </Button>
-              <Button colorScheme="blue" onClick={() => remove(index)}>
-                <Icon as={FiArrowDown} />
-              </Button>
-              <Button
-                colorScheme="red"
-                onClick={() => remove(questoes_index)}
-              >
-                <Icon as={FiTrash2} />
-              </Button>
-            </HStack>
-          ))}
-        <Button
-          onClick={() =>
-            push({
-              descricao: '',
-            })
-          }
-        >
-          Adicionar item
-        </Button>
-      </Box>
-    )}
-  </FieldArray>
-*/
 
 export default SecaoItem

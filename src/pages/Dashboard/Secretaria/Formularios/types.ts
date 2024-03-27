@@ -1,27 +1,25 @@
 export type FormValues = {
-  nome: string
-  descricao: string
-  bloqueado: boolean
-  dataInicio: string
-  dataFim: string
-  secoes: Array<SecaoValues>
+  noForm: string
+  dsForm: string
+  dtLimit: string
+  ncoStep: Array<SecaoValues>
 }
 
 export type SecaoValues = {
-  titulo: string
-  descricao: string
-  questoes: Array<QuestaoValues>
+  noFormStep: string
+  dsFormStep: string
+  ncoFormQuestion: Array<QuestaoValues>
 }
 
 export type QuestaoValues = {
-  titulo: string
-  descricao: string
-  tipo: string
-  obrigatorio: boolean
-  itens?: Array<ItemValues>
+  noQuestion: string
+  dsQuestion: string
+  coTypeQuestion: string
+  isRequired: boolean
+  ncoFormItem?: Array<ItemValues>
 }
 
-export type ItemValues = { label: string; value: string }
+export type ItemValues = { dsItem: string }
 
 export type SecaoItemProps = {
   secao: SecaoValues

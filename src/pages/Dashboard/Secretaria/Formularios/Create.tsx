@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { FiPlusCircle } from 'react-icons/fi'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Formik, Field, Form, FieldArray, useFormikContext } from 'formik'
 
@@ -8,7 +8,6 @@ import {
   Card,
   Button,
   FormLabel,
-  FormControl,
   HStack,
   Input,
   Stack,
@@ -17,31 +16,30 @@ import {
   Box,
   Grid,
   GridItem,
-  Switch,
   Icon,
+  useToast,
 } from '@chakra-ui/react'
 
+import { useMutationPostFormulario } from '@/api/dashboard/formulario/mutations'
 import SecaoItem from '@/components/SecaoItem'
 
 import { FormValues } from './types'
 
 const initialValues = {
-  nome: '',
-  descricao: '',
-  dataInicio: '',
-  dataFim: '',
-  bloqueado: false,
-  secoes: [
+  noForm: '',
+  dsForm: '',
+  dtLimit: '',
+  ncoStep: [
     {
-      titulo: '',
-      descricao: '',
-      questoes: [
+      noFormStep: '',
+      dsFormStep: '',
+      ncoFormQuestion: [
         {
-          titulo: '',
-          descricao: '',
-          tipo: '',
-          obrigatorio: true,
-          itens: [],
+          noQuestion: '',
+          dsQuestion: '',
+          coTypeQuestion: '',
+          isRequired: true,
+          ncoFormItem: [],
         },
       ],
     },
@@ -55,47 +53,41 @@ const AdicionarIdentificacaoPadraoButton = () => {
   const adicionarIdentificacaoPadrao = () => {
     if (temIdentificacaoPadrao) return
     const novaSecao = {
-      titulo: 'Identificação',
-      descricao: 'Informações pessoais',
-      questoes: [
+      noFormStep: 'Identificação',
+      dsFormStep: 'Informações pencoFormQuestionssoais',
+      ncoFormQuestion: [
         {
-          titulo: 'Nome',
-          descricao: 'Insira seu nome completo',
-          obrigatorio: true,
-          tipo: 'text',
+          noQuestion: 'Nome',
+          dsQuestion: 'Insira seu nome completo',
+          isRequired: true,
+          coTypeQuestion: 'text',
         },
         {
-          titulo: 'Email institucional',
-          descricao: 'Insira seu email institucional',
-          obrigatorio: true,
-          tipo: 'email',
+          noQuestion: 'Email institucional',
+          dsQuestion: 'Insira seu email institucional',
+          isRequired: true,
+          coTypeQuestion: 'email',
         },
         {
-          titulo: 'Número de matrícula',
-          descricao: 'Insira seu número de matrícula',
-          obrigatorio: true,
-          tipo: 'number',
+          noQuestion: 'Número de matrícula',
+          dsQuestion: 'Insira seu número de matrícula',
+          isRequired: true,
+          coTypeQuestion: 'number',
         },
         {
-          titulo: 'Curso',
-          descricao: 'Selecione o seu curso',
-          obrigatorio: true,
-          tipo: 'radio',
-          itens: [
-            {
-              label: 'Ciência da computação',
-              value: 'ciencia-da-computacao',
-            },
-            {
-              label: 'Engenharia de computação',
-              value: 'engenharia-de-computacao',
-            },
+          noQuestion: 'Curso',
+          dsQuestion: 'Selecione o seu curso',
+          isRequired: true,
+          coTypeQuestion: 'radio',
+          ncoFormItem: [
+            { dsItem: 'Ciência da computação' },
+            { dsItem: 'Engenharia de computação' },
           ],
         },
       ],
     }
-    formik.setFieldValue('secoes', [novaSecao, ...formik.values.secoes])
-    formik.setFieldTouched('secoes', true, false)
+    formik.setFieldValue('ncoStep', [novaSecao, ...formik.values.ncoStep])
+    formik.setFieldTouched('ncoStep', true, false)
     setTemIdentificacaoPadrao(true)
   }
 
@@ -117,14 +109,42 @@ const AdicionarIdentificacaoPadraoButton = () => {
 }
 
 const CreateFormulario = () => {
+  const toast = useToast()
+  const navigate = useNavigate()
+
+  const { mutate: postFormulario, isLoading: isPostFormularioLoading } =
+    useMutationPostFormulario({
+      onSuccess: () => {
+        toast({
+          title: 'Formulário criado com sucesso!',
+          status: 'success',
+          duration: 5000,
+        })
+        navigate('/dashboard/secretaria/formularios')
+      },
+      onError: () => {
+        toast({
+          title: 'Houve um erro ao criar o formulário.',
+          status: 'error',
+          duration: 3000,
+        })
+      },
+    })
+
+  const onSubmit = (values: FormValues) => {
+    const payload = {
+      noForm: values.noForm,
+      dsForm: values.dsForm,
+      dtLimit: values.dtLimit,
+      ncoStep: values.ncoStep,
+    }
+
+    postFormulario(payload)
+  }
+
   return (
     <Stack gap={5}>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={async (values): Promise<void> => {
-          console.log(values)
-        }}
-      >
+      <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values }) => (
           <>
             <Text fontSize="2xl" fontWeight="semibold" color="#444A63">
@@ -133,65 +153,43 @@ const CreateFormulario = () => {
 
             <Form>
               <Card p="4">
-                <Grid templateColumns="repeat(10, 1fr)" gap={4} mt="4">
-                  <GridItem colSpan={9}>
+                <Grid templateColumns="repeat(2, 1fr)" gap={4} mt="4">
+                  <GridItem colSpan={1}>
                     <FormLabel htmlFor={'nome'}>Nome do Formulário</FormLabel>
                     <Field
                       as={Input}
                       variant="filled"
-                      id="nome"
-                      name="nome"
+                      id="noForm"
+                      name="noForm"
                       placeholder="Nome do formulário"
                     />
                   </GridItem>
+
                   <GridItem colSpan={1}>
-                    <FormControl>
-                      <FormLabel htmlFor={'bloqueado'}>Bloqueado</FormLabel>
-                      <Field
-                        as={Switch}
-                        id="bloqueado"
-                        name="bloqueado"
-                        size="lg"
-                        isChecked={values.bloqueado}
-                      ></Field>
-                    </FormControl>
-                  </GridItem>
-                </Grid>
-
-                <FormLabel htmlFor={'descricao'} mt="4">
-                  Descrição do Formulário
-                </FormLabel>
-                <Field
-                  as={Input}
-                  variant="filled"
-                  id="descricao"
-                  name="descricao"
-                  placeholder="Descrição"
-                />
-
-                <Grid templateColumns="repeat(13, 1fr)" gap={4} mt="4">
-                  <GridItem colSpan={5}>
-                    <FormLabel htmlFor={'dataInicio'}>
-                      Data de abertura do Formulário
-                    </FormLabel>
-                    <Field
-                      as={Input}
-                      variant="filled"
-                      id="dataInicio"
-                      name="dataInicio"
-                      type="date"
-                    />
-                  </GridItem>
-                  <GridItem colSpan={5}>
-                    <FormLabel htmlFor={'dataFim'}>
+                    <FormLabel htmlFor={'dtLimit'}>
                       Data de fechamento do Formulário
                     </FormLabel>
                     <Field
                       as={Input}
                       variant="filled"
-                      id="dataFim"
-                      name="dataFim"
+                      id="dtLimit"
+                      name="dtLimit"
                       type="date"
+                    />
+                  </GridItem>
+                </Grid>
+
+                <Grid templateColumns="repeat(13, 1fr)" gap={4} mt="4">
+                  <GridItem colSpan={10}>
+                    <FormLabel htmlFor={'dsForm'}>
+                      Descrição do Formulário
+                    </FormLabel>
+                    <Field
+                      as={Input}
+                      variant="filled"
+                      id="dsForm"
+                      name="dsForm"
+                      placeholder="Descrição"
                     />
                   </GridItem>
                   <GridItem colSpan={3} mt="5">
@@ -200,11 +198,11 @@ const CreateFormulario = () => {
                 </Grid>
               </Card>
 
-              <FieldArray name="secoes">
+              <FieldArray name="ncoStep">
                 {({ remove, push }) => (
                   <Box>
-                    {values.secoes.length > 0 &&
-                      values.secoes.map((secao, indexSecao) => (
+                    {values.ncoStep.length > 0 &&
+                      values.ncoStep.map((secao, indexSecao) => (
                         <SecaoItem
                           key={`secao-${indexSecao}`}
                           secao={secao}
@@ -227,9 +225,9 @@ const CreateFormulario = () => {
                         mt={4}
                         onClick={() =>
                           push({
-                            titulo: '',
-                            descricao: '',
-                            questoes: [],
+                            noFormStep: '',
+                            dsFormStep: '',
+                            ncoFormQuestion: [],
                           })
                         }
                       >
@@ -251,8 +249,6 @@ const CreateFormulario = () => {
                   Voltar
                 </Button>
                 <HStack>
-                  <Button colorScheme="red">Descartar</Button>
-                  <Button colorScheme="blue">Salvar rascunho</Button>
                   <Button colorScheme="green" type="submit">
                     Disponibilizar
                   </Button>
