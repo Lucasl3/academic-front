@@ -29,10 +29,10 @@ const Formularios = () => {
   const formsData = useMemo(() => {
     return forms?.map((form) => {
       return {
-        id: form.coFormulario,
-        title: form.noFormulario,
-        description: form.dsFormulario,
-        dueDate: form.dtLimiteFormulario,
+        id: form.coForm,
+        title: form.noForm,
+        description: form.dsForm,
+        dueDate: form.dtLimit,
         status: 'available',
       }
     })
@@ -67,10 +67,8 @@ const Formularios = () => {
           formsData?.map((formulario, index) => (
             <FormularioCard
               key={index}
-              to={`/dashboard/secretaria/formularios/detalhes/${formulario.id}`}
               title={formulario.title}
               description={formulario.description}
-              tooltipText="Clique para editar"
               date={formulario.dueDate}
             />
           ))}

@@ -17,7 +17,6 @@ const FormularioCard = ({
   statusTag,
   isClosed,
 }: IFormularioCardProps) => {
-  const navigate = useNavigate()
   const toast = useToast()
 
   const closeFormAlert = () => {
@@ -37,7 +36,7 @@ const FormularioCard = ({
         bg={isClosed ? '#DDDDDD' : '#FFFFFF'}
         gap={2}
         cursor={isClosed ? 'not-allowed' : 'pointer'}
-        onClick={() => (!isClosed ? navigate(to) : closeFormAlert())}
+        onClick={() => isClosed && closeFormAlert()}
       >
         <HStack justifyContent="space-between">
           <Text noOfLines={1} fontSize="2xl" fontWeight="semibold">

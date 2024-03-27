@@ -26,7 +26,6 @@ import Demandas from '@/pages/Dashboard/Secretaria/Demandas'
 import DemandaView from '@/pages/Dashboard/Secretaria/Demandas/View'
 import SecretariaFormularios from '@/pages/Dashboard/Secretaria/Formularios'
 import CreateFormulario from '@/pages/Dashboard/Secretaria/Formularios/Create'
-import EditFormulario from '@/pages/Dashboard/Secretaria/Formularios/Edit'
 import SecretariaHome from '@/pages/Dashboard/Secretaria/Home'
 import Tutoriais from '@/pages/Dashboard/Secretaria/Tutoriais'
 import CreateTutorial from '@/pages/Dashboard/Secretaria/Tutoriais/Create'
@@ -137,15 +136,7 @@ class App extends React.Component {
                       </Route>
                       <Route path="formularios">
                         <Route index element={<SecretariaFormularios />} />
-                        <Route
-                          path="outro"
-                          element={<SecretariaFormularios />}
-                        />
                         <Route path="criar" element={<CreateFormulario />} />
-                        <Route
-                          path="detalhes/:id"
-                          element={<EditFormulario />}
-                        />
                       </Route>
                     </Route>
                   </Route>

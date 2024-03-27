@@ -1,8 +1,8 @@
-export interface IGeFormularioDTO {
-  coFormulario: number
-  noFormulario: string
-  dsFormulario: string
-  dtLimiteFormulario: string
+export interface IGetFormularioDTO {
+  coForm: number
+  noForm: string
+  dsForm: string
+  dtLimit: string
   dtCreatedAt: string
   dtUpdatedAt: string
   dtDeletedAt: string
@@ -23,9 +23,9 @@ export interface IPutFormularioDTO extends IFormularioDTOBase {
 }
 
 export type TGetFormularioParams = { id: number }
-export type TGetFormsResponse = Array<IGeFormularioDTO>
-export type TGetFormularioResponse = IGeFormularioDTO
+export type TGetFormsResponse = Array<IGetFormularioDTO>
+export type TGetFormularioResponse = IGetFormularioDTO
 export type TPostFormularioParams = IPostFormularioDTO
-export type TPostFormularioResponse = IGeFormularioDTO
+export type TPostFormularioResponse = IGetFormularioDTO
 export type TPutFormularioParams = IPutFormularioDTO
-export type TPutFormularioResponse = IGeFormularioDTO
+export type TPutFormularioResponse = IGetFormularioDTO
