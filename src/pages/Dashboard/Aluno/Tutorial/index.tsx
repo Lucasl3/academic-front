@@ -53,7 +53,6 @@ const ViewTutorial = () => {
   )
 
   const tutorialData = useMemo(() => {
-    console.log(tutorial)
     return {
       id: tutorial?.coTutorial,
       title: tutorial?.noTutorial,

@@ -24,7 +24,7 @@ export const postTutorial = async (params: TPostTutorialParams) => {
 }
 
 export const putTutorial = async (params: TPutTutorialParams) => {
-  const response = await http.put('/tutorial/', params)
+  const response = await http.put(`/tutorial/${params.coTutorial}/`, params)
 
   return response.data
 }

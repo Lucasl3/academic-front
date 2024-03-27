@@ -27,11 +27,8 @@ const RichTextEditor = ({
     onUpdate: ({ editor }) => {
       onChange?.(editor?.getHTML())
     },
+    editable: !readOnly,
   })
-
-  useEffect(() => {
-    editor?.setEditable(!readOnly)
-  }, [])
 
   return (
     <Box bg={readOnly ? 'transparent' : '#FFFFFF'} py="4" borderRadius="md">

@@ -136,32 +136,27 @@ function AlunoSolicitacao() {
               <Stepper
                 index={activeStep + 1}
                 orientation="vertical"
-                minHeight={
-                  statusSolic?.length === 1
-                    ? 'auto'
-                    : activeStep === statusSolic?.length
-                      ? '400px'
-                      : '500px'
-                }
                 marginY="16px"
               >
                 {statusSolic?.map((step: any, index: number) => (
-                  <Step key={index}>
-                    <StepIndicator>
-                      <StepStatus
-                        complete={<StepIcon />}
-                        incomplete={<StepNumber />}
-                        active={<StepNumber />}
-                      />
-                    </StepIndicator>
-                    <Box>
-                      <StepTitle>{step?.title}</StepTitle>
-                      {step?.description && (
-                        <StepDescription>{step?.description}</StepDescription>
-                      )}
-                      <StepSeparator />
-                    </Box>
-                  </Step>
+                  <Box key={index} w="full">
+                    <Step>
+                      <StepIndicator>
+                        <StepStatus
+                          complete={<StepIcon />}
+                          incomplete={<StepNumber />}
+                          active={<StepNumber />}
+                        />
+                      </StepIndicator>
+                      <Box w="full">
+                        <StepTitle>{step?.title}</StepTitle>
+                        {step?.description && (
+                          <StepDescription>{step?.description}</StepDescription>
+                        )}
+                        <StepSeparator />
+                      </Box>
+                    </Step>
+                  </Box>
                 ))}
               </Stepper>
             </Flex>
